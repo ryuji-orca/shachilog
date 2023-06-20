@@ -2,26 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer components {
+  .prose .anchor {
+    @apply absolute opacity-0 no-underline w-full max-w-3xl -ml-4 cursor-pointer ease-in duration-150;
+    margin-left: -1em;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  .prose .anchor:after {
+    @apply dark:text-yellowdark-11 text-indigo-11  font-medium;
+    content: "#";
+  }
+
+  .prose *:hover > .anchor {
+    @apply no-underline opacity-100;
+  }
+
+  .prose :where(ul > li):not(:where([class~="not-prose"] *))::marker,
+  .prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
+    @apply text-indigo-10 dark:text-indigodark-10;
+  }
+
+  .prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
+    @apply font-medium;
+  }
+
+  .prose :where(code):not(:where([class~="not-prose"] *))::before {
+    content: none;
+  }
+
+  .prose :where(code):not(:where([class~="not-prose"] *))::after {
+    content: none;
+  }
+
+  /* Toc */
+  .js-toc {
+    @apply text-slate-11 dark:text-slatedark-11;
+  }
+
+  .js-toc .toc-list .toc-list {
+    @apply pl-3 mb-1;
+  }
+
+  .js-toc .toc-list .toc-list a {
+    @apply text-xs;
+  }
+
+  .js-toc > .toc-list > li:not(:last-child) {
+    @apply mb-3;
+  }
+
+  .js-toc a {
+    @apply no-underline text-sm hover:text-indigo-7 dark:hover:text-indigodark-7;
+  }
+
+  .js-toc a.is-active-link {
+    @apply text-indigo-8 dark:text-indigodark-8;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .max-w-1096 {
+    max-width: 1096px;
+  }
+}
+
+/* pretty-code */
+
+div[data-rehype-pretty-code-fragment] {
+  @apply my-6;
+}
+
+div[data-rehype-pretty-code-fragment] > pre {
+  @apply bg-indigodark-2;
+}
+
+[data-rehype-pretty-code-fragment] code {
+  @apply grid min-w-full break-words rounded-none border-0 bg-transparent p-0 text-sm;
+  counter-reset: line;
+  box-decoration-break: clone;
+}
+
+[data-rehype-pretty-code-fragment] .line {
+  @apply border-l-[2px] border-transparent px-4;
+}
+div[data-rehype-pretty-code-fragment] .line.line--highlighted {
+  @apply bg-slatedark-7/30 border-l-bluedark-8 py-1;
+}
+
+[data-rehype-pretty-code-fragment] [data-line-numbers] > .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1rem;
+  text-align: right;
+}
+
+[data-rehype-pretty-code-fragment] .line-highlighted span {
+  @apply relative;
+}
+
+[data-rehype-pretty-code-fragment] .word--highlighted {
+  @apply rounded-md bg-slatedark-5 bg-opacity-20 p-1;
+}
+
+[data-rehype-pretty-code-title] {
+  @apply px-4 py-3 font-mono text-xs font-medium border-b rounded-t-lg text-slatedark-11 border-indigodark-6 bg-indigodark-2;
+}
+
+[data-rehype-pretty-code-title] + pre {
+  @apply mt-0 rounded-t-none border-t-0;
 }

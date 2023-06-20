@@ -1,0 +1,17 @@
+.vscode/
+.DS_Store
+node_modules/
+
+/.cache
+/build
+/server-build
+/public/build
+/coverage
+
+app/styles
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+/content/blog/*.mdx
+/content/blog/**/*.mdx

@@ -1,0 +1,1127 @@
+---
+title: 【決定版】NFTのアローリスト(ホワイトリスト)をスマートコントラクトで実装する方法
+slug: nft-allowlist-smart-contract
+publishedAt: 2023-06-20
+summary: 'NFTのアローリスト(ホワイトリスト)をスマートコントラクトで実装する方法を解説する'
+tags: [solidity, nft, smart-contract]
+image: /image/merkle-tree/merkle-tree-allowlist-social.png
+---
+
+この記事では、NFTのアローリスト(ホワイトリスト)をスマートコントラクトで実装しサイトからNFTを購入する方法を紹介します。
+
+スマートコントラクトのコードは誰でも見れるので、間違ったセールのコードを書いてしまうと<Bold>ハッキングのリスク</Bold>があります。
+
+なので、安全なアローリスト登録のコードを書きたい方はぜひ見てください！
+
+<AlertCard  title="対象読者">
+	この記事は自分でコードを書いてNFTを発行したい方向けです。
+
+	特にギミックがない簡単なNFTなら[thirdweb](https://thirdweb.com/)などを使った方が安全だしいいと思います。
+
+	また、Solidityの基礎ができていることを想定しています。
+
+	フロントに関しては購入サイト(ミントサイト)をゼロから作りたい方向けです。
+</AlertCard>
+
+## NFTのアローリスト登録をする方法は3つある【マークルツリーがおすすめ】
+
+NFTのアローリストの登録をスマートコントラクトで実装する方法は3つあります。
+
+- [マークルツリー](https://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E6%9C%A8)
+- [mapping](https://www.tutorialspoint.com/solidity/solidity_mappings.htm)
+- [ECDSA](https://zoom-blc.com/what-is-ecdsa)
+
+難しそうなものが3つ並んでいますが、タイトルにある通り特別な理由がない限り<Bold>マークルツリーを採用</Bold>してください。
+
+なぜかというと、<Code title="mapping" /> は簡単だけどガス代かなりかかりますし、<Code title="ECDSA" /> は実装の難易度が高くてハッキングの落とし穴も結構あるからです。
+
+それに比べてマークルツリーは多くのNFTプロジェクトで採用されており、ガス代あまりかかりませんし実装難易度も <Code title="ECDSA" /> に比べたら難しくありません。
+
+なので今回はマークルツリーの実装方法を詳しくみていきたいと思います！
+
+<AlertCard  title="CNPRのECDSAについて">
+	[コード](https://etherscan.io/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code)を見れば分かるとおり、僕がエンジニアとして担当した[CNPR](https://www.ninja-dao.com/cnpr)では <Code title="ECDSA" /> を採用しています。
+
+	当時はセールを複数回に分けて実地している事例がなくて、ガス代などを含めて何回もセールをするなら <Code title="ECDSA" /> の方が良いと思い採用しました。
+
+	今はマークルツリーで複数回セールをしている事例はたくさんあるので分割セールでもマークルツリーでいいと思います。
+
+	僕も[ZUTTO MAMORU](https://zutto-mamoru.com/)では <Code title="ECDSA" /> ではなくマークルツリーを採用しました。
+</AlertCard>
+
+## マークルツリーの基礎
+
+先ほどから単語が出ているマークルツリーについて解説します。
+
+マークルツリーはブロックチェーンにも使われており、主にたくさんのデータを使って何かチェックしたいときに使います。
+
+例えば、以前もらった色付きの箱が複数あって、前と比べて凹んでいないか確認するときは普通に見て確認しますよね。
+
+ただ、これが1000万以上ある場合だと一個一個確認するのきついですよね。
+
+そこで使われるのがマークルツリーです。
+
+確認したい箱をマークルツリーの機械に入れると必ず一定の大きさの文字列を返してくれます。
+
+<MerkleTreeIntro showBoxData={false}/>
+
+また、最後に出てくる文字列は適当に出てくるのではなくて以下の法則を持っています。
+
+- 同じ箱を入れたら出てくる文字列は常に一緒
+- 出てきた文字列から入れる前の箱を調べることができない
+- 少しでも入れた箱が違うと全く違う文字列が出てくる
+
+順番に見ていきましょう。
+
+### 同じ箱を入れたら出てくる文字列は常に一緒
+これは<Bold>同じものを入れたら常に同じデータが返ってくる</Bold>ということです。
+
+<Code title="change" /> を押した後に <Code title="reset" /> を押してみてください。
+
+<Code title="0x" /> の後の値が最初の値と変わっていないのがわかると思います。
+
+<MerkleTreeIntro/>
+
+### 出てきた文字列から入れる前の箱を調べることができない
+
+こちらはタイトル通り、<Bold>文字列をどんなに調べてもそこから使われているデータを当てることはできない</Bold>ということです。
+
+先ほどの例は下の値が公開されていたので文字列を作るのに何が使われていたのか分かりましたが、以下の情報だけだとわからないですよね。
+
+<MerkleTreeIntro showBoxList={false} showBoxData={false} />
+
+### 少しでも入れた箱が違うと全く違う文字列が出てくる
+
+下記のデモで実際に角を変えてみてください。
+
+ちょっとだけしか変えていないのに上のラベルの文字列がかなり変わっているのが確認できると思います。
+
+<MerkleTreeIntro showChangeRadiusAndWeight={true}/>
+
+上記を踏まえて、1000万の箱を以前と比べて凹んでいないか確認したいときは以下の手順でチェックできます。
+
+1. 箱をもらった時にペアを作り最後の一個になるまでマークルツリーの機械に入れて出てきた文字列をメモしておく
+
+2. 凹んでいないかチェックする時も同じ処理をして最後に出てきた文字列があっているかチェックする
+
+これだけで1000万の箱が凹んでいないかチェックできます。
+
+一連の流れを画像で説明するとこんな感じです。
+
+<Image src="/image/merkle-tree/merkle-tree-generate.svg" alt="マークルツリーのルートの生成図" width={724} height={632} />
+
+<Image src="/image/merkle-tree/merkle-tree-regenerate.svg" alt="マークルツリーのルートの再生成" width={724} height={632} />
+
+<AlertCard variant="warning" title="画像についての注意">
+	1000万のデータを画像で表すのは無理なので、簡略化しています。
+</AlertCard>
+
+なぜ最後の文字列だけ見ればいいかというと先ほどのデモで見た<Bold>少しでも入れたデータが違うと全く違う文字列が出てくる</Bold>と言う性質があるので、最後に出てくる値が違ってきてしまうからですね。
+
+<Image src="/image/merkle-tree/merkle-tree-regenerate-error.svg" alt="メモしたルートと生成したルートが違う" width={724} height={632} />
+
+この<Bold>最後の値だけ確認すればいい</Bold>と言うのがアローリスト登録で重要です。
+
+なぜならイーサリアムではデータを設定する度にガス代がかかるのですが、マークルツリーならどんなにデータが多くても最後の文字列を設定するだけで検証できます。
+
+なのでアローリストの登録をするのにガス代をすごく安くできるので、特定の人しかNFTを購入できないようにしたいときに使えるんですね！
+
+マークルツリーの基礎について分かったと思うので、次の章では実際にアローリストを登録する方法を解説します。
+
+<AlertCard  title="マークルツリーの用語" variant="pro">
+	<Code title="Leaves(Leaf)" text="データをハッシュ化したもの" />
+
+	<Code title="Nodes(Node)" text="LeafまたはNodeを組み合わせてしてハッシュ化したもの" />
+
+	<Code title="Root" text="最後に出てくる文字列" />
+
+	先ほどの図で表すとこんな感じです。
+
+	<Image src="/image/merkle-tree/merkle-tree-terminology.svg" alt="マークルツリーの全体図" width={648} height={526} />
+</AlertCard>
+
+## マークルツリーでNFTのアローリスト登録を実装する
+
+さてマークルツリーについて大体わかったところで、実際にマークルツリーでNFTのアローリストを登録していきましょう！
+
+さっきは登録するデータが箱でしたがそれをアドレスと購入できる最大数に変更する感じですね。
+
+アローリストを登録するときはアドレスのみじゃなくて、アドレスと購入できる最大数を登録するのが一般的なのでこの二つを設定する方法を見ていきます！
+
+手順としては以下の通りです。
+
+1. スマートコントラクトを作る
+2. テストコードを書く
+3. マークルツリーの認証をフロントで作る
+
+では見ていきましょう！
+
+<AlertCard  title="環境構築">
+	環境構築はこの記事の範囲外です。
+
+	この記事では[foundry](https://book.getfoundry.sh/)を使って解説していきます。
+
+	一応[hardhat](https://hardhat.org/)とfoundryの環境構築をする際に役に立ちそうなリソースを載せておきます。
+	<CustomList list={[<a href="https://dev.classmethod.jp/articles/hardhat-quick-start/">Hardhatで始めるスマートコントラクト開発</a>,<a href="https://zenn.dev/yuk6ra/articles/789d411398c6f9">Hardhatの環境構築（入門）</a>,<a href="https://zenn.dev/razokulover/articles/574eb471e6db1c">EthereumのDapp開発環境のFoundryを使ってみる</a>]}/>
+
+	また、この記事で使ったfoundryのコードは[GitHub](https://github.com/ryuji-orca/nft-allowlist-merkle-tree-foundry)に公開しているので参考までにどうぞ。
+</AlertCard>
+
+### スマートコントラクトを作る
+
+完成系のコードはこちらです。
+
+```solidity title="src/nftFree.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
+	enum SalePhase {
+		Locked,
+		Presale
+	}
+
+	SalePhase public phase = SalePhase.Locked;
+
+	bytes32 public merkleRoot;
+
+	mapping(address user => uint256 mintAmount) public presaleMintCount;
+
+	// =============================================================
+	//   ONLY OWNER
+	// =============================================================
+
+	function setPhase(SalePhase _phase) external onlyOwner {
+		phase = _phase;
+	}
+
+	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+		merkleRoot = _merkleRoot;
+	}
+
+	// =============================================================
+	//   MINT FUNCTION
+	// =============================================================
+
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		require(phase == SalePhase.Presale, "presale event is not active");
+
+		require(isWhitelisted(msg.sender, _maxMintAmount, _proof), "you don't have a whitelist");
+
+		require(presaleMintCount[msg.sender] + _mintAmount <= _maxMintAmount, "exceeds number of earned tokens");
+
+		presaleMintCount[msg.sender] += _mintAmount;
+
+		_mint(msg.sender, _mintAmount);
+	}
+
+	// =============================================================
+	//   MERKLE TREE
+	// =============================================================
+
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+
+	function _startTokenId() internal view virtual override returns (uint256) {
+		return 1;
+	}
+}
+```
+
+いきなりコードを全部出されても分かりずらいと思うので順番に解説していきます。
+
+まずは以下のライブラリをインストールします。
+
+- [openzeppelin](https://docs.openzeppelin.com/contracts/)
+- [ERC721A](https://github.com/chiru-labs/ERC721A)
+
+[openzeppelin](https://www.openzeppelin.com/)は安全なコードを提供してくれるところでたくさんの人が利用しています。
+
+今回は、[MerkleProof](https://docs.openzeppelin.com/contracts/api/utils#MerkleProof)と[Ownable](https://docs.openzeppelin.com/contracts/api/access#Ownable)を使います。
+
+また、NFTプロジェクトを作る場合はERC721Aが使われることが多いので今回はこちらをベースとして使います。
+
+インストールが完了したら、<Code title=".sol"/> ファイルを作りライブラリをインポートしてコードを以下のようにします。
+
+```solidity title="src/nftFree.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+```
+
+- <Code title="SPDX-License-Identifier: MIT" text={<a href="https://www.skyarch.net/blog/spdx-license-identifiers-%E3%81%A3%E3%81%A6%E3%81%AA%E3%82%93%E3%81%A0%E3%80%82/" >コードのライセンス</a>} />
+- <Code title="pragma solidity" text="バージョン指定" />
+
+次に <Code title="contract"/> を作り <Code title="ERC721A"/> と <Code title="Ownable"/> を継承します。
+
+```solidity title="src/nftFree.sol" {7-12}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFT is ERC721A("MyToken", "MTK"), Ownable {
+function _startTokenId() internal view virtual override returns (uint256) {
+    return 1;
+  }
+}
+```
+
+<Code title="MyToken" /> がトークン名で <Code title="MTK" /> がシンボル名です。
+
+ERC721AはトークンIDが <Code title="0" /> から始まるので <Code title="1" /> から始まるように変更しています。
+
+これで準備ができたのでセールのコードを追加します。
+
+```solidity title="src/nftFree.sol" {8-10}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		_mint(msg.sender, _mintAmount);
+	}
+
+	function _startTokenId() internal view virtual override returns (uint256) {
+		return 1;
+	}
+}
+```
+<Code title="presaleMint" /> は3つの引数を受け取ります。
+
+- <Code title="_mintAmount" text="購入する枚数" />
+- <Code title="_maxMintAmount" text="最大で購入できる枚数" />
+- <Code title="_proof" text="マークルツリー内にデータがあるかどうか調べる" />
+
+その下にERC721Aの <Code title="_mint" /> 関数を設置しています。
+
+これを実行すると購入しようとしている人に〇〇量のNFTが送られます。
+
+ただこれだと誰でも実行できてしまうので、マークルツリーで特定の人しか購入できないようにしていきましょう！
+
+```solidity title="src/nftFree.sol" {8,10-12,15,19-26}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
+	bytes32 public merkleRoot;
+
+	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+		merkleRoot = _merkleRoot;
+	}
+
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		require(isWhitelisted(msg.sender, _maxMintAmount, _proof), "you don't have a whitelist");
+		_mint(msg.sender, _mintAmount);
+	}
+
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+
+	function _startTokenId() internal view virtual override returns (uint256) {
+		return 1;
+	}
+}
+```
+
+<Code title="merkleRoot" /> を誰でも変更できてしまうと悪用されてしまうので <Code title="setMerkleRoot" /> に <Code title="onlyOwner" /> をつけています。
+
+```solidity title="src/nftFree.sol" /onlyOwner/
+	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+		merkleRoot = _merkleRoot;
+	}
+```
+
+<Code title="onlyOwner" /> をつけると関数を実行できるのを<Bold>コントラクトのオーナーのみに制限</Bold>してくれます。
+
+また、 <Code title="presaleMint" /> に <Code title="require" /> を追加して <Code title="isWhitelisted" /> が <Code title="false" /> だったらエラーが出るようにしています。
+
+```solidity title="src/nftFree.sol" {2}
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		require(isWhitelisted(msg.sender, _maxMintAmount, _proof), "you don't have a whitelist");
+		_mint(msg.sender, _mintAmount);
+	}
+```
+
+<Code title="isWhitelisted" /> では、ウォレットアドレスと購入できる最大数で <Code title="leaf" /> を作ってマークルツリーの認証をしています。
+
+```solidity title="src/nftFree.sol" 
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+```
+
+結構難しそうなことをしているように見えますが、一個一個見ていきます。
+
+まず、<Code title={<a href="https://docs.soliditylang.org/en/v0.8.11/abi-spec.html" >abi.encodePacked</a>} /> はデータをくっつけて <Code title={<a href="https://wa3.i-3-i.info/word1933.html" >バイト型</a>} /> に変換します。
+
+なぜ、これをやるかというとデータを <Code title="バイト型" /> に変えないと[EVM](https://ethereum.org/ja/developers/docs/evm/)が読み取れないからですね。
+
+<Image src="/image/merkle-tree/abi-encode-packed-compare-group.svg" alt="abi.encodePackedを使う場合と使うわない場合の比較図" width={724} height={341} />
+
+もう少し詳しくいうとEVMがバイトデータを扱うようにできていてそこで使われる <Code title={<a href="https://www.ruckplus-tech.io/blog/web3-1#:~:text=Keccak%2D256%20%E3%81%AF%E3%80%81Ethereum%20%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF,%E3%81%AB%E3%82%88%E3%81%A3%E3%81%A6%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E5%8C%96%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82" >keccak256</a>} /> の受け付けるデータが <Code title="バイト型" /> だから変換しています。
+
+試しに以下のコードを作って呼び出すとコメントアウトのデータが返ってきます。
+
+```solidity title="src/nftFree.sol"
+	//return: 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000000000000000000000000000000000000000000a
+	function testAbiEncodePacked() public pure returns (bytes memory) {
+		address a = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+		uint256 b = 10;
+		return abi.encodePacked(a, b);
+	}
+```
+
+さらに詳しく見たい方はこちらの[abi.encodePacked()の働きを見てみよう](https://qiita.com/Voldemort/items/2d9f01c2a7aaabdcc067)がわかりやすいと思います。
+
+
+ただ、これだと何のデータを入れたかわかってしまうので <Code title="keccak256" /> で一定の長さの<a href="https://wa3.i-3-i.info/word11949.html" >ハッシュ値</a>に変換します。
+
+まぁ要するに入れたデータをわからないようにして悪いことできないようにしている感じです。
+
+<Image src="/image/merkle-tree/keccak256-not-view.svg" alt="keccak256を使うと元のデータを調べることができない" width={724} height={250} />
+
+前の章のマークルツリーの基礎で説明した<Bold>常に一定の大きさの文字列を返して逆から計算することができない</Bold>というのはこの機能を使っているからです。
+
+試しに先ほどのデータに対して <Code title="keccak256" /> を使ってみるとコメントアウトのデータが返ってきます。
+
+```solidity title="src/nftFree.sol"
+	//return: 0x569ab48c70cc15322c9253243aab005d1c64df7c33031cf8dfb5a8ac071d368d
+	function testKeccak256AbiEncode() public pure returns (bytes32) {
+		address a = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+		uint256 b = 10;
+		return keccak256(abi.encodePacked(a, b));
+	}
+```
+
+さっきの文字列に比べてだいぶ短くなったのがわかると思います。
+
+また、Chatgptに値を戻すように指示しても無理ですね。
+
+<Image src="/image/merkle-tree/keccak256-chatgpt.jpg" alt="chatgptに聞いてもkeccak256で生成したデータを復元できない" width={724} height={262} />
+
+ちなみに前の <Code title="0x" /> は文字列が<a href="https://wa3.i-3-i.info/word1610.html" >16進数</a>であることを表しています。
+
+さらに詳しくみたい方はこちらの[Hashing Functions In Solidity Using Keccak256](https://medium.com/0xcode/hashing-functions-in-solidity-using-keccak256-70779ea55bb0)が参考になると思います。
+
+まとめると <Code title="leaf" /> を生成するためにやっていることは以下の通りです。
+
+1. <Code title="_address" /> と <Code title="_maxMintAmount" /> をくっつけて <Code title="バイト型" />にデータを変換
+2. それをハッシュ化して一定の長さの文字列に変換
+
+これだけです。
+
+次に、<Code title="MerkleProof.verifyCalldata" /> を見ていきます。
+
+ここでは、3つの引数を受け取って <Code title="root" /> の中にさっき作った <Code title="leaf" /> があるかどうか確認しています。
+
+```solidity title="src/nftFree.sol" /MerkleProof.verifyCalldata(_proof, merkleRoot, leaf)/
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+```
+
+<Code title="leaf" /> が <Code title="root" /> の中にあるかどうか確認するためには、<Code title="leaf" /> と <Code title="proof" /> から <Code title="root" /> をもう一回計算して設定されている <Code title="root" /> と同じかどうか比較します。
+
+```solidity title="MerkleProof.sol"
+	function verifyCalldata(bytes32[] calldata proof, bytes32 root, bytes32 leaf) internal pure returns (bool) {
+		return processProofCalldata(proof, leaf) == root;
+	}
+```
+
+例えば、青の箱が <Code title="root" /> の中に含まれているかどうか確認したいときは、水色の枠線のハッシュ値が必要です。
+
+<Image src="/image/merkle-tree/proof-and-leaf-are-required-to-recalculate-root.svg" alt="rootを再計算するにはProofとleafが必要" width={724} height={249} />
+
+<Code title="bytes32[] calldata proof" /> とあるように渡すときはそれらを配列に入れて渡します。
+
+これで特定の人しか購入できないNFTのセールのコントラクトを作ることができました！
+
+```solidity title="NFTFree.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
+	bytes32 public merkleRoot;
+
+	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+		merkleRoot = _merkleRoot;
+	}
+
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		require(isWhitelisted(msg.sender, _maxMintAmount, _proof), "you don't have a whitelist");
+		_mint(msg.sender, _mintAmount);
+	}
+
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+
+	function _startTokenId() internal view virtual override returns (uint256) {
+		return 1;
+	}
+}
+```
+
+ただこのままだとアローリストを登録している人が無制限に購入できてしまうので、もう少しコントラクトにコードを追加します。
+
+```solidity title="NFTFree.sol" {8-11,13,17,23-25,28,32,34}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "erc721a/contracts//ERC721A.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
+	enum SalePhase {
+		Locked,
+		Presale
+	}
+
+	SalePhase public phase = SalePhase.Locked;
+
+	bytes32 public merkleRoot;
+
+	mapping(address user => uint256 mintAmount) public presaleMintCount;
+
+	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+		merkleRoot = _merkleRoot;
+	}
+
+	function setPhase(SalePhase _phase) external onlyOwner {
+		phase = _phase;
+	}
+
+	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
+		require(phase == SalePhase.Presale, "presale event is not active");
+
+		require(isWhitelisted(msg.sender, _maxMintAmount, _proof), "you don't have a whitelist");
+
+		require(presaleMintCount[msg.sender] + _mintAmount <= _maxMintAmount, "exceeds number of earned tokens");
+
+		presaleMintCount[msg.sender] += _mintAmount;
+
+		_mint(msg.sender, _mintAmount);
+	}
+
+	function isWhitelisted(
+		address _address,
+		uint256 _maxMintAmount,
+		bytes32[] calldata _proof
+	) public view returns (bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(_address, _maxMintAmount));
+		return MerkleProof.verifyCalldata(_proof, merkleRoot, leaf);
+	}
+
+	function _startTokenId() internal view virtual override returns (uint256) {
+		return 1;
+	}
+}
+```
+
+これでセールの時間にならないと購入できなくて、購入上限に達したらエラーになるようにできました！
+
+<AlertCard  title="有料販売の場合" variant="pro">
+	価格をつけて販売する場合は以下のNFTPayableを参考にしてみてください。
+</AlertCard>
+
+### テストコードを書く
+
+上記まででコントラクトのコードは完成したのですが、スマートコントラクトの開発は一つのミスが大惨事になる可能性があるので、作るだけじゃなくてテストしないとダメです。
+
+実際スマートコントラクトの開発をする場合、テストコードを書いている時間の方が長くなると思います😓
+
+例えばfoundryの場合は以下のようにテストしていきます。
+
+```solidity title="test/util/MerkleTreeHelper.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "forge-std/Test.sol";
+import "murky/Merkle.sol";
+
+abstract contract MerkleTreeHelper is Test, Merkle {
+	struct MerkleDataSet {
+		address[] accounts;
+		uint256[] units;
+		bytes32[] leaves;
+		bytes32 root;
+	}
+
+	function generateMerkleData(
+		address[] memory addresses,
+		uint256[] memory units
+	) public pure returns (bytes32[] memory leaves) {
+		leaves = new bytes32[](addresses.length);
+		for (uint256 i = 0; i < addresses.length; i++) {
+			leaves[i] = keccak256(abi.encodePacked(addresses[i], units[i]));
+		}
+		return leaves;
+	}
+
+	function createMerkleDataset(uint256 size) internal pure returns (MerkleDataSet memory) {
+		address[] memory accounts;
+		uint256[] memory units;
+		bytes32[] memory leaves;
+		bytes32 root;
+		accounts = new address[](size);
+		units = new uint256[](size);
+
+		for (uint256 i = 0; i < accounts.length; i++) {
+			accounts[i] = vm.addr(i + 1);
+			units[i] = size + i;
+		}
+
+		leaves = generateMerkleData(accounts, units);
+		root = getRoot(leaves);
+		return MerkleDataSet(accounts, units, leaves, root);
+	}
+}
+```
+
+```solidity title="test/NftFree.t.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "src/NftFree.sol";
+import "./util/MerkleTreeHelper.sol";
+
+contract NFTFreeTest is MerkleTreeHelper {
+	NFTFree public nftContract;
+
+	address public owner;
+	MerkleDataSet internal merkleDataset;
+
+	function setUp() public {
+		nftContract = new NFTFree();
+		merkleDataset = createMerkleDataset(10);
+		owner = nftContract.owner();
+		vm.startPrank(owner);
+		nftContract.setMerkleRoot(merkleDataset.root);
+		vm.stopPrank();
+	}
+
+	modifier saleStart() {
+		vm.startPrank(owner);
+		nftContract.setPhase(NFTFree.SalePhase.Presale);
+		vm.stopPrank();
+		_;
+	}
+
+	// =============================================================
+	//   UNIT
+	// =============================================================
+
+	function testCheckInitValue() public {
+		assertEq(nftContract.name(), "MyToken");
+		assertEq(nftContract.symbol(), "MTK");
+		assertEq(nftContract.owner(), owner);
+		assertEq(nftContract.merkleRoot(), merkleDataset.root);
+	}
+
+	// access controll
+	function testFailtNotOwner() public {
+		vm.startPrank(vm.addr(1));
+		nftContract.setPhase(NFTFree.SalePhase.Presale);
+	}
+
+	// sale
+	function testRevertPresaleMintNotStartSale() public {
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 0);
+		vm.startPrank(vm.addr(1));
+		vm.expectRevert("presale event is not active");
+		nftContract.presaleMint(10, 10, proof);
+	}
+
+	function testRevertPresaleMintNotRoot() external saleStart {
+		MerkleDataSet memory anotherMerkleDataset = createMerkleDataset(15);
+		vm.startPrank(owner);
+		nftContract.setMerkleRoot(anotherMerkleDataset.root);
+		vm.stopPrank();
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 0);
+		vm.startPrank(vm.addr(1));
+		vm.expectRevert("you don't have a whitelist");
+		nftContract.presaleMint(1, 10, proof);
+	}
+
+	function testRevertPresaleMintNotAddress() external saleStart {
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 0);
+		vm.startPrank(vm.addr(2));
+		vm.expectRevert("you don't have a whitelist");
+		nftContract.presaleMint(1, 10, proof);
+	}
+
+	function testRevertPresaleMintNotProof() external saleStart {
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 1);
+		vm.startPrank(vm.addr(1));
+		vm.expectRevert("you don't have a whitelist");
+		nftContract.presaleMint(1, 10, proof);
+	}
+
+	function testRevertPresaleMintNotAllowtedAmount() external saleStart {
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 0);
+		vm.startPrank(vm.addr(1));
+		vm.expectRevert("you don't have a whitelist");
+		nftContract.presaleMint(1, 15, proof);
+	}
+
+	// =============================================================
+	//   INTEGRATION
+	// =============================================================
+
+	function testSuccessPresaleMint() external saleStart {
+		bytes32[] memory proof = getProof(merkleDataset.leaves, 0);
+		vm.startPrank(vm.addr(1));
+		nftContract.presaleMint(10, 10, proof);
+		assertEq(nftContract.balanceOf(vm.addr(1)), 10);
+
+		nftContract.safeTransferFrom(vm.addr(1), vm.addr(2), 1);
+		assertEq(nftContract.balanceOf(vm.addr(1)), 9);
+		assertEq(nftContract.balanceOf(vm.addr(2)), 1);
+
+		vm.expectRevert("exceeds number of earned tokens");
+		nftContract.presaleMint(10, 10, proof);
+		vm.stopPrank();
+	}
+}
+```
+
+Solidityでマークルツリーのテストをするために<a href="https://github.com/dmfxyz/murky">Murky</a>というライブラリを使っています。
+
+マークルツリーの生成に必要なものは <Code title="Helper" /> として別のファイルに記載しそれをメインの方で継承してテストしています。
+
+申し訳ないですが、ここでテストのやり方を説明してしまうと記事が膨大になってしまうので、詳しい説明は省かせていただきます🙇‍♂️
+
+また、Hardhatのテストは[ルブライトさん](https://twitter.com/lavulite_eng)の[GitHub](https://github.com/Lavulite/ERC721MultiSale/blob/main/test/SampleERC721MultiSaleByMerkle.ts)が参考になると思います。
+
+テストが完了したら、テストネットにデプロイします。
+
+やり方は以下の記事が参考になると思います。
+
+- [EthereumのDapp開発環境のFoundryを使ってみる](https://zenn.dev/razokulover/articles/574eb471e6db1c)
+- [Foundry Deploying our contract](https://book.getfoundry.sh/tutorials/solidity-scripting?highlight=env#deploying-our-contract)
+- [Deploying to a live network](https://hardhat.org/tutorial/deploying-to-a-live-network)
+
+
+<AlertCard  title="このコードを使う場合の注意" variant="warning">
+	このコントラクトはあくまで参考です。
+	
+	使う前に安全かどうか自分でしっかりテストしてください。
+</AlertCard>
+
+### マークルツリーの認証をフロントで作る
+
+さてコントラクト側の準備ができたので次はフロント側をやっていきます。
+
+僕は<a href="https://nextjs.org/docs">next.js</a>でサイトを作ることが多いのでこれを使う前提で解説しますが Reactなら問題ないと思います。
+
+また、通常の購入するサイト(ミントサイト)は使い捨てされるので[ハッシュリップス](https://github.com/HashLips/hashlips_nft_minting_dapp)が採用されることが多いのですが、フロントがある程度慣れていると結構使いずらいので僕はプロジェクトでは使っていません。
+
+ただ、フロントがよくわからないまたはサクッと購入するサイトを作りたい方も結構いると思うので、その場合はハッシュリップスで十分だと思います！
+
+ハッシュリップスを使いたい方は[Ninja Dao](https://www.ninja-dao.com/)の[エンジニアサーバー](https://discord.gg/Uf8F3XUw)にある[けいすけさん](https://twitter.com/kei31)が解説されている「しごジェネ」が参考になると思います！
+
+なお、こちらもマークルツリーに焦点を当てたいので、申し訳ないですがフロントの基本的な解説は省かせていただきますので各自の環境でセットアップをお願いします🙏
+
+準備ができたら、マークルツリーに登録するデータを用意します。
+
+おそらくスプレに登録するアドレスと購入できる枚数が記載されたものを共有される場合が多いと思うので、それを以下のように登録します。
+
+```ts title="data/al.ts"
+export const alData: [`0x${string}`, number][] = [
+  ["0xa3beb3febf6d38b1612784c4aae0dde6786bf8ea", 1],
+  ["0xbc8a3f437ac6d96ec7bab8c34ad0b8f26e2c4919", 1],
+  ["0xc4704c93c9cd36f3298be1afef8bdc844a19558a", 1],
+  ["0xd03509cbe5aefe2e00d0e354dbb6d8735b56592a", 1],
+];
+```
+
+ここで重要なのが必ず<Bold>ユーザーのアドレスをすべて小文字に変換</Bold>してください。
+
+そうしないとユーザーが購入できないトラブルが起きてしまうので[変換ツール](https://www.lambdatest.com/free-online-tools/text-lowercase)ですべて小文字にしましょう。
+
+次はユーザーがウォレットに接続したらマークルツリーの <Code title="proof" /> を返す仕組みを作ります。
+
+まずは[wagmi](https://wagmi.sh/react/getting-started)をインストールまたはセットアップしましょう！
+
+それに加えて[merkletreejs](https://github.com/merkletreejs/merkletreejs)をインストールします。
+
+完了したらファイルを作りマークルツルーのフックを以下のよう感じで作っていきます。
+
+```ts title="src/util/merkle-tree.ts"
+"use client";
+
+import { useAccount } from "wagmi";
+import { encodePacked, keccak256, zeroAddress } from "viem";
+import MerkleTree from "merkletreejs";
+import { alData } from "../../data/al";
+
+const toLowerCaseTyped = <T extends string>(arg: T) => {
+  return arg.toLowerCase() as Lowercase<T>;
+};
+
+export const useGenerateAlData = () => {
+  const { address } = useAccount();
+  const lowerAddress = toLowerCaseTyped(address ?? zeroAddress);
+
+	const alAddressData = alData.map((list) => {
+    return list[0];
+  });
+
+  const addressId = alAddressData.indexOf(lowerAddress);
+
+  const leafNodes = alData.map((data) => {
+    return keccak256(
+      encodePacked(["address", "uint256"], [data[0], BigInt(data[1])])
+    );
+  });
+
+  const claimLeafNodes = keccak256(
+    encodePacked(
+      ["address", "uint256"],
+      [lowerAddress, BigInt(addressId === -1 ? 0 : alData[addressId][1])]
+    )
+  );
+
+  const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+  const localRootHash = merkleTree.getRoot();
+  const hexProof = merkleTree.getHexProof(claimLeafNodes) as `0x${string}`[];
+  const maxAmount = addressId === -1 ? 0 : alData[addressId][1];
+  const verify = merkleTree.verify(hexProof, claimLeafNodes, localRootHash);
+
+  return { hexProof, maxAmount, verify };
+};
+
+```
+
+順番に見ていきます。
+
+まずはこちらのコードを追加します。
+
+```ts title="src/util/merkle-tree.ts"
+"use client";
+
+import { useAccount } from "wagmi";
+import { encodePacked, keccak256, zeroAddress } from "viem";
+import MerkleTree from "merkletreejs";
+import { alData } from "../../data/al";
+```
+
+先頭にある <Code title="use client" /> はNext.jsがアップデートでデフォルトが[サーバーコンポーネント](https://nextjs.org/docs/getting-started/react-essentials)になったのでつけています。
+
+Next.jsを使っていないもしくはpagesで開発している方は不要です。
+
+<a href="https://viem.sh/">viem</a>というライブラリはwagmiがアプデで<a href="https://docs.ethers.org/v5/">ether.js</a>を使うのやめてviemを採用したので使っています。
+
+僕が使ってみた感じだとviemの方が型安全でドキュメントも読みやすいのでこっちの方がいいかなと思います。
+
+詳しくは<a href="https://viem.sh/docs/introduction.html">Why viem</a>を読んでみてください。
+
+その下の <Code title="toLowerCaseTyped" /> は <Code title="toLowerCase" /> したときに <Code title="string型" /> になるのを防ぐための関数です。
+
+```ts title="src/util/merkle-tree.ts"
+const toLowerCaseTyped = <T extends string>(arg: T) => {
+  return arg.toLowerCase() as Lowercase<T>;
+};
+```
+ここは理解できなくても問題ないので飛ばしてください。
+
+次のコードは取得したアドレスを小文字変換して、alデータからアドレスのみのデータを取得しています。
+
+また、アドレスのみのデータに対して <Code title="indexOf" /> を使い小文字変換したアドレスが何番目にあるか探しています。
+
+```ts title="src/util/merkle-tree.ts"
+const { address } = useAccount();
+
+  const lowerAddress = toLowerCaseTyped(address ?? zeroAddress);
+  const alAddressData = alData.map((list) => {
+    return list[0];
+  });
+
+  const addressId = alAddressData.indexOf(lowerAddress);
+```
+
+<Code title="indexOf" /> はデータがない場合は <Code title="-1" /> を返します。
+
+次のコードを見ると <Code title="leafNodes" /> と <Code title="claimLeafNodes" /> があると思います。
+
+```ts title="src/util/merkle-tree.ts"
+  const leafNodes = alData.map((data) => {
+    return keccak256(
+      encodePacked(["address", "uint256"], [data[0], BigInt(data[1])])
+    );
+  });
+
+  const claimLeafNodes = keccak256(
+    encodePacked(
+      ["address", "uint256"],
+      [lowerAddress, BigInt(addressId === -1 ? 0 : alData[addressId][1])]
+    )
+  );
+```
+
+ここでは、マークルツリーの作成に必要な <Code title="leafNodes" /> と検証するデータの <Code title="claimLeafNodes" /> を作成しています。
+
+先ほどのマークルツリーの基礎で説明したようにデータを検証するときは再度マークルツリーのデータをを作成する必要があります。
+
+そして最後のコードを見ていきます。
+
+```ts title="src/util/merkle-tree.ts"
+  const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+  const localRootHash = merkleTree.getRoot();
+  const hexProof = merkleTree.getHexProof(claimLeafNodes) as `0x${string}`[];
+  const maxAmount = addressId === -1 ? 0 : alData[addressId][1];
+  const verify = merkleTree.verify(hexProof, claimLeafNodes, localRootHash);
+
+  return { hexProof, maxAmount, verify };
+```
+
+こちらでは <Code title="MerkleTree" /> に必要なデータを入れてインスタンスを作成し、そのインスタンスを使い <Code title="rootHash" />、<Code title="hexProof" />、<Code title="verify" /> を作っています。
+
+事前に <Code title="verify" /> することでミスをなくせますし、アローリストに登録されているかどうか判定するために使えます。
+
+もっと厳格にしたい場合はオンチェーンに設定されている <Code title="root" /> を取ってきて <Code title="verify" /> するのもありだと思います！
+
+こんな感じでフックを作成していきます。
+
+あくまで一例なので気になるところがありましたら自分で変えてください。
+
+<AlertCard  title="サーバーサイドでやらなくていいの？">
+	マークルツリーは先ほど説明した通りデータを少しでも変更したら最後に出てくるルートも全く違うものになります。
+
+	仮に悪い人がデータをいじったとしてもオンチェーンに設定しているものと違うのでエラーになります。
+
+	なので特にサーバーサイドでやらなくても大丈夫です。
+
+	気になる方はnext.jsの <Code title={<a href="https://nextjs.org/docs/app/building-your-application/routing/router-handlers">Route Handlers</a>} /> などを使いサーバーサイドでやることもできます。
+
+	ここではフックの方が簡単かなと思いこちらを紹介しました。
+</AlertCard>
+
+次にオンチェーンのマークルツリーの <Code title="root" /> の設定がまだなのでやりましょう。
+
+<Code title="root" /> はさっき作ったフックに <Code title="console.log" /> を使って調べられます。
+
+```ts title="src/src/util/merkle-tree.ts"
+  const localRootHash = merkleTree.getRoot();
+  console.log("Root Hash: ", "0x" + localRootHash.toString("hex"));
+```
+コンソールを確認すると <Code title="root" /> の値が取得できているのが確認できると思います。
+
+それをコピーできたら、[イーサスキャン](https://goerli.etherscan.io/)にデプロイしたコントラクトアドレスを入力して、<Code title="write" /> にある <Code title="setMerkleRoot" /> を呼び出し <Code title="merkleRoot" /> を設定してください。
+
+設定が終わったら <Code title="console.log()" /> は消してください。
+
+次に実際にフロントからコントラクトを呼び出してNFTを購入してみましょう。
+
+フロントからコントラクトを呼び出すにはコントタクトアドレスと[abi](https://solidity-jp.readthedocs.io/ja/latest/abi-spec.html)が必要なのでイーサスキャンからとってきます。
+
+その後フォルダを作りファイルを作成し以下のようにします。
+
+```ts title="src/contract/abi/nftFreeAbi.ts"
+  export const NFT_FREE_ABI = [
+		// abiをここに入れる
+	]
+```
+
+```ts title="src/contract/contractConfig.ts"
+import { NFT_FREE_ABI } from "./abi/nftFreeAbi";
+
+export const nftFreeConfig = {
+  address: "0xE77E2143263807eB84b84ea21eDdB3F076777c83",
+  abi: NFT_FREE_ABI,
+} as const;
+```
+
+これで準備ができました。
+
+あとウォレットの繋ぎ方ですがwagmiの[Connect Wallet](https://wagmi.sh/examples/connect-wallet)にやり方が記載されています。
+
+僕は今回デフォルトで組み込まれているConnectコンポーネントを使いますがアドレスが取れれば大丈夫なので、繋ぎ方は自分の好きなようにしてください。
+
+ウォレットをサイトに繋げるようになったら以下のコードを追加します。
+
+```tsx title="src/app/page.tsx"
+"use client";
+
+import { Connect } from "@/components/Connect";
+import { nftFreeConfig } from "@/contract/contractConfig";
+import { useGenerateAlData } from "@/utils/merkle-tree copy";
+import { BaseError, zeroAddress } from "viem";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
+
+export default function Page() {
+  const { isConnected, address } = useAccount();
+  const { hexProof, maxAmount, verify } = useGenerateAlData();
+
+  const { data: phase } = useContractRead({
+    ...nftFreeConfig,
+    functionName: "phase",
+    enabled: Boolean(address),
+  });
+
+  const { data: presaleMintCount } = useContractRead({
+    ...nftFreeConfig,
+    functionName: "presaleMintCount",
+    args: [address ?? zeroAddress],
+    enabled: Boolean(address),
+  });
+
+  const {
+    write: writePresaleMint,
+    data: presaleMintData,
+    error: presaleMintError,
+    isLoading: isPresaleMintLoading,
+    isError: isPresaleMintError,
+  } = useContractWrite({
+    ...nftFreeConfig,
+    functionName: "presaleMint",
+  });
+
+  const { isLoading: isPresaleMintPending, isSuccess: isPresaleMintSuccess } =
+    useWaitForTransaction({
+      hash: presaleMintData?.hash,
+    });
+
+  const presaleMint = () => {
+    if (typeof presaleMintCount === "undefined") {
+      return;
+    }
+
+    const claimAmount = Math.max(maxAmount - Number(presaleMintCount), 0);
+    writePresaleMint({
+      args: [BigInt(claimAmount), BigInt(maxAmount), hexProof ?? []],
+    });
+  };
+
+  return (
+    <div>
+      <h1>NFT購入サイト</h1>
+      <Connect />
+      {!isConnected ? (
+        <p>connect wallet</p>
+      ) : phase === 0 ? (
+        <p>セールが開始されていません</p>
+      ) : !verify ? (
+        <p>アローリストに登録されていません</p>
+      ) : isPresaleMintSuccess ? (
+        <p>成功しました！</p>
+      ) : typeof presaleMintCount != "undefined" &&
+        maxAmount - Number(presaleMintCount) <= 0 ? (
+          <p>購入できる上限に到達しました</p>
+      ) : (
+        <div>
+          <button
+            onClick={presaleMint}
+            disabled={isPresaleMintLoading || isPresaleMintPending}
+          >
+            購入する
+          </button>
+          {isPresaleMintLoading && <div>ウォレットのチェック中...</div>}
+          {isPresaleMintPending && <div>トランザクション送信中...</div>}
+          {isPresaleMintError && (
+            <div>{(presaleMintError as BaseError)?.shortMessage}</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+```
+
+上記はフロントの最適限のコードです。
+
+サイトを見てみると「セールが開始されていません」となっていると思いますが、これは <Code title="phase" /> が <Code title="0" /> だからですね。
+
+イーサスキャンの <Code title="write" /> から <Code title="setPhase" /> を呼び出し <Code title="1" /> に変更しておきましょう。
+
+<AlertCard  title="phaseの注意" variant="warning">
+	実際に販売するときは <Code title="phase" /> の変更を直前までしないでください。
+</AlertCard>
+
+そうすると購入するボタンが出てくると思います。
+
+ボタンを押すとメタマスクが立ち上がると思いますので実際にトランザクションを送って見てください。
+
+少し経つとトランザクションが成功すると思います！
+
+これでアローリストに登録した人しか購入できないスマートコントラクトの構築とフロントを作ることができました！
+
+<AlertCard  title="コードの注意" variant="warning">
+	有料販売や購入枚数を選べるようにしたい場合は別途コードを変更する必要があるので注意してください。
+</AlertCard>
+
+## Bonus: NFTプロジェクトを作るときにかかる費用
+
+お金がかかる主な部分は以下の二つだと思います。
+
+- デプロイ
+- 関数操作
+
+ブロックチェーン見ればわかるので、参考までに僕が担当したプロジェクトのデプロイ費用を掲載いたします。
+
+<CustomTable heads={["プロジェクト", "デプロイ費用"]} data={[["ZUTTO MAMORU", "0.3593 ETH"],["CNPR","0.0284 ETH"]]}  />
+
+これに加えてエアドロや他の関数の操作もするので、僕の場合は余裕を持って <Code title="0.5~1ETH" /> をファウンダーの方からもらうことが多いです。
+
+ただ、規模やすることによって金額も大きく変わるので参考までにです。
+
+hardhatやfoundryならおおよそのかかるガス代を事前に見れるので、それを参考にするといいと思います！
+
+ちなみに <Code title="mapping" /> でアローリスト登録しようとする場合は、普通に <Code title="1ETH" /> 以上かかったりするので、マークルツリーに感謝ですね。
+
+## まとめ
+
+マークルツリーを使えばアローリストを登録するのにガス代をかけず安全にセールをすることができます。
+
+この記事がこれからNFTのセールをするエンジニアの方の参考になれば幸いです。
+
+もし参考になったという方がいましたら、ブクマかTwitterなどでシェアしていただけると嬉しいです。
+
+また、NFTプロジェクトを立ち上げたいなどでブロックチェーンエンジニアをお探しでしたら<a href="https://twitter.com/orca48691">DM</a>か<a href="mailto:ryuji48691771@gmail.com">メール</a>していただければご相談に乗りますのでお気軽に送っていただければと思います！
