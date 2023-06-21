@@ -9,13 +9,13 @@ const LINKS = [
     icon: (
       <TwitterLogoIcon className="h-6 w-6 text-slate-12 dark:text-slatedark-12" />
     ),
-    href: "/blog",
+    href: "https://twitter.com/orca48691",
   },
   {
     icon: (
       <GitHubLogoIcon className="h-6 w-6 text-slate-12 dark:text-slatedark-12" />
     ),
-    href: "/about",
+    href: "https://github.com/ryuji-orca",
   },
 ]
 
@@ -25,7 +25,7 @@ const NavLink = ({
 }: Omit<Parameters<typeof Link>["0"], "href"> & { href: string }) => {
   return (
     <li>
-      <Link href={href} {...rest} />
+      <Link href={href} {...rest} target="_blank" />
     </li>
   )
 }
