@@ -246,13 +246,13 @@ export const MerkleTreeIntro = ({
                             ? `${topRadiusValue}px ${topRadiusValue}px ${bottomRadiusValue}px ${bottomRadiusValue}px`
                             : "0px",
                       }}
-                      className={`isolate flex h-full w-full max-w-[min(100%,160px)]  items-center justify-center overflow-hidden border-4 bg-slatedark-6 p-2 text-center text-base text-slatedark-12 md:aspect-video md:p-4`}
+                      className={`isolate flex h-full w-full max-w-[min(100%,160px)] items-center justify-center overflow-hidden border-4 bg-slatedark-6 px-2 py-4 text-center text-base text-slatedark-12 md:aspect-video md:p-4`}
                     >
                       <p>重さ：{weight}g</p>
                     </div>
                   ) : (
                     <div
-                      className={`flex w-full max-w-[min(100%,160px)] items-center justify-center border-4 border-slatedark-8  bg-slatedark-6  p-2 text-center sm:p-4 md:aspect-video`}
+                      className={`flex w-full max-w-[min(100%,160px)] items-center justify-center border-4 border-slatedark-8 bg-slatedark-6 px-2 py-4 text-center sm:p-4 md:aspect-video`}
                     >
                       <HelpCircleIcon className="h-9 w-9 text-slatedark-11" />
                     </div>
