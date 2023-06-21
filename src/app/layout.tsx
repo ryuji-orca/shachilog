@@ -3,6 +3,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
+import { Analytics } from "@vercel/analytics/react"
+
 import { Providers } from "@/app/providers"
 
 const inter = Inter({
@@ -69,7 +71,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className={`${inter.className}`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Analytics />
+        </Providers>
       </body>
     </html>
   )
