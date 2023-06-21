@@ -60,6 +60,9 @@ export const metadata: Metadata = {
   icons: {
     shortcut: "/favicon.ico",
   },
+  verification: {
+    google: "ZXOngkLZnBjLXJ38lCN1elG8V632hb4NGzTxUOyFtOQ",
+  },
 }
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
