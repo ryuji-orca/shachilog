@@ -961,16 +961,21 @@ const { address } = useAccount();
 ```ts title="src/contract/abi/nftFreeAbi.ts"
   export const NFT_FREE_ABI = [
 		// abiをここに入れる
-	]
+	] as const
 ```
 
 ```ts title="src/contract/contractConfig.ts"
 import { NFT_FREE_ABI } from "./abi/nftFreeAbi";
 
-export const nftFreeConfig = {
-  address: "0xE77E2143263807eB84b84ea21eDdB3F076777c83",
+type nftFreeConfigType = {
+  address: `0x${string}`;
+  abi: typeof NFT_FREE_ABI;
+};
+
+export const nftFreeConfig: nftFreeConfigType = {
+  address: "0x...",
   abi: NFT_FREE_ABI,
-} as const;
+};
 ```
 
 これで準備ができました。
