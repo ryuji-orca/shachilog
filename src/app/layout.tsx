@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | shachilog",
   },
   description:
-    "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信するブログです",
+    "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信します。",
   creator: "ryuji",
   authors: [
     {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "shachilog",
     description:
-      "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信するブログです",
+      "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信します。",
     url: "https://www.shachilog.xyz",
     siteName: "shachilog",
     images: [
@@ -55,8 +55,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: "shachilog",
-    // description:
-    //   "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信するブログです",
     card: "summary_large_image",
   },
   icons: {
