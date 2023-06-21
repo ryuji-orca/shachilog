@@ -108,9 +108,9 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 
 一連の流れを画像で説明するとこんな感じです。
 
-<Image src="/image/merkle-tree/merkle-tree-generate.svg" alt="マークルツリーのルートの生成図" width={724} height={632} />
+<Image src="/image/merkle-tree/merkle-tree-generate.png" alt="マークルツリーのルートの生成図" width={724} height={632} />
 
-<Image src="/image/merkle-tree/merkle-tree-regenerate.svg" alt="マークルツリーのルートの再生成" width={724} height={632} />
+<Image src="/image/merkle-tree/merkle-tree-regenerate.png" alt="マークルツリーのルートの再生成" width={724} height={632} />
 
 <AlertCard variant="warning" title="画像についての注意">
 	1000万のデータを画像で表すのは無理なので、簡略化しています。
@@ -118,7 +118,7 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 
 なぜ最後の文字列だけ見ればいいかというと先ほどのデモで見た<Bold>少しでも入れたデータが違うと全く違う文字列が出てくる</Bold>と言う性質があるので、最後に出てくる値が違ってきてしまうからですね。
 
-<Image src="/image/merkle-tree/merkle-tree-regenerate-error.svg" alt="メモしたルートと生成したルートが違う" width={724} height={632} />
+<Image src="/image/merkle-tree/merkle-tree-regenerate-error.png" alt="メモしたルートと生成したルートが違う" width={724} height={632} />
 
 この<Bold>最後の値だけ確認すればいい</Bold>と言うのがアローリスト登録で重要です。
 
@@ -137,7 +137,7 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 
 	先ほどの図で表すとこんな感じです。
 
-	<Image src="/image/merkle-tree/merkle-tree-terminology.svg" alt="マークルツリーの全体図" width={648} height={526} />
+	<Image src="/image/merkle-tree/merkle-tree-terminology.png" alt="マークルツリーの全体図" width={648} height={526} />
 </AlertCard>
 
 ## マークルツリーでNFTのアローリスト登録を実装する
@@ -386,7 +386,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 なぜ、これをやるかというとデータを <Code title="バイト型" /> に変えないと[EVM](https://ethereum.org/ja/developers/docs/evm/)が読み取れないからですね。
 
-<Image src="/image/merkle-tree/abi-encode-packed-compare-group.svg" alt="abi.encodePackedを使う場合と使うわない場合の比較図" width={724} height={341} />
+<Image src="/image/merkle-tree/abi-encode-packed-compare-group.png" alt="abi.encodePackedを使う場合と使うわない場合の比較図" width={724} height={341} />
 
 もう少し詳しくいうとEVMがバイトデータを扱うようにできていてそこで使われる <Code title={<a href="https://www.ruckplus-tech.io/blog/web3-1#:~:text=Keccak%2D256%20%E3%81%AF%E3%80%81Ethereum%20%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF,%E3%81%AB%E3%82%88%E3%81%A3%E3%81%A6%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E5%8C%96%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82" >keccak256</a>} /> の受け付けるデータが <Code title="バイト型" /> だから変換しています。
 
@@ -408,7 +408,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 まぁ要するに入れたデータをわからないようにして悪いことできないようにしている感じです。
 
-<Image src="/image/merkle-tree/keccak256-not-view.svg" alt="keccak256を使うと元のデータを調べることができない" width={724} height={250} />
+<Image src="/image/merkle-tree/keccak256-not-view.png" alt="keccak256を使うと元のデータを調べることができない" width={724} height={250} />
 
 前の章のマークルツリーの基礎で説明した<Bold>常に一定の大きさの文字列を返して逆から計算することができない</Bold>というのはこの機能を使っているからです。
 
@@ -465,7 +465,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 例えば、青の箱が <Code title="root" /> の中に含まれているかどうか確認したいときは、水色の枠線のハッシュ値が必要です。
 
-<Image src="/image/merkle-tree/proof-and-leaf-are-required-to-recalculate-root.svg" alt="rootを再計算するにはProofとleafが必要" width={724} height={249} />
+<Image src="/image/merkle-tree/proof-and-leaf-are-required-to-recalculate-root.png" alt="rootを再計算するにはProofとleafが必要" width={724} height={249} />
 
 <Code title="bytes32[] calldata proof" /> とあるように渡すときはそれらを配列に入れて渡します。
 
