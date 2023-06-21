@@ -43,7 +43,7 @@ const Home = () => {
           <p>
             ブロックチェーンにコミットしているフリーランスのエンジニアです。
           </p>
-          <p>このブログでは、僕が学んだことなどアウトプットしています。</p>
+          <p>このブログでは、僕が学んだことなどをアウトプットしています。</p>
         </div>
         <ul className="grid grid-cols-1 justify-between gap-8 pt-14 md:grid-cols-2">
           <LinkCard
