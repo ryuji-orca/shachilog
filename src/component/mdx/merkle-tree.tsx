@@ -246,7 +246,7 @@ export const MerkleTreeIntro = ({
                             ? `${topRadiusValue}px ${topRadiusValue}px ${bottomRadiusValue}px ${bottomRadiusValue}px`
                             : "0px",
                       }}
-                      className={`w-full max-w-[min(100%,160px)] overflow-hidden border-4 p-1 md:aspect-video`}
+                      className={`isolate w-full max-w-[min(100%,160px)] overflow-hidden border-4 p-1 md:aspect-video`}
                     >
                       <div className="flex h-full items-center justify-center bg-slatedark-6 p-2 text-center text-slatedark-12 md:p-4">
                         <p>重さ：{weight}g</p>
