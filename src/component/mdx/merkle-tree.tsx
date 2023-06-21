@@ -198,7 +198,7 @@ export const MerkleTreeIntro = ({
         <div className="flex flex-col gap-16 px-4 py-8 sm:p-8">
           <div className="flex items-center justify-center gap-8">
             <ArcherElement id="root">
-              <div className="flex aspect-video w-full min-w-[64px] max-w-[min(100%,160px)] items-center justify-center bg-slatedark-6 p-4">
+              <div className="flex aspect-video w-full max-w-[min(100%,160px)] items-center justify-center bg-slatedark-6 p-4">
                 <Badge
                   className="scrollbar-hide flex w-20 items-center overflow-x-auto whitespace-nowrap bg-greendark-4 text-greendark-11 hover:bg-greendark-5"
                   variant="green"
@@ -246,7 +246,7 @@ export const MerkleTreeIntro = ({
                             ? `${topRadiusValue}px ${topRadiusValue}px ${bottomRadiusValue}px ${bottomRadiusValue}px`
                             : "0px",
                       }}
-                      className={`aspect-video w-full max-w-[min(100%,160px)] overflow-hidden border-4 p-1`}
+                      className={`w-full max-w-[min(100%,160px)] overflow-hidden border-4 p-1 md:aspect-video`}
                     >
                       <div className="flex h-full items-center justify-center bg-slatedark-6 p-2 text-center text-slatedark-12 md:p-4">
                         <p>重さ：{weight}g</p>
@@ -254,7 +254,7 @@ export const MerkleTreeIntro = ({
                     </div>
                   ) : (
                     <div
-                      className={`aspect-video w-full max-w-[min(100%,160px)] border-4 border-slatedark-8 p-1`}
+                      className={`w-full max-w-[min(100%,160px)] border-4 border-slatedark-8 p-1 md:aspect-video`}
                     >
                       <div className="flex h-full items-center justify-center bg-slatedark-6 p-2 text-center sm:p-4">
                         <HelpCircleIcon className="h-9 w-9 text-slatedark-11" />
