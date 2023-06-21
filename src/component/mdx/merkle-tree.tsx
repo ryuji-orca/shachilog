@@ -198,7 +198,7 @@ export const MerkleTreeIntro = ({
         <div className="flex flex-col gap-16 px-4 py-8 sm:p-8">
           <div className="flex items-center justify-center gap-8">
             <ArcherElement id="root">
-              <div className="flex w-full max-w-[min(100%,160px)] items-center justify-center bg-slatedark-6 p-4 md:aspect-video">
+              <div className="flex w-full max-w-[min(100%,160px)] items-center justify-center bg-slatedark-6 px-2 py-4 md:aspect-video md:p-4">
                 <Badge
                   className="scrollbar-hide flex w-20 items-center overflow-x-auto whitespace-nowrap bg-greendark-4 text-greendark-11 hover:bg-greendark-5"
                   variant="green"
