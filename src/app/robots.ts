@@ -5,7 +5,7 @@ export default function robots() {
         userAgent: "*",
       },
     ],
-    sitemap: "https://a/sitemap.xml",
-    host: "https://a.io",
+    sitemap: "https://www.shachilog.xyz/sitemap.xml",
+    host: "https://www.shachilog.xyz",
   }
 }

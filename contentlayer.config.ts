@@ -10,13 +10,6 @@ import remarkGfm from "remark-gfm"
 
 /** @type {import('contentlayer/source-files').ComputedFields} */
 const computedFields: ComputedFields = {
-  // slug: {
-  //   type: "string",
-  //   resolve: doc => {
-  //     return doc._raw.flattenedPath
-  //   },
-  // },
-
   structuredData: {
     type: "mdx",
     resolve: doc => {
@@ -27,8 +20,8 @@ const computedFields: ComputedFields = {
         datePublished: doc.publishedAt,
         dateModified: doc.publishedAt,
         description: doc.summary,
-        image: doc.image ? `https://${doc.image}` : ``,
-        url: `https://ryuji/blog/${doc._raw.flattenedPath}`,
+        image: doc.image ? `https://www.shachilog.xyz${doc.image}` : ``,
+        url: `https://www.shachilog.xyz/blog/${doc._raw.flattenedPath}`,
         author: {
           "@type": "Person",
           name: "ryuji",
