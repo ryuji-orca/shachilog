@@ -248,7 +248,7 @@ export const MerkleTreeIntro = ({
                       }}
                       className={`aspect-video w-full min-w-[64px] max-w-[min(100%,160px)] overflow-hidden border-4 p-1`}
                     >
-                      <div className="flex h-full items-center justify-center bg-slatedark-6 p-4 text-center text-slatedark-12">
+                      <div className="flex h-full items-center justify-center bg-slatedark-6 p-2 text-center text-slatedark-12 md:p-4">
                         <p>重さ：{weight}g</p>
                       </div>
                     </div>
@@ -256,8 +256,8 @@ export const MerkleTreeIntro = ({
                     <div
                       className={`aspect-video w-full min-w-[64px] max-w-[min(100%,160px)] border-4 border-slatedark-8 p-1`}
                     >
-                      <div className="h-full bg-slatedark-6 p-2 text-center sm:p-4">
-                        <HelpCircleIcon className="h-full w-full text-slatedark-11" />
+                      <div className="flex h-full items-center justify-center bg-slatedark-6 p-2 text-center sm:p-4">
+                        <HelpCircleIcon className=" h-6 w-6 text-slatedark-11 md:h-9 md:w-9" />
                       </div>
                     </div>
                   )}
