@@ -4,7 +4,7 @@
 
 @layer components {
   .prose .anchor {
-    @apply absolute opacity-0 no-underline w-full max-w-3xl -ml-4 cursor-pointer ease-in duration-150;
+    @apply absolute opacity-0 no-underline w-full max-w-[272px] md:max-w-3xl -ml-4 cursor-pointer ease-in duration-150;
     margin-left: -1em;
   }
 
