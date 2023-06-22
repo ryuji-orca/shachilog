@@ -177,7 +177,7 @@ const About = () => {
             Twitter
           </a>
           のDMか
-          <a href="mailto:ryuji48691771@gmail.com" target="_blank">
+          <a href="mailto:shachilog.ryuji@gmail.com" target="_blank">
             メール
           </a>
           でご連絡お願いします！
