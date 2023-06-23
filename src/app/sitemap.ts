@@ -1,16 +1,18 @@
+import type { MetadataRoute } from "next"
+
 import { allBlogs } from "contentlayer/generated"
 
-export default async function sitemap() {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogs = allBlogs.map(post => {
     return {
-      url: `https://www.shachilog.xyz/blog/${post.slug}`,
+      url: `https://shachilog.xyz/blog/${post.slug}`,
       lastModified: post.publishedAt,
     }
   })
 
   const routes = ["", "/about", "/blog"].map(route => {
     return {
-      url: `https://www.shachilog.xyz${route}`,
+      url: `https://shachilog.xyz${route}`,
       lastModified: new Date().toISOString().split("T")[0],
     }
   })

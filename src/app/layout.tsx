@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "ryuji",
-      url: "https://www.shachilog.xyz",
+      url: "https://shachilog.xyz",
     },
   ],
 
@@ -32,11 +32,11 @@ export const metadata: Metadata = {
     title: "shachilog",
     description:
       "ryujiの個人ブログです。ブロックチェーンやフロントエンドに関して学んだことを発信します。",
-    url: "https://www.shachilog.xyz",
+    url: "https://shachilog.xyz",
     siteName: "shachilog",
     images: [
       {
-        url: "https://www.shachilog.xyz/image/common/og-default.png",
+        url: "https://shachilog.xyz/image/common/og-default.png",
         width: 1200,
         height: 630,
       },

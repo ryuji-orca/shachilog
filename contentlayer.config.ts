@@ -20,8 +20,8 @@ const computedFields: ComputedFields = {
         datePublished: doc.publishedAt,
         dateModified: doc.publishedAt,
         description: doc.summary,
-        image: doc.image ? `https://www.shachilog.xyz${doc.image}` : ``,
-        url: `https://www.shachilog.xyz/blog/${doc._raw.flattenedPath}`,
+        image: doc.image ? `https://shachilog.xyz${doc.image}` : ``,
+        url: `https://shachilog.xyz/blog/${doc._raw.flattenedPath}`,
         author: {
           "@type": "Person",
           name: "ryuji",

@@ -40,10 +40,10 @@ export const generateMetadata = async ({
       description,
       type: "article",
       publishedTime,
-      url: `https://www.shachilog.xyz/blog/${slug}`,
+      url: `https://shachilog.xyz/blog/${slug}`,
       images: [
         {
-          url: `https://www.shachilog.xyz${image}`,
+          url: `https://shachilog.xyz${image}`,
         },
       ],
     },
@@ -51,7 +51,7 @@ export const generateMetadata = async ({
       card: "summary_large_image",
       title,
       description,
-      images: [`https://www.shachilog.xyz${image}`],
+      images: [`https://shachilog.xyz${image}`],
     },
   }
 }
