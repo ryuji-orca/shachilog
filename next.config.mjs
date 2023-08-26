@@ -8,7 +8,6 @@ const nextConfig = {
   swcMinify: true,
   eslint: "./src",
   experimental: {
-    appDir: true,
     serverActions: true,
     // mdxRs: true,
     serverComponentsExternalPackages: [
