@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 
 import { allBlogs } from "contentlayer/generated"
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const blogs = allBlogs.map(post => {
     return {
       url: `https://shachilog.xyz/blog/${post.slug}`,
