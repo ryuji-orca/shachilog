@@ -1,0 +1,746 @@
+---
+title: 【決定版 ガイド】SBT(ソウルバウンドトークン)
+slug: sbt
+publishedAt: 2023-08-26
+summary: 'SBT(ソウルバウンドトークン)についてのガイド記事です。SBTの基礎や実装方法などを解説しています。'
+tags: [solidity, nft, smart-contract]
+image: /image/sbt/sbt-social.png
+layout: "full"
+---
+
+この記事は、SBT(ソウルバウンドトークン)について解説している完全ガイドです。
+
+主に以下のことを学べます。
+
+- SBTについて
+- SBTの実際の使用例
+- SBTを作る方法
+- その他色々
+
+また、NFT(Non-Fungible Token)についてある程度知識がないとSBTを理解するのは難しいと思うので、まだNFTについてわからない方は、NFTの基礎を勉強してから読むことをおすすめします。
+
+では、さっそく見ていきましょう！
+
+<Section title="SBTの基礎" color="blue" chapterNumber={1} />
+
+<FullPageH2 title="SBTとは？" />
+
+SBTとは、簡単にいうと誰かに送ったり売ったりできないNFTで、最初に[Vitalik Buterin](https://vitalik.ca/general/2022/01/26/soulbound.html)のブログでアイディアが提案されました。ソウルバウンドを直訳すると、「魂に紐づいた」という意味でここでの魂というのは[ウォレット](https://coincheck.com/ja/article/143)のアカウントのことなので、もっと簡単にいうと<Bold>ウォレットから離れられないデジタルデータ</Bold>ということになります。
+
+<Image src="/image/sbt/sbt-can-not-leave-the-wallet.png" alt="SBTはウォレットから離れられない" width={724} height={333} />
+
+通常のNFTとSBTの違いを理解するために、簡単なデモを用意しました。購入ボタンを押して移動させて見てください。
+
+<SbtAndNft/>
+
+通常のNFTは移動できますが、 SBTはできないのがわかると思います。
+
+しかし、移動できないNFTに何の価値があるのでしょうか？次はこの部分について見ていきます。
+
+<AlertCard  title="SBTの論文">
+	SBTの論文で[Decentralized Society: Finding Web3's Soul](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763)というものがあります。これは、Vitalik Buterinらによって書かれた論文でDeSoc（分散型社会）やSBTについて書かれています。気になる方はどうぞ。
+</AlertCard>
+
+<FullPageH2 title="なぜSBTが必要なのか" />
+
+移動できないNFTであるSBTは、一見不便に見えると思います。
+
+では、なぜSBTが必要なのでしょうか？
+
+### 証明証に使える
+
+SBTは売却や人に送ったりできないので、金銭的価値がないものや転売されては困るものをNFTにしたい時に使えます。みなさんの持っているもので、マイナンバーカードや免許証などは誰かに送ったりせず自分自身を証明するときに使いますよね。そういう<Bold>証明証などをデジタルで表現したい時</Bold>にSBTは使えます。
+
+<Image src="/image/sbt/sbt-can-be-used-for-certification.webp" alt="SBTは証明証に使える" width={724} height={881} />
+
+SBTを使えば<Bold>偽造とかもできない</Bold>ので、認証をするのがすごく楽になります。具体例を出すと、とあるところに寄付をしても自分から言わないと相手に伝わらないですし、証明する手段もあまりないですよね。しかも、自分から言うのは中々気が引けたりします。NFTを使えばデジタルの証明証を作れますが転売できてしまうので、寄付していない人でもしました！と言うことができてしまいます。
+
+そこで、一定の金額を寄付をした人にSBTを発行するとします。そうすれば、その人のウォレットを見るだけでこの人は〇〇にこれだけの金額を寄付していると、わざわざ自分で言わなくても証明することができますし、ウォレットから移動できないので嘘をつけません。
+
+また、イーサリアムで発行すれば<Bold>支援した履歴はイーサリアムがなくならない限り消えない</Bold>ので、10年後に支援した人にお礼するなどがすごく簡単にできます。
+
+なので、NFTもすごく便利ですがSBTはNFTでは、やりずらかったことやできなかったことを実現できます。
+
+あと、現実世界だけではなくゲーム内のアチーブメントの達成などにもSBTは使えます。
+
+### レピュテーションの獲得
+SBTが生まれた背景として、現状だとリアルでの活動や実績よりも、高額なNFTを持っているかどうかでその人がすごいかどうか判断されてしまっているという懸念がありました。NFTについてある程度知識がある方ならわかると思いますが、[BAYC](https://twitter.com/BoredApeYC)や[CryptoPunks](https://www.larvalabs.com/cryptopunks)を持っていたおそらくすごいなーってなりますよね。ただ、判断基準がこれだけだと単純にお金を持っているかどうかでその人が判断されてしまいます。
+
+もし、自分の活動を表すSBTがあれば、この人はあのコミュニティでこれだけの実績があって、寄付もしているんだなーと疑うことなく<Bold>人を判断する基準を増やす</Bold>ことができます。
+
+<FullPageH2 title="SBTのデメリット" />
+
+SBTは証明証などで使えるので便利ですが、まだまだ発展途上なのでデメリットも当然あります。
+
+ここでは、以下の3つを紹介します。
+
+- プライバシーの問題
+- ウォレットのハッキング
+- 差別をしやすくなってしまう
+
+順番に見ていきます。
+
+### プライバシーの問題
+
+先ほどSBTは証明証に使えると言いましたが、個人情報が必要なSBTの場合に関しては、そのままブロックチェーンに上げたら世界中の誰でもその情報を確認できて一生消せなくなってしまいます。これを解決するためには、[オフチェーン](https://xrcloud.jp/blog/articles/business/3446/#:~:text=%E3%82%AA%E3%83%95%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%81%A8%E3%81%AF%E3%80%81%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF,%E3%81%A6%E7%AE%A1%E7%90%86%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82)で個人のデータを管理し、オンチェーン部分ではハッシュ値だけ載せて、証明する時は[ゼロ知識証明](https://ethereum.org/ja/zero-knowledge-proofs)を使う必要があります。ほとんどの人はSBTを使う時に何かしたことを証明できればいいので、ユーザーの個人情報をもらう必要はないと思います。
+
+### ウォレットのハッキング
+SBTはウォレットから離れられないので、ウォレットをハッキングされても特別なギミックがない限りハッカーも移動できません。
+
+しかし、SBTを使った機能を使うことができてしまいますし、SBTを持っている人に配られるNFTなどの場合はハッカーのウォレットに移動できてしまいます。
+
+また、SBTによっては所有者のみが[バーン](https://fafa0911.com/nft-burn)できるようになっている場合があるので、ハッカーがそれを実行したらSBTを失うことになります。
+
+SBTが自分の生活に関わるものではない場合は、気分が最悪になるだけで済みますが、そうでない場合はかなりの致命傷になってしまいます。ハッキング以外にも[シークレットリカバリーフレーズ](https://support.metamask.io/hc/ja/articles/4404722782107-%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%AC%E3%82%A4%E3%83%89-%E3%82%B7%E3%83%BC%E3%82%AF%E3%83%AC%E3%83%83%E3%83%88%E3%83%AA%E3%82%AB%E3%83%90%E3%83%AA%E3%83%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%82%BA-%E3%83%91%E3%82%B9%E3%83%AF%E3%83%BC%E3%83%89-%E7%A7%98%E5%AF%86%E9%8D%B5)を間違えて保存してしまい、ウォレットにアクセスできないなどのリスクも考えられます。これは、SBTの問題というかウォレットの課題でもあり、現状だとウォレットをハッキングされたりアクセスできないリスクが常にあるので、<Bold>SBTを持っているからと言って完全に信頼できるというわけではない</Bold>です。
+
+なので、理論上はマイナンバーカードなどの個人情報や大学の卒業証明証もSBTにできますが、それを実現するには様々な問題を解決する必要があるので、現状は一般公開しても大丈夫なデータなどをSBTにすることがほとんどだと思います。
+
+ただ、ウォレットをハッキングされない限り大丈夫なので、信頼度は既存のサービスと比べてかなり高いです。
+
+<AlertCard  title="コミュニティリカバリー" >
+    ウォレットがハッキングされたりアクセスできなくなったりした場合に、論文では[コミュニティリカバリー](https://xtech.nikkei.com/atcl/nxt/column/18/02132/030900011/#:~:text=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%83%86%E3%82%A3%E3%83%BC%E3%83%AA%E3%82%AB%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%81%AF%E3%80%81%E7%B4%9B%E5%A4%B1,%E5%9B%9E%E5%BE%A9%E3%81%99%E3%82%8B%E4%BB%95%E7%B5%84%E3%81%BF%E3%81%A7%E3%81%82%E3%82%8B%E3%80%82)という手法が提案されています。これは、[ソーシャルリカバリー](https://vitalik.ca/general/2021/01/11/recovery.html)を発展させたもので、SBTを発行したコミュニティの中から自分で考えた条件に合う人または団体をウォレットの保護者に選んでおいて、ウォレットを回復させたいときは選んだ人の合意があれば、復活させることができるというものです。
+
+    <Image src="/image/sbt/community-reecovery.webp" alt="コミュニティリカバリー" width={648} height={697} />
+
+    ソーシャルリカバリーだと自分が信頼できる人に依存してしまうので、<Bold>信頼関係と維持をするのが重要</Bold>ですが、コミュニティリカバリーの方は保護者を探す手間を省けてよりリスクを分散できます。
+    
+    しかし、保護者に任命した人が亡くなっていたり、連絡がつかなくなっているとコミュニティリカバリーでも回復するのは難しくなるので、問題を完全に解決するわけではないですし、これを採用してうまくいっているところを僕は知らないのでまだ実験段階だと思います。
+</AlertCard>
+
+### 差別をしやすくなってしまう
+
+SBTを持っている方に向けて何か特典を付与するというのは結構あると思いますが、逆にこのSBTを持っている人を出禁するなどといった<Bold>特定のコミュニティに対する悪意のある差別</Bold>もできてしまいます。論文内でもSBTは「[レッドライニング](https://www.weblio.jp/content/%E3%83%AC%E3%83%83%E3%83%89%E3%83%A9%E3%82%A4%E3%83%8B%E3%83%B3%E3%82%B0)を自動化し差別をより透明化する」と書かれています。
+
+なので、ユーザー側でSBTを削除したり隠す機能が場合によっては必要では？と言われています。
+
+ただ、SBTを削除できるようにしても過去にこのSBTを持っていたということは消せません。隠す機能に関しては、マケプレ側でできてもNFTやSBTなどの本体を隠す機能は現状実装されていません。
+
+<Section title="SBTの実際の使用例" color="pink" chapterNumber={2} />
+
+SBTはまだまだ発展途上で、今後様々なものに応用されていくと思います。
+
+現状で考えられる使い道をいくつかあげると下記の通りです。
+
+- クラウドファンディングのリターン
+- 資格や卒業証明書などの何かを成し遂げた証明証
+- イベントなどの参加証明書
+- [シビルアタック](https://suginami-exp.com/what-is-sybil-attack/)の対策
+- オンラインでの評判
+- ブロックチェーンゲーム
+
+理論的にはできることを解説するより、実際に使われている事例を紹介した方がいいかなと思ったので、ここでは実際にSBTが使われた例を紹介します。
+
+では、見ていきましょう！
+
+<FullPageH2 title="CryptoAnime Labs：アニメクラウドファンディング" />
+
+<Image src="/image/sbt/cryptoanime-labs-sakuya-anime-crowdfunding.webp" alt="CryptoAnime Labs：アニメクラウドファンディング" width={724} height={483} quoteText="NFT発のTVアニメシリーズが世界初で実現。原作『CryptoNinja』をオリジナルストーリーで描く『忍ばない！クリプトニンジャ咲耶』が2023年10月より放送開始" quoteLink="https://prtimes.jp/main/html/rd/p/000000024.000086122.html" />
+
+[CryptoAnime Labs](https://cryptoanimelabs.xyz)はweb3時代のアニメ制作委員会で、「株式会社THE BATTLE、一般社団法人オタクコイン協会、株式会社ツクリエ、株式会社ファンワークス、合同会社日本の田舎は資本主義のフロンティアだ」と共同で設立されました。[PR TIMES](https://prtimes.jp/main/html/rd/p/000000015.000086122.html)から「web3時代のアニメ制作委員会」の部分をを引用いたします。
+
+> web3時代のアニメ制作委員会は、NFTを活用して直接的にアニメ制作にまつわるクリエイターや関係者たちに金銭的な支援・応援ができる”クラウドファンディング2.0”ともいうべきサービスです
+
+具体的にはパスポートNFTとステーキング用のNFTの二つを購入してもらい、ステーキングした枚数に応じてパスポートの色が変化します。このパスポートNFTにSBTが使われています。
+
+第一弾として、日本のNFTコレクションで有名な[CryptoNinja](https://twitter.com/CryptoNinja_NFT)の咲耶が主人公のアニメ「CryptoNinja-咲耶」のクラウドファンディングが行われました。
+
+<Image src="/image/sbt/crypt-anime-labs-passport-nft.webp" alt="CryptoAnime Labs パスポートNFT" width={724} height={365} />
+
+<Image src="/image/sbt/crypt-anime-labs-shuliken-nft.webp" alt="CryptoAnime Labs 手裏剣NFT" width={724} height={635} />
+
+最初のセールはまさかの[1分で完売して2,000万円](https://prtimes.jp/main/html/rd/p/000000074.000033548.html)を調達し、応援したかったけどできなかった人が続出して「応援させろ」がトレンド入りしました笑。僕も最初のセールに参加しましたが買えず、その後の追加のセールで何とか20枚購入してパスポートをゴールドにすることができました(本当は虹にしたい)。最初のクラファンでは2000万の調達でしたが、追加の販売でなんと7000万円を超える資金をクラファンで集めています。
+
+<X id="1685113412815380480" />
+
+SBTを見れば自分がどのくらい支援したかわかりますし、既存のクラファンとは下記が違います。
+
+- [P2P](https://coincheck.com/ja/article/577)なので販売手数料が取られない
+- 着金に時間がかからない
+- クラファンのサービスがなくなって後で支援者にお礼ができなくなるリスクの回避
+
+まさにクラファン2.0ですね✨。
+
+<FullPageH2 title="チムニータウン：CHIMNEY TOWN GIFT" />
+
+<Image src="/image/sbt/chimney-town-gift.webp" alt="CHIMNEY TOWN GIFT" width={724} height={206} />
+
+[チムニータウン](https://chimney.town)は、[キングコングの西野](https://twitter.com/nishinoakihiro)さんが立ち上げたエンタメの会社で、[えんとつ町のプペル](https://poupelle.com)で有名ですね。西野さんは投資対象になるNFTにあまり興味がないみたいで、手段としてのNFTに可能性を感じており、色々なところでNFTを活用しています。その中で、[CHIMNEY TOWN GIFT](https://chimneytown.net/collections/chimneytowngift)という子供施設に絵本を支援したらリターンとして支援したことを証明する支援NFTがもらえるプロジェクトがあり、そこにSBTを使われています。
+
+メダルは一つ一つ「寄贈先の団体名」「寄贈する絵本の冊数」が記載され、「寄贈する絵本の冊数」に応じて、メダルの色が変わります。
+
+<Image src="/image/sbt/chimney-town-gift-medal.webp" alt="CHIMNEY TOWN GIFT メダル" width={724} height={559} quoteLink="https://twitter.com/nishinoakihiro/status/1600613436714807296" />
+
+<CustomTable heads={["メダルの色", "絵本の冊数"]} data={[["Big Gold", "500冊~"],["Gold","200冊~499冊"],["Black","150冊~199冊"],["Wine Red","100冊~149冊"],["Night Blue","50冊~99冊"],["Forest Green","20冊~49冊"]]}  />
+
+このSBTを見れば、この団体に〇〇冊数を寄付していますとすぐわかりますね✨。
+
+また、西野さんの後輩が経営している[CHIMNEY COFFEE](https://chimney-coffee.com)も支援のSBTを出しています。
+
+<Image src="/image/sbt/chimney-coffee-medal.webp" alt="CHIMNEY COFFEE メダル" width={724} height={483} quoteText="CHIMNEY COFFEEがNFTを用いた海外のコーヒー農家支援プロジェクト『CHIMNEY COFFEE BASE』を始動" quoteLink="https://prtimes.jp/main/html/rd/p/000000004.000101866.html" />
+
+ポイントは、CHIMNEY TOWN GIFTのデザインと合わせることでコーヒー支援したい人だけではなくて、<Bold>メダルのコレクターも顧客になるように設計</Bold>されています。その他にも西野さんは、[舞台テイラーバートン](https://taylorburton.jp)の[クラファン](https://www.picture-book.jp/projects/taylorburton/rewards/35084)でもリターンとしてSBTを出されています。
+
+<Image src="/image/sbt/taylor-burton-sbt.webp" alt="テイラーバートン SBT" width={724} height={217} />
+
+値段が30万なのにすぐ売り切れになったみたいです😳。今後も色々なところで、SBTを活用していくと思います。
+
+<FullPageH2 title="セブン銀行 ATM： NFT募金キャンペーン" />
+
+<Image src="/image/sbt/seven-atm.webp" alt="セブン銀行 ATM NFT募金キャンペーン" width={724} height={451} />
+
+セブン銀行は、環境をテーマにした社会貢献活動の支援の証として、[ATMに寄付するとSBTがもらえるキャンペーン](https://www.sevenbank.co.jp/oos/adv/tmp_256.html)を実地しました。
+
+<X id="1681159394216771584" />
+
+レシートにQRコードが記載されており、読み取ればNFTがもらえるようです。
+
+<X id="1681167065959260161" />
+
+現在でもレシートに割引が付いてくるとかあるので、今後レシートからNFTを受け取れるようにする事例は増えそうですね👀。
+
+<FullPageH2 title="Binance：BABトークン" />
+
+<Image src="/image/sbt/bab-token.webp" alt="BAB トークン" width={724} height={451} />
+
+[Binance](https://www.binance.com/en)は仮想通貨取引所で[BABトークン](https://www.binance.com/en/babt)は、BinanceのKYC(本人確認)が完了しているアカウントに送られるトークンで[BNBチェーン](https://www.fisco.co.jp/media/crypto/bsc-about/)上で発行されます。このSBTを持っているということは本人確認が完了したということなので、<Bold>ボット対策やプライバシー保護</Bold>などに役に立ちますね！
+
+<FullPageH2 title="LLAC(Live Like A Cat)：会員証SBT" />
+
+<Image src="/image/sbt/llac-homepage.webp" alt="LLAC トップ画像" width={724} height={380} />
+
+[LLAC](https://llac.fun)は「猫のように自由気ままに生きる」がテーマの日本のNFTプロジェクトです。ファウンダーは[しゅうへい](https://twitter.com/shupeiman)さんでマーケティングアドバイザーに[イケハヤ](https://twitter.com/IHayato)さん、リードデザイナーに[猫森うむ子](https://twitter.com/umuco_digital)さんが入られています。LLACは[またたび屋](https://shop.llac.fun)というオンラインショップも展開しており、購入した方に[会員証SBT](https://opensea.io/collection/matatabi-club-membership)を手に入れられるようにしています。
+
+<Image src="/image/sbt/matatabi-club.webp" alt="LLAC 会員証SBT" width={724} height={387} quoteText="【SBTの可能性を切り拓く】Live Like A Cat 公式オンラインショップ「またたび屋」 SBT会員証を発行" quoteLink="https://prtimes.jp/main/html/rd/p/000000003.000112419.html" />
+
+この会員証SBTを持っていると期間限定で割引を受けられたりします。
+
+また、LLACはセミナーを参加した人に[SBT](https://opensea.io/collection/llac-nft-seminar-apr-18-2023)を配布したり、初期で購入してくれた方に[SBT](https://opensea.io/collection/live-like-a-cat-mint-sbt)を配布など色々なところでSBTを応用しています。
+
+<X id="1603193427482775554" />
+
+<X id="1613008573780623360" />
+
+<X id="1609324803856662528" />
+
+猫ちゃんの画像がすごく可愛いですね🥰。
+
+<FullPageH2 title="TMAs(TheMafiaAnimalsSoldiers)：絆の証SBT" />
+
+<Image src="/image/sbt/tmas-homepage.webp" alt="TMAs ホームページ" width={724} height={463} />
+
+[TMAs](https://opensea.io/collection/the-mafia-animals-soldiers-)は、[TMA](https://mafia-animals.com)の世界観をもっと拡げるために生まれた日本のNFTプロジェクトで、ファウンダーは[Rii2](https://twitter.com/rii2_4)さんです。僕もエンジニアとして参加させていただいており、[syou](https://twitter.com/nft_syou)さんと[Lavulite](https://twitter.com/lavulite_eng)さんもエンジニアとして参加しています。TMAsでは、2次流通でNFTを買ってくれた方に[絆の証](https://opensea.io/collection/memory-of-tma)というSBTを配布しました。
+
+<X id="1658648092844113920" />
+
+これを見れば2次で買い増しをして、プロジェクトを支えてくれた方がわかりますね✨。
+
+<FullPageH2 title="APP(Aopanda Party)：クリスマスプレゼント" />
+
+<Image src="/image/sbt/app-homeoage.webp" alt="APP ホームページ" width={724} height={463} />
+
+[APP](https://nft.aopanda.ainy-llc.com/site)は、TikTokで有名な[あおぱんだ](https://www.tiktok.com/@aopanda_ao)が元になった日本のNFTプロジェクトで、ファウンダーは[Ao](https://twitter.com/Devil_Kitties_)さんです。APPでは、クリスマスにクリエイターが書いたイラストの交換会を実地し、そこに[SBT](https://opensea.io/collection/aopanda-party-sbt-memorial)が使われました。
+
+<X id="1601531809174794241" />
+
+プレゼントなので、売買できないSBTと相性いいですね✨。
+
+また、APPは[イベント参加のSBT](https://opensea.io/assets/matic/0xfaa2ef776e5b17e6e4252610da292fb13eac7c53/1351)や[Aoさんの誕生日](https://twitter.com/Devil_Kitties_/status/1669895274687516673)にSBTを活用など色々SBTを応用しています。
+
+<Image src="/image/sbt/app-event-sbt.webp" alt="APP イベント SBT" width={724} height={451} />
+
+<X id="1669895274687516673" />
+
+誕生日にSBTを使うのは新しいですね！
+
+<Section title="SBTの仕組み" color="sky" chapterNumber={3} />
+
+ここでは、SBT内部の仕組みがどうなっているのか、スマートコントラクトのコードも紹介しながら説明します。
+
+では、見ていきましょう！
+
+<FullPageH2 title="SBTは転送できないNFT" />
+
+先ほど説明したように、SBTはただ単に送ったり売ったりできないNFTです。
+
+もっというと、NFTから<Bold>転送や承認する関数を使えないようにしたもの</Bold>がSBTです。
+
+<Image src="/image/sbt/nft-and-sbt-function.webp" alt="NFTとSBTの関数の比較" width={724} height={409} />
+
+では、SBT内部のコードはどうなっているのでしょうか？
+
+次は、それについて見ていこうと思います。
+
+<FullPageH2 title="SBT内部のコードを見ていこう" />
+
+SBTのコードを見ていく前に、NFTからSBTに変えていったほうがわかりやすいと思うので、まずは通常のNFTのコードを見ていきます。通常のNFTは、[ERC-721](https://docs.openzeppelin.com/contracts/erc721)をベースに使うことが多いので、こちらを元に解説します。最初のコードは以下の通りです。
+
+```solidity title="src/ERC721NFT.sol"
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
+
+contract ERC721NFT is ERC721 {
+  using Counters for Counters.Counter;
+
+  string public baseURI = "https://demo.com/";
+
+  string public baseExtension = ".json";
+
+  Counters.Counter private _tokenIdCounter;
+
+  constructor() ERC721("MyToken", "MTK") {
+      _tokenIdCounter.increment();
+  }
+
+  function mint() external {
+      uint256 tokenId = _tokenIdCounter.current();
+      _tokenIdCounter.increment();
+      _mint(msg.sender, tokenId);
+  }
+
+  function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+      require(_exists(_tokenId), "URI query for nonexistent token");
+      return string(abi.encodePacked(ERC721.tokenURI(_tokenId), baseExtension));
+  }
+
+  function _baseURI() internal view virtual override returns (string memory) {
+      return baseURI;
+  }
+}
+```
+
+これは、誰でもNFTを購入できるシンプルなコードです。<Code title="Counters"/> でNFTを購入したときに、 <Code title="tokenId"/> を自動で上げるようにしています。ここに、転送と承認の関数をERC721から<Code title="override"/>します。
+
+```solidity title="src/ERC721NFT.sol" {35-54}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
+
+contract ERC721NFT is ERC721 {
+  using Counters for Counters.Counter;
+
+  string public baseURI = "https://demo.com/";
+
+  string public baseExtension = ".json";
+
+  Counters.Counter private _tokenIdCounter;
+
+  constructor() ERC721("MyToken", "MTK") {
+      _tokenIdCounter.increment();
+  }
+
+  function mint() external {
+      uint256 tokenId = _tokenIdCounter.current();
+      _tokenIdCounter.increment();
+      _mint(msg.sender, tokenId);
+  }
+
+  function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+      require(_exists(_tokenId), "URI query for nonexistent token");
+      return string(abi.encodePacked(ERC721.tokenURI(_tokenId), baseExtension));
+  }
+
+  function _baseURI() internal view virtual override returns (string memory) {
+      return baseURI;
+  }
+
+  // 転送や承認の関数
+  function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
+      super.safeTransferFrom(from, to, tokenId, data);
+  }
+
+  function safeTransferFrom(address from, address to, uint256 tokenId) public override {
+      super.safeTransferFrom(from, to, tokenId);
+  }
+
+  function transferFrom(address from, address to, uint256 tokenId) public override {
+      super.transferFrom(from, to, tokenId);
+  }
+
+  function approve(address approved, uint256 tokenId) public override {
+      super.approve(approved, tokenId);
+  }
+
+  function setApprovalForAll(address operator, bool approved) public override {
+      super.setApprovalForAll(operator, approved);
+  }
+}
+```
+
+SBTにするには、これらの関数を使えないようにする必要があります。コードにすると以下の通りです。
+
+```solidity title="src/ERC721NFT.sol" {10,22,24-27} /checkLock/
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
+
+contract ERC721NFT is ERC721 {
+  using Counters for Counters.Counter;
+
+  bool private isLocked = true;
+
+  string public baseURI = "https://demo.com/";
+
+  string public baseExtension = ".json";
+
+  Counters.Counter private _tokenIdCounter;
+
+  constructor() ERC721("MyToken", "MTK") {
+      _tokenIdCounter.increment();
+  }
+
+  error ErrLocked();
+
+  modifier checkLock() {
+      if (isLocked) revert ErrLocked();
+      _;
+  }
+
+  function mint() external {
+      uint256 tokenId = _tokenIdCounter.current();
+      _tokenIdCounter.increment();
+      _mint(msg.sender, tokenId);
+  }
+
+  function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+      require(_exists(_tokenId), "URI query for nonexistent token");
+      return string(abi.encodePacked(ERC721.tokenURI(_tokenId), baseExtension));
+  }
+
+  function _baseURI() internal view virtual override returns (string memory) {
+      return baseURI;
+  }
+
+  // 転送や承認の関数
+  function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override checkLock {
+      super.safeTransferFrom(from, to, tokenId, data);
+  }
+
+  function safeTransferFrom(address from, address to, uint256 tokenId) public override checkLock {
+      super.safeTransferFrom(from, to, tokenId);
+  }
+
+  function transferFrom(address from, address to, uint256 tokenId) public override checkLock {
+      super.transferFrom(from, to, tokenId);
+  }
+
+  function approve(address approved, uint256 tokenId) public override checkLock {
+      super.approve(approved, tokenId);
+  }
+
+  function setApprovalForAll(address operator, bool approved) public override checkLock {
+      super.setApprovalForAll(operator, approved);
+  }
+}
+```
+
+転送と承認の関数に <Code title="checkLock"/> をつけて、<Bold>呼び出した時にエラーになるように</Bold>しました。
+
+なので、もしOpenSeaとかでこれを移動させようとしたら、エラーが出て移動できません。
+
+<Image src="/image/sbt/nft-and-sbt-function-opensea.webp" alt="ERC-5192がOpenSeaでサポートされている" width={724} height={614} />
+
+これで、通常のNFTをSBTに変えることができました！
+
+以上がSBTの内部の仕組みです。意外と簡単ですよね。
+
+<Section title="SBTの作り方" color="mint" chapterNumber={4} />
+
+ここではスマートコントラクトを自分で構築し、ゼロからSBTを作る方法を紹介します。
+
+自分でSBTを作れるようになると、応用の幅が広がります。
+
+では、見ていきましょう！
+
+<FullPageH2 title="スマートコントラクトの構築" />
+
+先ほどのコードを使ってもいいのですが、OpenSeaなどのマーケットプレイスが<Bold>SBTか通常のNFTか判断できない</Bold>のでユーザー体験が少し悪くなってしまいます。これを避けるためには、マーケットプレイスがNFTみたいにSBTと判断できる[規格](https://wa3.i-3-i.info/word11051.html)を採用する必要があるのですが、SBTにもいくつか出てきており、現在で最もマーケットプレイスに採用される確率が高いのは[ERC-5192](https://eips.ethereum.org/EIPS/eip-5192)だと思います。
+
+実際にOpenSeaでは、[ERC-5192](https://docs.opensea.io/docs/metadata-standards#disable-trading-for-staked-or-locked-tokens)がサポートされています。
+
+<Image src="/image/sbt/erc-5192-opensea-support.webp" alt="ERC-5192がOpenSeaでサポートされている" width={724} height={527} />
+
+なので、今回はERC-5192を使って作ります。
+
+また、ERC-5192はERC-721をベースに作られており、たくさんの枚数を配布または購入する場合は[ERC-721A](https://www.erc721a.org)などに変えた方がいいのですが、今回は公式がデフォルトにしているERC-721をベースに作りたいと思います。
+
+<AlertCard title="ERC-721以外にしたい場合" variant="pro">
+    ぶっちゃけERC721と同じように、<Bold>その規格の転送や承認の関数を使えないようにすればいい</Bold>ので、やる作業としてはそこまで変わりません。自分でやるの怖い方は、僕に[DM](https://twitter.com/orca48691)か[メール](mailto:shachilog.ryuji@gmail.com)でご相談いただければお手伝いいたします。需要があれば、この記事に他の規格のやり方を追記するかもです。
+</AlertCard>
+
+開発環境はお任せしますが、今回はすぐ始められる[Remix](https://remix.ethereum.org)を使って説明していこうと思います。
+
+まず、 <Code title="contracts" /> に <Code title=".sol" /> ファイルを作り、以下のコードをコピペしてください。
+
+```solidity title="contracts/SBT.sol"
+// SPDX-License-Identifier: GPL-3.0-only
+pragma solidity ^0.8.20;
+
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
+import { ERC5192 } from "https://github.com/attestate/ERC5192/blob/main/src/ERC5192.sol";
+
+contract SBT is ERC5192, Ownable {
+    using Counters for Counters.Counter;
+
+    bool private isLocked;
+
+    string public baseURI = "https://demo.xyz/";
+
+    string public baseExtension = ".json";
+
+    Counters.Counter private _tokenIdCounter;
+
+    constructor(string memory _name, string memory _symbol, bool _isLocked) ERC5192(_name, _symbol, _isLocked) {
+        isLocked = _isLocked;
+        _tokenIdCounter.increment();
+    }
+
+    // only owner
+    function setBaseURI(string memory _newBaseURI) external onlyOwner {
+        baseURI = _newBaseURI;
+    }
+
+    function setBaseExtension(string memory _newBaseExtension) external onlyOwner {
+        baseExtension = _newBaseExtension;
+    }
+
+    // mint
+    function mint() external {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(msg.sender, tokenId);
+        if (isLocked) emit Locked(tokenId);
+    }
+
+    // other
+    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+        require(_exists(_tokenId), "URI query for nonexistent token");
+        return string(abi.encodePacked(ERC721.tokenURI(_tokenId), baseExtension));
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
+    }
+}
+
+```
+
+大事なところをピックアップして解説します。
+
+僕は <Code title="baseURI" /> を適当なものにしていますが、自分の画像のURIに変更してください。
+
+```solidity
+    string public baseURI = "https://demo.xyz/";
+```
+
+<Code title="constructor" /> では、コードをデプロイするときに「コレクションの名前、シンボル名、SBTにするかどうか」を決めます。
+
+また、<Code title="tokenId" /> を <Code title="1" /> から始まるようにしています。
+
+```solidity
+    constructor(string memory _name, string memory _symbol, bool _isLocked) ERC5192(_name, _symbol, _isLocked) {
+        isLocked = _isLocked;
+        _tokenIdCounter.increment();
+    }
+```
+
+その下の <Code title="set" /> 関数は、後でURIと拡張子を変えられるように <Code title={<a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol">onlyOwner</a>} /> をつけて、コントラクトオーナーのみ変更できるようにしています。
+
+ミント関数は、説明用なので誰でも呼び出せて何回でも呼び出せるようにしています。必要に応じて、コントラクトオーナーのみ配布できる関数に変えたり、アローリスト持っているユーザーのみ購入できるように変えてください。アローリスト登録のやり方は、[こちらの記事](https://www.shachilog.xyz/blog/nft-allowlist-smart-contract)で解説しているので気になる方はどうぞ。
+
+<FullPageH2 title="デプロイ" />
+
+今回は、[Goerli](https://goerli.etherscan.io) というテストネットにデプロイしようと思います。
+
+まず、テストネットにデプロイするにはGoerliのイーサが必要なので、[こちら](https://goerlifaucet.com/)からゲットしてください。
+
+そしたら、Remixに戻りコンパイラのバージョンがあっているか確認し、コンパイルボタンを押します。
+
+<Image src="/image/sbt/remix-compile-button.webp" alt="Remixのコンパイル画面" width={724} height={319} />
+
+コンパイルが完了したら、デプロイの設定を以下のようにします。
+
+<Image src="/image/sbt/remix-deploy-setting.webp" alt="SBTのRemixのデプロイの設定画面" width={724} height={480} />
+
+<Code title="constractor" /> の <Code title="name" /> と <Code title="symbol" /> は、自分の好きなものにしてください。
+
+また、ネットワークがGoerliになっているか確認してください。
+
+準備ができたら、transactボタンを押します。少し経つと、トランザクションが完了すると思います！
+
+<Image src="/image/sbt/remix-transact-success.webp" alt="SBTのトランザクション成功" width={724} height={479} />
+
+<Bold>Deployed Contracts</Bold>にデプロイしたコントラクトがあると思うので、自分が設定した通りになっているかどうか確認してみます。
+
+<Image src="/image/sbt/remix-deploy-data-check.webp" alt="SBTのデータの確認" width={724} height={479} />
+
+問題なさそうですね！
+
+実際にミントボタンを押して、SBTをゲットしてみましょう。
+
+<Image src="/image/sbt/remix-sbt-mint-button.webp" alt="SBTのミントボタン" width={724} height={464} />
+
+トランザクションが完了したら、[イーサスキャン](https://goerli.etherscan.io)にアクセスしてコントラクトアドレスをコピーします。
+
+<Image src="/image/sbt/remix-sbt-view-on-etherscan.webp" alt="view on etherscan" width={724} height={464} />
+
+<Image src="/image/sbt/remix-sbt-etherscan-contract-address.webp" alt="コントラクトアドレス" width={724} height={464} />
+
+次に、[テストネット用のOpenSea](https://testnets.opensea.io)の検索にコピーしたアドレスを貼り付けます。
+
+<Image src="/image/sbt/opensea-testnet-sbt.webp" alt="テストネットの OpenSea" width={724} height={464} />
+
+そうすると、自分のコレクションが確認できると思います。通常のNFTは出品や転送のボタンがありますが、自分のSBTを見ると出品と転送のボタンがないのがわかると思います。
+
+<Image src="/image/sbt/common-token-vs-erc5192.webp" alt="SBTをトランスファーしようとするとエラーになる" width={724} height={1026} />
+
+これで、SBTを作ることができました🥳。
+
+今回紹介したSBTのコードは、最低限必要なものを実装したので、必要であれば自分のニーズに合わせてカスタマイズしてください。
+
+<AlertCard  title="コードのverify" variant="pro">
+    Remixでコードのverifyをするには、プラグインが必要なので検索して有効にします。
+
+    <Image src="/image/sbt/remix-plugin-verify.webp" alt="Remixのverifyのプラグイン" width={646} height={418} />
+
+	また、[イーサスキャンのAPIキー](https://web-breeze.net/ether-scan-ss/#toc1)も必要なので取得してください。
+
+    取得できたらイーサスキャンのタブをクリックして、入力欄にAPIキーを入力してください。
+
+    そしたら、ボタンを押して以下のように設定してください。
+    
+    <Image src="/image/sbt/remix-sbt-verify-setting.webp" alt="SBTのverifyの設定" width={648} height={415} />
+
+    <Code title="name" /> と <Code title="symbol" /> は自分が設定したものを入力し、コントラクトアドレスはさっきイーサスキャンからコピーしたものを入力してください。
+
+    準備ができたらverifyボタンを押します。
+
+    すると、完了したとメッセージが出ると思います！
+    
+    再度デプロイしたイーサスキャンを見ると、contractにチェックマークがついていると思います。
+
+    <Image src="/image/sbt/sbt-contract-verify-check.webp" alt="SBTのコントラクトのverifyの確認" width={648} height={413} />
+    
+    無事verifyができました！
+</AlertCard>
+
+<Section title="SBTを作成できるツール" color="tomato" chapterNumber={5} />
+
+先ほどSBTを作る方法を解説しましたが、プログラミングできない方もいると思います。
+
+そう言った方に朗報です。
+
+すでに、SBTを作成できる素晴らしいツールがいくつかあります。
+
+簡単なSBTを作りたいなら、自分でコントラクトを作らずツールを使ったほうが安全で、車輪の再発明をしなくて済みます。
+
+では、見ていきましょう！
+
+<FullPageH2 title="thirdweb" />
+
+<Image src="/image/sbt/thirdweb-homepage.webp" alt="thirdwebのトップページ" width={724} height={463} />
+
+[thirdweb](https://thirdweb.com)はNFTや、マーケットプレイスなど色々なものをプログラミングのスキルがなくても作れるツールです。
+
+また、作ったものは[独自コントラクト](https://nf-times.com/dokuji-contract/#:~:text=%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E6%88%90%E3%81%97%E3%81%9F%E3%82%B3%E3%83%B3%E3%83%88%E3%83%A9%E3%82%AF%E3%83%88,%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%81%AB%E8%A8%98%E9%8C%B2%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82)で発行されます。
+
+たくさんの種類のコントラクトを扱っており、購入するサイトの構築や色々制限を加えられるのでとても便利です。現在は完全に無料ですが、今後[有料の高度な機能を導入する予定](https://blog.thirdweb.com/thirdweb-is-now-free)みたいです。SBTのやり方は、[こちらの記事](https://hashhub-research.com/articles/2022-12-02-about-thirdweb)が参考になると思います。
+
+ただ、注意点として<Bold>転送の関数を制限しているだけなので、OpenSea等で買えないけどリストはできてしまう</Bold>みたいです。
+
+<FullPageH2 title="Manifold" />
+
+<Image src="/image/sbt/manifold-homepage.webp" alt="Manifoldのトップページ" width={724} height={463} />
+
+[Manifold](https://manifold.xyz/home)もthirdwebと同じく、プログラミングの知識がなくても購入するサイトや独自コントラクトのNFTを作れるツールです。普通のNFTも作れますが、アプリケーションを使うことでSBTの構築や既存の[NFTをバーン](https://fafa0911.com/nft-burn)して新しいNFTを作れたり、様々な機能を使うことができます。クリエイターは完全に無料で使うことができてロイヤリティや収益も全部もらえますが、NFTを[1次で購入（ミント）する人は約$1の手数料](https://docs.manifold.xyz/v/manifold-studio/essentials/pricing)が購入時に含まれます。
+
+
+<Section title="Advanced：プログラマブルプライバシー" color="violet" chapterNumber={6} />
+
+最後に論文で書かれていた、プログラマブルプライバシーについて解説します。
+
+では、見ていきましょう！
+
+<FullPageH2 title="プログラマブルプライバシーとは？" />
+
+プログラマブルプライバシーは、<Bold>個人のプライバシーをプログラムによって制御</Bold>し、<Bold>他の人に情報を共有したりする方法を自分で設定できる仕組み</Bold>です。プライバシーをプログラムで制御ってどういうこと？ってなると思いますが、まず既存のプライバシーの問題を見ていきます。
+
+X(Twitter)やLINEやFacebookなどを使う時って、プライバシーの規約に同意して自分の個人情報をそのサービスに提供していますよね。普通のサービスは、ユーザーに提供してもらったデータを第三者に公開するのを禁止していますが、ハッキングで情報漏洩する可能性も結構ありますし、[ケンブリッジ・アナリティカ事件](https://acompany.tech/privacytechlab/cambridge-analytica-and-facebook-brexit-privacy-protect)みたいにユーザーの同意なしで勝手にデータを公開されてしまうリスクもあります。
+
+また、DMや個人のチャットなどはそれらのサービスで働いている従業員に見れないようになっていると思いますが、偉い人がやろうと思えば公開できてしまうと思います。
+
+この問題の共通点は、<Bold>自分がそのサービスに提供したプライバシーが第三者に譲渡可能な状態である</Bold>ということです。
+
+<Image src="/image/sbt/privacy-is-transferable-to-third-parties.webp" alt="プライバシーが第三者に譲渡可能" width={724} height={576} />
+
+そこで、プライバシーを譲渡可能にするのではなくて、<Bold>SBTにある個人のデータをユーザー側がプログラムを実行して、どのデータをどこに公開するか、使用する条件などを細かく自分で設定して決めるの</Bold>が良いのではないかと話が出てきました。
+
+<Image src="/image/sbt/sbt-privacy.webp" alt="プログラマブルプライバシー" width={724} height={709} />
+
+これにより、<Bold>サービスがユーザーのプライバシーを所有しない</Bold>ので、ハッキングで大量のデータが流出したり勝手に第三者に共有されるリスクを回避できますし、サービス側がユーザーのプライバシーを欲しがるようになるので、<Bold>自分のプライバシーを提供するときはサービス側がお金を払う</Bold>などといったマネタイズが可能になります。
+
+またプログラム可能なので、データの利用を特定の条件が満たされたら共有可能にしたり、特定の目的にためだけに制限したりなど、データを共有する際に細かい設定を行うことができます。
+
+例えば、ある人が自分の医療情報を共有する場合、特定の医療機関だけに限定したり、特定の研究目的に限定したりすることが可能です。
+
+## zkSBT (Zero-Knowledge Soulbound Token)
+
+zkSBTは、[ゼロ知識証明](https://ethereum.org/ja/zero-knowledge-proofs)を搭載したSBTです。先ほどユーザー側が自分で公開するデータを制御すると言いましたが、サービスにアクセス可能にしたら結局データを取られて第三者に公開されてしまうのでは？そもそもSBTに個人情報を載せるの危なくない？と思うかもですが、zkSBTなら<Bold>具体的なデータを公開せず認証として使うことが可能</Bold>です。
+
+すみませんが、ここでゼロ知識証明の説明をするとかなり長くなるので、各自で調べてみてください(このブログでもいつか記事書きます)。
+
+ゼロ知識証明とSBTを使った事例で、[Masa](https://www.masa.finance)という論文で書かれていたプログラマブルプライバシーの実現を軸にしているプロジェクトがあり、そこがzkSBTを出しています。
+
+<X id="1653464852487127060" />
+
+詳しくは、[ホワイトペーパー](https://github.com/masa-finance/whitepaper/blob/main/masa-whitepaper.pdf)か[ブログ記事](https://medium.com/masa-finance/introducing-the-masa-zksbt-d5e221f8a300)を見ていただきたいのですが、一部抜粋します。
+
+> zkSBTコントラクトは、[分散型データストレージ](https://massive.io/ja/file-transfer/what-is-decentralized-storage)の利点を維持しつつ、ユーザーのプライベートデータのプライバシーとセキュリティの安全性を確保しています。
+> ゼロ知識証明を利用することで、このコントラクトは第三者に実際のデータを明かすことなく、暗号化されたプライベートデータの共有を可能にします。
+
+zkSBTの使用例を、いくつかブログ記事からピックアップすると下記の通りです。
+
+> 安全な本人確認
+>
+> ユーザーは暗号化された個人識別情報（パスポート番号、社会保障番号など）を、zkSBT内に保存することができます。
+本人確認を必要とするサードパーティのサービスとやりとりする場合、ユーザーは実際の個人情報を明かすことなくzkSBT を共有でき、サードパーティはゼロ知識証明を使用してデータの真正性を検証できます。
+>
+> プライバシーを保護する[クレジットスコアリング](https://www.ifinance.ne.jp/glossary/creditcard/cre196.html#gsc.tab=0)
+>
+> クレジットスコアリングサービスは、ユーザーの暗号化されたクレジットスコアデータをzkSBT内に保存することができる。ユーザーがローンを申し込むと、そのzkSBTを融資機関と共有することができる。金融機関は実際のクレジットスコアデータにアクセスすることなく、ユーザーの信用度を検証することができ、これによりユーザーのプライバシーが保護される。
+>
+> プライベートな資産所有
+>
+> ユーザーは、資産所有の暗号化された記録（不動産、車両など）をzkSBT内に保存できます。
+所有権の証明が必要な場合、ユーザーは自分のzkSBTを関係当局と共有し、資産の具体的な詳細を明かすことなく所有権を確認することができます。
+
+上記の通り、zkSBTはかなり応用が効くので、今後かなり注目されてくる分野かなと思います。
+メタバースが流行ればデジタルで生活する人も増えるので、個人情報をデジタルで表現するときの選択肢としてかなり良さそうですよね。
+
+ただ、これにも懸念点があり、論文では以下のように書かれていました(日本語はDeepLで翻訳してchatGPTでわかりやすくしています)。
+
+> Unilateral zk-sharing isn’t incentive-compatible with our use cases, nor does it reect our norms  around privacy.  Most of our applications depend on some level of publicity.  But under zk-sharing, Souls  can’t know another Soul possesses an SBT unless it is shared to them—making reputation-staking, credible  commitments, sybil-resistant governance, and simple rental contracts (e.g., apartment lease) impossible to get  o the ground as other commitments and encumbrances are not necessarily visible.  More deeply, we are  skeptical that unilateral shareability is usually the right privacy paradigm.  Rarely does one party in a  multi-party relationship have the unilateral rights to disclose the relationship without the consent of the  other.  Just as unilaterally transferable private property is not a rich property regime, simplistic unilateral  shareability is not a very rich privacy regime.  If two parties co-own an asset and choose to represent their  relationship through a VC, such credential doesn’t allow for the mutual-consent and mutual-permissions.
+
+> 一方向のzk共有も、私たちの使用事例やインセンティブに合わないことがあり、私たちのプライバシーに関する基準を十分に反映しているわけではありません。私たちの多くのアプリケーションは、一定程度の情報の共有に依存しています。しかしzk共有の場合、他の人々がSoulbound Token（SBT）を持っていることを知ることはできません。そのため、他のコミットメントや保証が必ずしも明確には見えないため、信頼性を重視するステーキングやコミットメント、不正防止の仕組み、シンプルな賃貸契約（アパートを借りるなど）を成立させるのは難しいです。さらに言えば、一方的な共有の能力が通常のプライバシーのアイデアに適しているかどうかについては、私たちは疑問を抱いています。複数の関係者が関与する場合、片方の関係者が相手の同意なしに関係を公開する権利を持つことはまれです。片方向に転送可能な私有財産が豊かな財産体制でないように、単純な片方向の共有能力だけでは十分なプライバシーの保護が難しいこともあります。
+
+なので、全ての認証サービスがゼロ知識証明に置き換わるというわけではなさそうです。
+
+また、人によっては自分でプライバシー管理するのめんどくさいという方もいると思うので、未来はどうなるか謎ですね。
+
+<Section title="まとめ" color="teal" />
+
+このSBTの完全ガイドが、少しでも皆さんのお役に立てば幸いです。
+
+NFTもそうですが、SBTはこれから発展していく分野なので、今後様々な形で応用されていくと思います。
+
+実際にSBTを作ってみたいなと思った方は、コードを書いたりツールを使って実際にSBTを作ってみてください。
+
+もし自分でやるの怖いなと思った方や、もっと高度なSBTを作りたいという方は、僕に[DM](https://twitter.com/orca48691)か[メール](mailto:shachilog.ryuji@gmail.com)でご連絡いだだければお手伝いしますので、お気軽にメッセージをいただければと思います🙇‍♂️。

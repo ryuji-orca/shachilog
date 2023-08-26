@@ -1,9 +1,6 @@
 import { allBlogs } from "contentlayer/generated"
 
-/**
- * @package
- */
-export const getBlogMdxListItem = (slug: string) => {
+const getBlogMdxListItem = (slug: string) => {
   const post = allBlogs.find(post => {
     return post.slug === slug
   })
@@ -11,10 +8,7 @@ export const getBlogMdxListItem = (slug: string) => {
   return post ?? null
 }
 
-/**
- * @package
- */
-export const getBlogMdxListItems = () => {
+const getBlogMdxListItems = () => {
   return allBlogs.sort((a, b) => {
     if (new Date(a.publishedAt) > new Date(b.publishedAt)) {
       return -1
@@ -22,3 +16,5 @@ export const getBlogMdxListItems = () => {
     return 1
   })
 }
+
+export { getBlogMdxListItem, getBlogMdxListItems }

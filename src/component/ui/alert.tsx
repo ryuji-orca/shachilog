@@ -1,12 +1,9 @@
 import { forwardRef, type HTMLAttributes } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import { cva, type VariantProps } from "class-variance-authority"
 
-/**
- * @package
- */
-export const alertVariants = cva(
+const alertVariants = cva(
   "relative w-full rounded-lg border-l-4 p-4 md:[&:has(svg)]:pl-14 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-slate-12 dark:[&>svg]:text-slatedark-12",
   {
     variants: {
@@ -25,10 +22,7 @@ export const alertVariants = cva(
   },
 )
 
-/**
- * @package
- */
-export const Alert = forwardRef<
+const Alert = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
 >(({ className, variant, ...props }, ref) => {
@@ -43,7 +37,7 @@ export const Alert = forwardRef<
 })
 Alert.displayName = "Alert"
 
-export const AlertTitle = forwardRef<
+const AlertTitle = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
@@ -60,10 +54,7 @@ export const AlertTitle = forwardRef<
 })
 AlertTitle.displayName = "AlertTitle"
 
-/**
- * @package
- */
-export const AlertDescription = forwardRef<
+const AlertDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
@@ -79,3 +70,5 @@ export const AlertDescription = forwardRef<
   )
 })
 AlertDescription.displayName = "AlertDescription"
+
+export { alertVariants, Alert, AlertTitle, AlertDescription }

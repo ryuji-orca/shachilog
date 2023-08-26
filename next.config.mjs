@@ -1,4 +1,4 @@
-import {withContentlayer} from 'next-contentlayer'
+import { withContentlayer } from "next-contentlayer"
 
 /** @type {import('next').NextConfig} */
 // const {withContentlayer} = require('next-contentlayer')
@@ -6,16 +6,16 @@ import {withContentlayer} from 'next-contentlayer'
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  eslint: './src',
+  eslint: "./src",
   experimental: {
     appDir: true,
     serverActions: true,
     // mdxRs: true,
     serverComponentsExternalPackages: [
-      '@tremor/react',
-      'react-tweet-embed',
-      'react-archer',
-      '@radix-ui/react-popover',
+      "@tremor/react",
+      "react-tweet-embed",
+      "react-archer",
+      "@radix-ui/react-popover",
     ],
   },
 }

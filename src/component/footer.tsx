@@ -30,12 +30,9 @@ const NavLink = ({
   )
 }
 
-/**
- * @package
- */
 export const Footer = () => {
   return (
-    <div className="border-t border-indigo-6 dark:border-indigodark-6">
+    <div className="mt-16 border-t border-indigo-6 dark:border-indigodark-6 md:mt-24">
       <footer className="mx-auto max-w-3xl p-8">
         <ul className="flex items-center justify-center gap-5 pb-6">
           {LINKS.map(({ icon, href }) => {

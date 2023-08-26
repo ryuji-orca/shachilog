@@ -7,44 +7,23 @@ import {
   type HTMLAttributes,
 } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 
-/**
- * @package
- */
-export const DropdownMenu = DropdownMenuPrimitive.Root
+const DropdownMenu = DropdownMenuPrimitive.Root
 
-/**
- * @package
- */
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 
-/**
- * @package
- */
-export const DropdownMenuGroup = DropdownMenuPrimitive.Group
+const DropdownMenuGroup = DropdownMenuPrimitive.Group
 
-/**
- * @package
- */
-export const DropdownMenuPortal = DropdownMenuPrimitive.Portal
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal
 
-/**
- * @package
- */
-export const DropdownMenuSub = DropdownMenuPrimitive.Sub
+const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
-/**
- * @package
- */
-export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 
-/**
- * @package
- */
-export const DropdownMenuSubTrigger = forwardRef<
+const DropdownMenuSubTrigger = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
     inset?: boolean
@@ -68,10 +47,7 @@ export const DropdownMenuSubTrigger = forwardRef<
 DropdownMenuSubTrigger.displayName =
   DropdownMenuPrimitive.SubTrigger.displayName
 
-/**
- * @package
- */
-export const DropdownMenuSubContent = forwardRef<
+const DropdownMenuSubContent = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.SubContent>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
 >(({ className, ...props }, ref) => {
@@ -89,10 +65,7 @@ export const DropdownMenuSubContent = forwardRef<
 DropdownMenuSubContent.displayName =
   DropdownMenuPrimitive.SubContent.displayName
 
-/**
- * @package
- */
-export const DropdownMenuContent = forwardRef<
+const DropdownMenuContent = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.Content>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => {
@@ -112,10 +85,7 @@ export const DropdownMenuContent = forwardRef<
 })
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
-/**
- * @package
- */
-export const DropdownMenuItem = forwardRef<
+const DropdownMenuItem = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.Item>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
     inset?: boolean
@@ -135,10 +105,7 @@ export const DropdownMenuItem = forwardRef<
 })
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
 
-/**
- * @package
- */
-export const DropdownMenuCheckboxItem = forwardRef<
+const DropdownMenuCheckboxItem = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
 >(({ className, children, checked, ...props }, ref) => {
@@ -164,10 +131,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
 DropdownMenuCheckboxItem.displayName =
   DropdownMenuPrimitive.CheckboxItem.displayName
 
-/**
- * @package
- */
-export const DropdownMenuRadioItem = forwardRef<
+const DropdownMenuRadioItem = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => {
@@ -191,10 +155,7 @@ export const DropdownMenuRadioItem = forwardRef<
 })
 DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName
 
-/**
- * @package
- */
-export const DropdownMenuLabel = forwardRef<
+const DropdownMenuLabel = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.Label>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
     inset?: boolean
@@ -214,10 +175,7 @@ export const DropdownMenuLabel = forwardRef<
 })
 DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
 
-/**
- * @package
- */
-export const DropdownMenuSeparator = forwardRef<
+const DropdownMenuSeparator = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.Separator>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => {
@@ -231,10 +189,7 @@ export const DropdownMenuSeparator = forwardRef<
 })
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 
-/**
- * @package
- */
-export const DropdownMenuShortcut = ({
+const DropdownMenuShortcut = ({
   className,
   ...props
 }: HTMLAttributes<HTMLSpanElement>) => {
@@ -246,3 +201,21 @@ export const DropdownMenuShortcut = ({
   )
 }
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuRadioGroup,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+}

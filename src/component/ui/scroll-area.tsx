@@ -6,13 +6,10 @@ import {
   type ElementRef,
 } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
-/**
- * @package
- */
-export const ScrollArea = forwardRef<
+const ScrollArea = forwardRef<
   ElementRef<typeof ScrollAreaPrimitive.Root>,
   ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
 >(({ className, children, ...props }, ref) => {
@@ -32,10 +29,7 @@ export const ScrollArea = forwardRef<
 })
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
 
-/**
- * @package
- */
-export const ScrollBar = forwardRef<
+const ScrollBar = forwardRef<
   ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
   ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
 >(({ className, orientation = "vertical", ...props }, ref) => {
@@ -58,3 +52,5 @@ export const ScrollBar = forwardRef<
   )
 })
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
+
+export { ScrollArea, ScrollBar }

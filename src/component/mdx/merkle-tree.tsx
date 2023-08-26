@@ -2,12 +2,15 @@
 
 import { useReducer, useState, type Reducer } from "react"
 
-import { Badge, Button, Slider } from "@/component/ui"
 import { faker } from "@faker-js/faker"
 import { HelpCircleIcon, TreeDeciduousIcon } from "lucide-react"
 import MerkleTree from "merkletreejs"
 import { ArcherContainer, ArcherElement } from "react-archer"
 import { encodePacked, keccak256 } from "viem"
+
+import { Badge } from "../ui/badge"
+import { Button } from "../ui/button"
+import { Slider } from "../ui/slider"
 
 type BoxDataListType = {
   color: string

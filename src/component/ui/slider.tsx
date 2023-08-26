@@ -6,13 +6,10 @@ import {
   type ElementRef,
 } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 
-/**
- * @package
- */
-export const Slider = forwardRef<
+const Slider = forwardRef<
   ElementRef<typeof SliderPrimitive.Root>,
   ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
 >(({ className, ...props }, ref) => {
@@ -33,3 +30,5 @@ export const Slider = forwardRef<
   )
 })
 Slider.displayName = SliderPrimitive.Root.displayName
+
+export { Slider }

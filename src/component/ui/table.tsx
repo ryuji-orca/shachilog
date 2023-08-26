@@ -5,31 +5,24 @@ import {
   type ThHTMLAttributes,
 } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 
-/**
- * @package
- */
-export const Table = forwardRef<
-  HTMLTableElement,
-  HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => {
-  return (
-    <div className="my-6 w-full overflow-auto">
-      <table
-        ref={ref}
-        className={cn("w-full caption-bottom text-sm my-0", className)}
-        {...props}
-      />
-    </div>
-  )
-})
+const Table = forwardRef<HTMLTableElement, HTMLAttributes<HTMLTableElement>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div className="my-6 w-full overflow-auto">
+        <table
+          ref={ref}
+          className={cn("w-full caption-bottom text-sm my-0", className)}
+          {...props}
+        />
+      </div>
+    )
+  },
+)
 Table.displayName = "Table"
 
-/**
- * @package
- */
-export const TableHeader = forwardRef<
+const TableHeader = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => {
@@ -39,10 +32,7 @@ export const TableHeader = forwardRef<
 })
 TableHeader.displayName = "TableHeader"
 
-/**
- * @package
- */
-export const TableBody = forwardRef<
+const TableBody = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => {
@@ -56,10 +46,7 @@ export const TableBody = forwardRef<
 })
 TableBody.displayName = "TableBody"
 
-/**
- * @package
- */
-export const TableFooter = forwardRef<
+const TableFooter = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => {
@@ -69,10 +56,7 @@ export const TableFooter = forwardRef<
 })
 TableFooter.displayName = "TableFooter"
 
-/**
- * @package
- */
-export const TableRow = forwardRef<
+const TableRow = forwardRef<
   HTMLTableRowElement,
   HTMLAttributes<HTMLTableRowElement>
 >(({ className, ...props }, ref) => {
@@ -89,10 +73,7 @@ export const TableRow = forwardRef<
 })
 TableRow.displayName = "TableRow"
 
-/**
- * @package
- */
-export const TableHead = forwardRef<
+const TableHead = forwardRef<
   HTMLTableCellElement,
   ThHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => {
@@ -109,10 +90,7 @@ export const TableHead = forwardRef<
 })
 TableHead.displayName = "TableHead"
 
-/**
- * @package
- */
-export const TableCell = forwardRef<
+const TableCell = forwardRef<
   HTMLTableCellElement,
   TdHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => {
@@ -129,10 +107,7 @@ export const TableCell = forwardRef<
 })
 TableCell.displayName = "TableCell"
 
-/**
- * @package
- */
-export const TableCaption = forwardRef<
+const TableCaption = forwardRef<
   HTMLTableCaptionElement,
   HTMLAttributes<HTMLTableCaptionElement>
 >(({ className, ...props }, ref) => {
@@ -148,3 +123,14 @@ export const TableCaption = forwardRef<
   )
 })
 TableCaption.displayName = "TableCaption"
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableCaption,
+}

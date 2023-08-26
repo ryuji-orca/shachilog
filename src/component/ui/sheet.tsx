@@ -7,20 +7,14 @@ import {
   type HTMLAttributes,
 } from "react"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
-/**
- * @package
- */
-export const Sheet = SheetPrimitive.Root
+const Sheet = SheetPrimitive.Root
 
-/**
- * @package
- */
-export const SheetTrigger = SheetPrimitive.Trigger
+const SheetTrigger = SheetPrimitive.Trigger
 
 const portalVariants = cva("fixed inset-0 z-50 flex", {
   variants: {
@@ -72,10 +66,10 @@ SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 const sheetVariants = cva("fixed z-50 w-full scale-100 gap-4 p-6 opacity-100", {
   variants: {
     position: {
-      top: "w-full animate-in slide-in-from-top duration-300",
-      bottom: "w-full animate-in slide-in-from-bottom duration-300",
-      left: "h-full animate-in slide-in-from-left duration-300",
-      right: "h-full animate-in slide-in-from-right duration-300",
+      top: "w-full duration-300 animate-in slide-in-from-top",
+      bottom: "w-full duration-300 animate-in slide-in-from-bottom",
+      left: "h-full duration-300 animate-in slide-in-from-left",
+      right: "h-full duration-300 animate-in slide-in-from-right",
     },
     size: {
       content: "",
@@ -154,14 +148,11 @@ const sheetVariants = cva("fixed z-50 w-full scale-100 gap-4 p-6 opacity-100", {
   },
 })
 
-export interface DialogContentProps
+interface DialogContentProps
   extends ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {}
 
-/**
- * @package
- */
-export const SheetContent = forwardRef<
+const SheetContent = forwardRef<
   ElementRef<typeof SheetPrimitive.Content>,
   DialogContentProps
 >(({ position, size, className, children, ...props }, ref) => {
@@ -184,10 +175,7 @@ export const SheetContent = forwardRef<
 })
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
-/**
- * @package
- */
-export const SheetHeader = ({
+const SheetHeader = ({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
@@ -203,10 +191,7 @@ export const SheetHeader = ({
 }
 SheetHeader.displayName = "SheetHeader"
 
-/**
- * @package
- */
-export const SheetFooter = ({
+const SheetFooter = ({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
@@ -222,10 +207,7 @@ export const SheetFooter = ({
 }
 SheetFooter.displayName = "SheetFooter"
 
-/**
- * @package
- */
-export const SheetTitle = forwardRef<
+const SheetTitle = forwardRef<
   ElementRef<typeof SheetPrimitive.Title>,
   ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
 >(({ className, ...props }, ref) => {
@@ -242,10 +224,7 @@ export const SheetTitle = forwardRef<
 })
 SheetTitle.displayName = SheetPrimitive.Title.displayName
 
-/**
- * @package
- */
-export const SheetDescription = forwardRef<
+const SheetDescription = forwardRef<
   ElementRef<typeof SheetPrimitive.Description>,
   ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
 >(({ className, ...props }, ref) => {
@@ -258,3 +237,17 @@ export const SheetDescription = forwardRef<
   )
 })
 SheetDescription.displayName = SheetPrimitive.Description.displayName
+
+export {
+  Sheet,
+  SheetTrigger,
+  SheetPortal,
+  SheetOverlay,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+  type SheetPortalProps,
+  type DialogContentProps,
+}

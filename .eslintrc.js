@@ -75,7 +75,17 @@ module.exports = {
       "error",
       { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
     ],
+
+    // 配列
+    "@typescript-eslint/array-type": [
+      "error",
+      {
+        default: "array",
+        readonly: "array",
+      },
+    ],
   },
+
   overrides: [
     {
       files: ["*.ts", "*.tsx", "*.js"],

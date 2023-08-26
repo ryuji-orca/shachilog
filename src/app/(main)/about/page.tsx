@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+import { shimmer, toBase64 } from "@/util/shimmer"
 import { Tweet } from "react-tweet"
 
 export const metadata = {
@@ -9,7 +10,7 @@ export const metadata = {
 
 const About = () => {
   return (
-    <section className="px-6 py-16 md:py-24">
+    <section className="px-6 pt-16 md:pt-24">
       <h1 className="pb-6 text-3xl text-slate-12 dark:text-slatedark-12">
         About
       </h1>
@@ -21,13 +22,16 @@ const About = () => {
         <h3>TheMafiaAnimals Soldiers</h3>
         <div className="not-prose relative">
           <Image
-            className="h-auto w-full object-contain"
-            width="0"
-            height="0"
+            className="h-auto w-full max-w-full object-contain"
+            width={802}
+            height={472}
             sizes="100vw"
             src="/image/about/tmas-staking.jpg"
             alt="tmasのトップ画像"
             priority
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(802, 472),
+            )}`}
           />
         </div>
         <p>
@@ -43,12 +47,15 @@ const About = () => {
         <h3>ZUTTO MAMORU</h3>
         <div className="not-prose relative">
           <Image
-            className="h-auto w-full object-contain"
-            width="0"
-            height="0"
+            className="h-auto w-full max-w-full object-contain"
+            width={802}
+            height={535}
             sizes="100vw"
             src="/image/about/zutto-mamoru.jpg"
             alt="ZUTTO MAMORUのトップ画像"
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(802, 535),
+            )}`}
           />
         </div>
         <p>
@@ -112,12 +119,15 @@ const About = () => {
         <h3>CNPR</h3>
         <div className="not-prose relative">
           <Image
-            className="h-auto w-full object-contain"
-            width="0"
-            height="0"
+            className="h-auto w-full max-w-full object-contain"
+            width={802}
+            height={535}
             sizes="100vw"
             src="/image/about/cnpr.jpg"
             alt="CNPRのトップ画像"
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(802, 535),
+            )}`}
           />
         </div>
         <p>

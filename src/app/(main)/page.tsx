@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from "react"
 import Link from "next/link"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import { BookOpenIcon, User as UserIcon } from "lucide-react"
 
 type LinkCardProps = {
@@ -34,7 +34,7 @@ const LinkCard: FC<LinkCardProps> = ({ name, icon, href, customCSS }) => {
 
 const Home = () => {
   return (
-    <div className="px-6 py-16 md:py-24">
+    <div className="px-6 pt-16 md:pt-24">
       <div>
         <h2 className="pb-4 text-2xl text-slate-12 dark:text-slatedark-12">
           ryuji
@@ -45,7 +45,8 @@ const Home = () => {
           </p>
           <p>このブログでは、僕が学んだことなどをアウトプットしています。</p>
         </div>
-        <ul className="grid grid-cols-1 justify-between gap-8 pt-14 md:grid-cols-2">
+
+        <ul className="grid grid-cols-1 justify-between gap-8 pt-16 md:grid-cols-2">
           <LinkCard
             name="Blog"
             icon={

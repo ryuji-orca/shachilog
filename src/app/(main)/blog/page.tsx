@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getBlogMdxListItems } from "@/util"
+import { getBlogMdxListItems } from "@/util/mdx-hook"
 
 export const metadata = {
   title: "記事一覧",
@@ -10,7 +10,7 @@ export const metadata = {
 const Blog = () => {
   const posts = getBlogMdxListItems()
   return (
-    <section className="px-6 py-16 md:py-24">
+    <section className="min-h-screen px-6 py-16 md:py-24">
       <h1 className="pb-6 text-3xl text-slate-12 dark:text-slatedark-12">
         Blog
       </h1>

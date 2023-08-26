@@ -4,10 +4,7 @@ import { useEffect } from "react"
 
 import tocbot from "tocbot"
 
-/**
- * @package
- */
-export const Toc = () => {
+const Toc = () => {
   useEffect(() => {
     tocbot.init({
       tocSelector: ".js-toc",
@@ -31,3 +28,5 @@ export const Toc = () => {
     </div>
   )
 }
+
+export { Toc }

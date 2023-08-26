@@ -2,20 +2,23 @@ import {
   Children,
   type AnchorHTMLAttributes,
   type FC,
+  type HTMLAttributes,
   type ReactElement,
   type ReactNode,
 } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
+import { cn } from "@/util/cn"
+import { shimmer, toBase64 } from "@/util/shimmer"
+import { cva, type VariantProps } from "class-variance-authority"
 import { AlertCircle, AlertTriangleIcon, CheckCircle } from "lucide-react"
 import { useMDXComponent } from "next-contentlayer/hooks"
+import { Tweet } from "react-tweet"
 
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
+import { Code } from "../ui/code"
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Code,
   Table,
   TableBody,
   TableCaption,
@@ -23,8 +26,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui"
+} from "../ui/table"
 import { MerkleTreeIntro } from "./merkle-tree"
+import { RadioProvider, SbtAndNft } from "./sbt"
 
 const Bold = ({ children }: { children: ReactNode }) => {
   return <span className="font-bold">{children}</span>
@@ -62,12 +66,58 @@ const CustomLink: FC<
   )
 }
 
-const RoundedImage: FC<Parameters<typeof Image>[0]> = ({
+type RoundedImageProps = {
+  quoteText?: string
+  quoteLink?: string
+} & Parameters<typeof Image>[0]
+
+const RoundedImage: FC<RoundedImageProps> = ({
   src,
   alt,
+  quoteText = "画像の引用先",
+  quoteLink,
+  width,
+  height,
   ...rest
 }) => {
-  return <Image src={src} alt={alt} className="rounded-lg" {...rest} />
+  return (
+    <div>
+      {quoteText && quoteLink ? (
+        <blockquote className="my-6 border-none p-0">
+          <Image
+            className="mb-4 h-auto w-full max-w-full rounded-lg"
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(width, height),
+            )}`}
+            {...rest}
+          />
+          <Link
+            href={quoteLink}
+            target="_blank"
+            className="ml-auto block w-fit text-sm"
+          >
+            {quoteText}
+          </Link>
+        </blockquote>
+      ) : (
+        <Image
+          className="rounded-lg"
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          placeholder={`data:image/svg+xml;base64,${toBase64(
+            shimmer(width, height),
+          )}`}
+          {...rest}
+        />
+      )}
+    </div>
+  )
 }
 
 type CustomTableProps = {
@@ -167,6 +217,87 @@ const CustomList = ({
   )
 }
 
+export const sectionVariants = cva(
+  "not-prose relative my-12 py-12 before:absolute before:inset-x-[-10000px] before:inset-y-0 before:h-full before:border-y-2 md:py-24 ",
+  {
+    variants: {
+      color: {
+        blue: " before:border-blue-9 dark:before:border-bluedark-9",
+        pink: "before:border-pink-9 dark:before:border-pinkdark-9",
+        violet: "before:border-violet-9 dark:before:border-violetdark-9",
+        orange: "before:border-orange-9 dark:before:border-orangedark-9",
+        mint: "before:border-mint-9 dark:before:border-mintdark-9",
+        tomato: "before:border-tomato-9 dark:before:border-tomatodark-9",
+        sky: "before:border-sky-9 dark:before:border-skydark-9",
+        yellow: "before:border-yellow-9 dark:before:border-yellowdark-9",
+        lime: "before:border-lime-9 dark:before:border-limedark-9",
+        teal: "before:border-teal-9 dark:before:border-tealdark-9",
+      },
+    },
+    defaultVariants: {
+      color: "blue",
+    },
+  },
+)
+
+type SectionProps = {
+  title: string
+  chapterNumber?: number
+} & HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof sectionVariants>
+
+const Section = ({ title, chapterNumber, color }: SectionProps) => {
+  const id = title.toLowerCase()
+  return (
+    <section className={cn(sectionVariants({ color }))}>
+      <div className="relative text-slate-12 dark:text-slatedark-12 ">
+        {chapterNumber ? (
+          <p className="mb-3 text-center font-medium">
+            CHAPTER {chapterNumber}
+          </p>
+        ) : null}
+
+        <h2
+          id={id}
+          className="ralative text-balance text-center text-2xl font-semibold leading-normal tracking-wider sm:text-3xl"
+        >
+          {title}
+        </h2>
+      </div>
+    </section>
+  )
+}
+
+const X = ({ id }: { id: string }) => {
+  return (
+    <div className="not-prose">
+      <Tweet id={id} />
+    </div>
+  )
+}
+
+const FullPageH2 = ({ title }: { title: string }) => {
+  const id = title.toLowerCase()
+  return (
+    <h2 id={id} className="js-toc-ignore">
+      {title}
+      <a className="anchor" href={`#${id}`} aria-hidden="true" tabIndex={-1}>
+        <div className="anchor visually-hidden">permalink</div>
+        <svg
+          className="autolink-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M9.199 13.599a5.99 5.99 0 0 0 3.949 2.345 5.987 5.987 0 0 0 5.105-1.702l2.995-2.994a5.992 5.992 0 0 0 1.695-4.285 5.976 5.976 0 0 0-1.831-4.211 5.99 5.99 0 0 0-6.431-1.242 6.003 6.003 0 0 0-1.905 1.24l-1.731 1.721a.999.999 0 1 0 1.41 1.418l1.709-1.699a3.985 3.985 0 0 1 2.761-1.123 3.975 3.975 0 0 1 2.799 1.122 3.997 3.997 0 0 1 .111 5.644l-3.005 3.006a3.982 3.982 0 0 1-3.395 1.126 3.987 3.987 0 0 1-2.632-1.563A1 1 0 0 0 9.201 13.6zm5.602-3.198a5.99 5.99 0 0 0-3.949-2.345 5.987 5.987 0 0 0-5.105 1.702l-2.995 2.994a5.992 5.992 0 0 0-1.695 4.285 5.976 5.976 0 0 0 1.831 4.211 5.99 5.99 0 0 0 6.431 1.242 6.003 6.003 0 0 0 1.905-1.24l1.723-1.723a.999.999 0 1 0-1.414-1.414L9.836 19.81a3.985 3.985 0 0 1-2.761 1.123 3.975 3.975 0 0 1-2.799-1.122 3.997 3.997 0 0 1-.111-5.644l3.005-3.006a3.982 3.982 0 0 1 3.395-1.126 3.987 3.987 0 0 1 2.632 1.563 1 1 0 0 0 1.602-1.198z"></path>
+        </svg>
+      </a>
+    </h2>
+  )
+}
+
 const components = {
   Bold,
   Image: RoundedImage,
@@ -175,6 +306,9 @@ const components = {
   Code: CodeBlock,
   CustomList,
   CustomTable,
+  Section,
+  X,
+  FullPageH2,
 }
 
 const addComponents = {
@@ -195,20 +329,24 @@ const addComponents = {
       />
     )
   },
+  SbtAndNft: () => {
+    return (
+      <RadioProvider>
+        <SbtAndNft />
+      </RadioProvider>
+    )
+  },
 }
 
 type MdxComponentProps = {
   code: string
 }
 
-/**
- * @package
- */
 export const MdxComponent: FC<MdxComponentProps> = ({ code }) => {
   const Component = useMDXComponent(code)
 
   return (
-    <div className="js-toc-content">
+    <div className="js-toc-content full-page-toc-content">
       <Component components={{ ...components, ...addComponents }} />
     </div>
   )

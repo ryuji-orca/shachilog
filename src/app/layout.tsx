@@ -1,8 +1,10 @@
 import "./globals.css"
+import "@radix-ui/themes/styles.css"
 
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
+import { Toaster } from "@/component/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 
 import { Providers } from "@/app/providers"
@@ -59,9 +61,9 @@ export const metadata: Metadata = {
     title: "shachilog",
     card: "summary_large_image",
   },
-  icons: {
-    shortcut: "/favicon.ico",
-  },
+  // icons: {
+  //   shortcut: "/favicon.ico",
+  // },
   verification: {
     google: "ZXOngkLZnBjLXJ38lCN1elG8V632hb4NGzTxUOyFtOQ",
   },
@@ -74,6 +76,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <Providers>
           {children}
           <Analytics />
+          <Toaster />
+          {/* <ThemePanel /> */}
         </Providers>
       </body>
     </html>

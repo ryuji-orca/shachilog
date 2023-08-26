@@ -1,11 +1,20 @@
 "use client"
 
+import { Theme } from "@radix-ui/themes"
 import { ThemeProvider } from "next-themes"
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {children}
+      <Theme
+        accentColor="indigo"
+        grayColor="slate"
+        radius="medium"
+        scaling="100%"
+        panelBackground="translucent"
+      >
+        {children}
+      </Theme>
     </ThemeProvider>
   )
 }

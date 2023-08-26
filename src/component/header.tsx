@@ -3,21 +3,20 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { cn } from "@/util"
+import { cn } from "@/util/cn"
 import { LaptopIcon, Menu as MenuIcon, MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
-import { ShachilogDark, ShachilogLight } from "public/image/common"
+import { ShachilogDark } from "public/image/common/shachilog-dark"
+import { ShachilogLight } from "public/image/common/shachilog-light"
 
+import { Button } from "./ui/button"
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "./ui"
+} from "./ui/dropdown-menu"
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 
 const LINKS = [
   { name: "Blog", href: "/blog" },
@@ -124,13 +123,10 @@ const NavLink = ({
   )
 }
 
-/**
- * @package
- */
 export const Header = () => {
   const pathname = usePathname()
   return (
-    <div className="sticky top-0 z-10 border-b border-indigo-6 bg-indigo-2/75 backdrop-blur dark:border-indigodark-6 dark:bg-indigodark-1/75">
+    <div className="sticky top-0 z-10 border-b border-indigo-6 bg-indigo-1/75 backdrop-blur dark:border-indigodark-6 dark:bg-indigodark-1/75">
       <header className="max-w-1096 mx-auto flex flex-col  justify-center p-6">
         <nav className="flex items-end justify-between gap-8 md:items-center">
           <Link href="/" className="block  w-auto">
