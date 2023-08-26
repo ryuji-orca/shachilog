@@ -521,89 +521,84 @@ export const SbtAndNft = () => {
   return (
     <Wrapper>
       <div>
-        <div>
-          <div>
-            <LayoutGroup>
-              <div className="mb-8 grid grid-cols-1  place-items-center gap-y-8 md:mb-6 md:grid-cols-2 md:gap-y-6">
-                <div className="md:col-span-3">
-                  <BuyButton
-                    handleClick={handleBuyButtonClick}
-                    disabled={
-                      filteredNullLocation.length === 0 ||
-                      isNullAddressTransferring
-                    }
-                  />
-                </div>
-                <WalletBlock
-                  title="購入用ウォレット"
-                  color="orange"
-                  location="WALLET1"
-                  isSelect={isSelect}
-                  setIsSelect={setIsSelect}
-                  nftOrSbtEntries={nftOrSbtEntries}
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    ease: "easeOut",
-                    duration: 1,
-                  }}
-                  onLayoutAnimationStart={() => {
-                    setNftTransferring({
-                      ...isTransferring,
-                      wallet1: true,
-                    })
-                  }}
-                  onLayoutAnimationComplete={() => {
-                    if (
-                      radioValue === "SBT" &&
-                      filteredWallet1Location.length === 1
-                    ) {
-                      setIsSelect("sbtToken1")
-                    }
-                    setNftTransferring({
-                      nullAddress: false,
-                      wallet1: false,
-                    })
-                  }}
-                  handleClick={handlewallet1ButtonClick}
-                  disabled={
-                    filteredWallet1Location.length === 0 ||
-                    isWallet1Transferring ||
-                    isWallet2Transferring ||
-                    (radioValue === "SBT" && isSelect === "")
-                  }
-                />
+        <LayoutGroup>
+          <div className="mb-8 grid grid-cols-1  place-items-center gap-y-8 md:mb-6 md:grid-cols-2 md:gap-y-6">
+            <div className="md:col-span-3">
+              <BuyButton
+                handleClick={handleBuyButtonClick}
+                disabled={
+                  filteredNullLocation.length === 0 || isNullAddressTransferring
+                }
+              />
+            </div>
+            <WalletBlock
+              title="購入用ウォレット"
+              color="orange"
+              location="WALLET1"
+              isSelect={isSelect}
+              setIsSelect={setIsSelect}
+              nftOrSbtEntries={nftOrSbtEntries}
+              animate={{ rotate: -360 }}
+              transition={{
+                ease: "easeOut",
+                duration: 1,
+              }}
+              onLayoutAnimationStart={() => {
+                setNftTransferring({
+                  ...isTransferring,
+                  wallet1: true,
+                })
+              }}
+              onLayoutAnimationComplete={() => {
+                if (
+                  radioValue === "SBT" &&
+                  filteredWallet1Location.length === 1
+                ) {
+                  setIsSelect("sbtToken1")
+                }
+                setNftTransferring({
+                  nullAddress: false,
+                  wallet1: false,
+                })
+              }}
+              handleClick={handlewallet1ButtonClick}
+              disabled={
+                filteredWallet1Location.length === 0 ||
+                isWallet1Transferring ||
+                isWallet2Transferring ||
+                (radioValue === "SBT" && isSelect === "")
+              }
+            />
 
-                <WalletBlock
-                  title="保管用ウォレット"
-                  color="pink"
-                  location="WALLET2"
-                  nftOrSbtEntries={nftOrSbtEntries}
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    ease: "easeOut",
-                    duration: 1,
-                  }}
-                  onLayoutAnimationStart={() => {
-                    setNftTransferring({
-                      wallet2: true,
-                    })
-                  }}
-                  onAnimationComplete={() => {
-                    setNftTransferring({
-                      wallet2: false,
-                    })
-                  }}
-                  handleClick={handlewallet2ButtonClick}
-                  disabled={
-                    filteredWallet2Location.length === 0 ||
-                    isWallet1Transferring ||
-                    isWallet2Transferring
-                  }
-                />
-              </div>
-            </LayoutGroup>
+            <WalletBlock
+              title="保管用ウォレット"
+              color="pink"
+              location="WALLET2"
+              nftOrSbtEntries={nftOrSbtEntries}
+              animate={{ rotate: 360 }}
+              transition={{
+                ease: "easeOut",
+                duration: 1,
+              }}
+              onLayoutAnimationStart={() => {
+                setNftTransferring({
+                  wallet2: true,
+                })
+              }}
+              onAnimationComplete={() => {
+                setNftTransferring({
+                  wallet2: false,
+                })
+              }}
+              handleClick={handlewallet2ButtonClick}
+              disabled={
+                filteredWallet2Location.length === 0 ||
+                isWallet1Transferring ||
+                isWallet2Transferring
+              }
+            />
           </div>
-        </div>
+        </LayoutGroup>
       </div>
 
       <div>
