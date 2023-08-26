@@ -5,9 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
+        allow: "/",
       },
     ],
     sitemap: "https://shachilog.xyz/sitemap.xml",
-    host: "https://shachilog.xyz",
   }
 }
