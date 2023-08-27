@@ -41,13 +41,13 @@ const TocFullPage = () => {
       <AnimatePresence>
         {!selectedId && y > 940 && (
           <motion.div
-            className="fixed bottom-8 right-8 z-10 flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-indigo-4 p-2 shadow-xl dark:bg-indigodark-4"
+            className="fixed bottom-6 right-6 z-10 flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-indigo-4 p-2 shadow-xl dark:bg-indigodark-4"
             onClick={() => {
               return setSelectedId(true)
             }}
-            initial={{ translateX: 100 }}
-            animate={{ translateX: 0 }}
-            exit={{ translateX: 100 }}
+            initial={{ translateX: 100, opacity: 0 }}
+            animate={{ translateX: 0, opacity: 1 }}
+            exit={{ translateX: 0, opacity: 0 }}
             transition={{ duration: 0.6, ease: "backOut", delay: 0.7 }}
           >
             <motion.button>
@@ -63,7 +63,7 @@ const TocFullPage = () => {
           animate={
             selectedId
               ? {
-                  translateY: -64,
+                  translateY: -86,
                   // visibility: "visible",
                   // opacity: 1,
                 }
@@ -72,7 +72,7 @@ const TocFullPage = () => {
           exit={{ translateY: -100 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
           className={cn(
-            "fixed -bottom-16 right-0 z-50 flex flex-col bg-indigo-4 dark:bg-indigodark-4 p-4 rounded-tl-2xl  shadow-xl gap-2",
+            "fixed -bottom-16 right-6 z-50 flex flex-col bg-indigo-4 dark:bg-indigodark-4 p-4 rounded-2xl shadow-xl gap-2 border border-indigo-6 dark:border-indigodark-6",
           )}
         >
           <motion.button
