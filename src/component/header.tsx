@@ -127,7 +127,7 @@ export const Header = () => {
   const pathname = usePathname()
   return (
     <div className="sticky top-0 z-10 border-b border-indigo-6 bg-indigo-1/75 backdrop-blur dark:border-indigodark-6 dark:bg-indigodark-1/75">
-      <header className="max-w-1096 mx-auto flex flex-col  justify-center p-6">
+      <header className="max-w-1096 mx-auto flex flex-col  justify-center px-6 py-4 md:p-6">
         <nav className="flex items-end justify-between gap-8 md:items-center">
           <Link href="/" className="block  w-auto">
             {pathname === "/" ? (
