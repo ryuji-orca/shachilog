@@ -72,6 +72,7 @@
     "@radix-ui/colors": "^2.1.0",
     "@tailwindcss/typography": "^0.5.9",
     "eslint-config-kentcdodds": "^20.5.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import-access": "^2.0.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
     "eslint-plugin-unused-imports": "^3.0.0",
