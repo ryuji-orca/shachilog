@@ -1,4 +1,5 @@
 {
+  // https://github.com/TypeStrong/ts-node/issues/2100
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -21,8 +22,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "contentlayer/generated": ["./.contentlayer/generated"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -30,8 +30,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".contentlayer/generated",
-    "contentlayer.config.ts",
     "tailwind.config.mts"
   ],
   "exclude": ["node_modules"]

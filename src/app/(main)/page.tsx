@@ -39,6 +39,7 @@ const Home = () => {
         <h2 className="pb-4 text-2xl text-slate-12 dark:text-slatedark-12">
           ryuji
         </h2>
+
         <div className="text-base text-slate-11 dark:text-slatedark-11">
           <p>
             ブロックチェーンにコミットしているフリーランスのエンジニアです。
@@ -50,7 +51,7 @@ const Home = () => {
           <LinkCard
             name="Blog"
             icon={
-              <BookOpenIcon className="h-16 w-16 text-slate-12 dark:text-slatedark-12" />
+              <BookOpenIcon className="size-16 text-slate-12 dark:text-slatedark-12" />
             }
             href="/blog"
           />
@@ -58,7 +59,7 @@ const Home = () => {
           <LinkCard
             name="About"
             icon={
-              <UserIcon className="h-16 w-16 text-slate-12 dark:text-slatedark-12" />
+              <UserIcon className="size-16 text-slate-12 dark:text-slatedark-12" />
             }
             href="/about"
             customCSS="dark:from-cyandark-2 from-cyan-2 dark:to-cyandark-6 to-cyan-6 bg-cyan-5 dark:bg-cyandark-6"

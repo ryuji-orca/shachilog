@@ -94,9 +94,6 @@ const MobileMenu = () => {
             )
           })}
         </div>
-        <div className="text-end">
-          <ModeToggle />
-        </div>
       </SheetContent>
     </Sheet>
   )
@@ -151,27 +148,18 @@ export const Header = () => {
             )}
           </Link>
           <div className="flex items-center gap-6">
-            {pathname === "/" ? (
-              <ModeToggle />
-            ) : (
-              <>
-                <ul className="hidden items-center gap-5 md:flex">
-                  {LINKS.map(({ name, href }) => {
-                    return (
-                      <NavLink key={name} href={href}>
-                        {name}
-                      </NavLink>
-                    )
-                  })}
-                </ul>
-                <div className="md:hidden">
-                  <MobileMenu />
-                </div>
-                <div className="hidden md:block">
-                  <ModeToggle />
-                </div>
-              </>
-            )}
+            <ul className="hidden items-center gap-5 md:flex">
+              {LINKS.map(({ name, href }) => {
+                return (
+                  <NavLink key={name} href={href}>
+                    {name}
+                  </NavLink>
+                )
+              })}
+            </ul>
+            <div className="md:hidden">
+              <MobileMenu />
+            </div>
           </div>
         </nav>
       </header>

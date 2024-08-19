@@ -1,6 +1,7 @@
-import { allBlogs } from "contentlayer/generated"
+import { getBlogPosts } from "./mdx-server"
 
 const getBlogMdxListItem = (slug: string) => {
+  const allBlogs = getBlogPosts()
   const post = allBlogs.find(post => {
     return post.slug === slug
   })
@@ -9,8 +10,9 @@ const getBlogMdxListItem = (slug: string) => {
 }
 
 const getBlogMdxListItems = () => {
+  const allBlogs = getBlogPosts()
   return allBlogs.sort((a, b) => {
-    if (new Date(a.publishedAt) > new Date(b.publishedAt)) {
+    if (new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)) {
       return -1
     }
     return 1

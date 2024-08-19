@@ -1,16 +1,16 @@
 import type { MetadataRoute } from "next"
 
-import { allBlogs } from "contentlayer/generated"
+import { getBlogPosts } from "@/util/mdx-server"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const blogs = allBlogs.map(post => {
+  const blogs = getBlogPosts()?.map(post => {
     return {
       url: `https://shachilog.xyz/blog/${post.slug}`,
-      lastModified: post.publishedAt,
+      lastModified: post.metadata.publishedAt,
     }
   })
 
-  const routes = ["", "/about", "/blog"].map(route => {
+  const routes: MetadataRoute.Sitemap = ["", "/about", "/blog"].map(route => {
     return {
       url: `https://shachilog.xyz${route}`,
       lastModified: new Date().toISOString().split("T")[0],

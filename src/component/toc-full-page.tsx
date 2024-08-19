@@ -41,7 +41,7 @@ const TocFullPage = () => {
       <AnimatePresence>
         {!selectedId && y > 940 && (
           <motion.div
-            className="fixed bottom-6 right-6 z-10 flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-indigo-4 p-2 shadow-xl dark:bg-indigodark-4"
+            className="fixed bottom-6 right-6 z-10 flex aspect-square size-12 items-center justify-center rounded-full bg-indigo-4 p-2 shadow-xl dark:bg-indigodark-4"
             onClick={() => {
               return setSelectedId(true)
             }}

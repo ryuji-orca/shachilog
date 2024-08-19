@@ -1,6 +1,6 @@
 import { Code as RadixCode } from "@radix-ui/themes"
 
-const Code = ({ title, text }: { title: string; text?: string }) => {
+const RadixCodeBlock = ({ title, text }: { title: string; text?: string }) => {
   return (
     <>
       <RadixCode variant="soft" size="3">
@@ -15,4 +15,4 @@ const Code = ({ title, text }: { title: string; text?: string }) => {
   )
 }
 
-export { Code }
+export { RadixCodeBlock }

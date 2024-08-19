@@ -8,6 +8,7 @@ import { Box, Card, Heading, Text } from "@radix-ui/themes"
 
 export const EmailSimpleForm = () => {
   const pathname = usePathname()
+
   if (pathname !== "/" && !pathname.startsWith("/blog/")) {
     return null
   }

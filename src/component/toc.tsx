@@ -6,14 +6,13 @@ import tocbot from "tocbot"
 
 const Toc = () => {
   useEffect(() => {
-    tocbot.init({
+    tocbot?.init({
       tocSelector: ".js-toc",
       contentSelector: ".js-toc-content",
       headingSelector: "h2, h3",
       headingsOffset: 124,
       scrollSmoothOffset: -124,
     })
-
     return () => {
       return tocbot.destroy()
     }

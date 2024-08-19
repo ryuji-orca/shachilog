@@ -3,9 +3,9 @@ title: 【決定版 ガイド】SBT(ソウルバウンドトークン)
 slug: sbt
 publishedAt: 2023-08-26
 summary: 'SBT(ソウルバウンドトークン)についてのガイド記事です。SBTの基礎や実装方法などを解説しています。'
-tags: [solidity, nft, smart-contract]
 image: /image/sbt/sbt-social.png
 layout: "full"
+
 ---
 
 この記事は、SBT(ソウルバウンドトークン)について解説している完全ガイドです。
@@ -311,7 +311,7 @@ contract ERC721NFT is ERC721 {
 }
 ```
 
-これは、誰でもNFTを購入できるシンプルなコードです。<Code title="Counters"/> でNFTを購入したときに、 <Code title="tokenId"/> を自動で上げるようにしています。ここに、転送と承認の関数をERC721から<Code title="override"/>します。
+これは、誰でもNFTを購入できるシンプルなコードです。<CodeBlock title="Counters"/> でNFTを購入したときに、 <CodeBlock title="tokenId"/> を自動で上げるようにしています。ここに、転送と承認の関数をERC721から<CodeBlock title="override"/>します。
 
 ```solidity title="src/ERC721NFT.sol" {35-54}
 // SPDX-License-Identifier: MIT
@@ -440,7 +440,7 @@ contract ERC721NFT is ERC721 {
 }
 ```
 
-転送と承認の関数に <Code title="checkLock"/> をつけて、<Bold>呼び出した時にエラーになるように</Bold>しました。
+転送と承認の関数に <CodeBlock title="checkLock"/> をつけて、<Bold>呼び出した時にエラーになるように</Bold>しました。
 
 なので、もしOpenSeaとかでこれを移動させようとしたら、エラーが出て移動できません。
 
@@ -476,7 +476,7 @@ contract ERC721NFT is ERC721 {
 
 開発環境はお任せしますが、今回はすぐ始められる[Remix](https://remix.ethereum.org)を使って説明していこうと思います。
 
-まず、 <Code title="contracts" /> に <Code title=".sol" /> ファイルを作り、以下のコードをコピペしてください。
+まず、 <CodeBlock title="contracts" /> に <CodeBlock title=".sol" /> ファイルを作り、以下のコードをコピペしてください。
 
 ```solidity title="contracts/SBT.sol"
 // SPDX-License-Identifier: GPL-3.0-only
@@ -535,15 +535,15 @@ contract SBT is ERC5192, Ownable {
 
 大事なところをピックアップして解説します。
 
-僕は <Code title="baseURI" /> を適当なものにしていますが、自分の画像のURIに変更してください。
+僕は <CodeBlock title="baseURI" /> を適当なものにしていますが、自分の画像のURIに変更してください。
 
 ```solidity
     string public baseURI = "https://demo.xyz/";
 ```
 
-<Code title="constructor" /> では、コードをデプロイするときに「コレクションの名前、シンボル名、SBTにするかどうか」を決めます。
+<CodeBlock title="constructor" /> では、コードをデプロイするときに「コレクションの名前、シンボル名、SBTにするかどうか」を決めます。
 
-また、<Code title="tokenId" /> を <Code title="1" /> から始まるようにしています。
+また、<CodeBlock title="tokenId" /> を <CodeBlock title="1" /> から始まるようにしています。
 
 ```solidity
     constructor(string memory _name, string memory _symbol, bool _isLocked) ERC5192(_name, _symbol, _isLocked) {
@@ -552,7 +552,7 @@ contract SBT is ERC5192, Ownable {
     }
 ```
 
-その下の <Code title="set" /> 関数は、後でURIと拡張子を変えられるように <Code title={<a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol">onlyOwner</a>} /> をつけて、コントラクトオーナーのみ変更できるようにしています。
+その下の <CodeBlock title="set" /> 関数は、後でURIと拡張子を変えられるように <CodeBlock title={<a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol">onlyOwner</a>} /> をつけて、コントラクトオーナーのみ変更できるようにしています。
 
 ミント関数は、説明用なので誰でも呼び出せて何回でも呼び出せるようにしています。必要に応じて、コントラクトオーナーのみ配布できる関数に変えたり、アローリスト持っているユーザーのみ購入できるように変えてください。アローリスト登録のやり方は、[こちらの記事](https://www.shachilog.xyz/blog/nft-allowlist-smart-contract)で解説しているので気になる方はどうぞ。
 
@@ -570,7 +570,7 @@ contract SBT is ERC5192, Ownable {
 
 <Image src="/image/sbt/remix-deploy-setting.webp" alt="SBTのRemixのデプロイの設定画面" width={724} height={480} />
 
-<Code title="constractor" /> の <Code title="name" /> と <Code title="symbol" /> は、自分の好きなものにしてください。
+<CodeBlock title="constractor" /> の <CodeBlock title="name" /> と <CodeBlock title="symbol" /> は、自分の好きなものにしてください。
 
 また、ネットワークがGoerliになっているか確認してください。
 
@@ -619,7 +619,7 @@ contract SBT is ERC5192, Ownable {
     
     <Image src="/image/sbt/remix-sbt-verify-setting.webp" alt="SBTのverifyの設定" width={648} height={415} />
 
-    <Code title="name" /> と <Code title="symbol" /> は自分が設定したものを入力し、コントラクトアドレスはさっきイーサスキャンからコピーしたものを入力してください。
+    <CodeBlock title="name" /> と <CodeBlock title="symbol" /> は自分が設定したものを入力し、コントラクトアドレスはさっきイーサスキャンからコピーしたものを入力してください。
 
     準備ができたらverifyボタンを押します。
 

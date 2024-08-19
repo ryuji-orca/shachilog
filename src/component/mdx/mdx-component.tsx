@@ -1,6 +1,8 @@
 import {
   Children,
+  createElement,
   type AnchorHTMLAttributes,
+  type DetailedHTMLProps,
   type FC,
   type HTMLAttributes,
   type ReactElement,
@@ -13,11 +15,12 @@ import { cn } from "@/util/cn"
 import { shimmer, toBase64 } from "@/util/shimmer"
 import { cva, type VariantProps } from "class-variance-authority"
 import { AlertCircle, AlertTriangleIcon, CheckCircle } from "lucide-react"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc"
 import { Tweet } from "react-tweet"
+import { highlight } from "sugar-high"
 
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
-import { Code } from "../ui/code"
+import { RadixCodeBlock } from "../ui/code"
 import {
   Table,
   TableBody,
@@ -174,11 +177,11 @@ const AlertCard: FC<AlertCardProps> = ({
   return (
     <Alert className="not-prose mb-16 mt-12" variant={variant}>
       {variant === "notice" ? (
-        <AlertCircle className="hidden h-6 w-6 md:block" />
+        <AlertCircle className="hidden size-6 md:block" />
       ) : variant === "pro" ? (
-        <CheckCircle className="hidden h-6 w-6 md:block" />
+        <CheckCircle className="hidden size-6 md:block" />
       ) : variant === "warning" ? (
-        <AlertTriangleIcon className="hidden h-6 w-6 md:block" />
+        <AlertTriangleIcon className="hidden size-6 md:block" />
       ) : null}
       <AlertTitle>{title}</AlertTitle>
       <div className="[&>*:not(:last-child)]:mb-4">
@@ -191,7 +194,7 @@ const AlertCard: FC<AlertCardProps> = ({
 }
 
 const CodeBlock = ({ title, text }: { title: string; text?: string }) => {
-  return <Code title={title} text={text} />
+  return <RadixCodeBlock title={title} text={text} />
 }
 
 const CustomList = ({
@@ -276,39 +279,120 @@ const X = ({ id }: { id: string }) => {
   )
 }
 
+const AnchorLink = ({ id }: { id: string }) => {
+  return (
+    <a className="anchor" href={`#${id}`} aria-hidden="true" tabIndex={-1}>
+      <div className="anchor visually-hidden">permalink</div>
+      <svg
+        className="autolink-svg"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M9.199 13.599a5.99 5.99 0 0 0 3.949 2.345 5.987 5.987 0 0 0 5.105-1.702l2.995-2.994a5.992 5.992 0 0 0 1.695-4.285 5.976 5.976 0 0 0-1.831-4.211 5.99 5.99 0 0 0-6.431-1.242 6.003 6.003 0 0 0-1.905 1.24l-1.731 1.721a.999.999 0 1 0 1.41 1.418l1.709-1.699a3.985 3.985 0 0 1 2.761-1.123 3.975 3.975 0 0 1 2.799 1.122 3.997 3.997 0 0 1 .111 5.644l-3.005 3.006a3.982 3.982 0 0 1-3.395 1.126 3.987 3.987 0 0 1-2.632-1.563A1 1 0 0 0 9.201 13.6zm5.602-3.198a5.99 5.99 0 0 0-3.949-2.345 5.987 5.987 0 0 0-5.105 1.702l-2.995 2.994a5.992 5.992 0 0 0-1.695 4.285 5.976 5.976 0 0 0 1.831 4.211 5.99 5.99 0 0 0 6.431 1.242 6.003 6.003 0 0 0 1.905-1.24l1.723-1.723a.999.999 0 1 0-1.414-1.414L9.836 19.81a3.985 3.985 0 0 1-2.761 1.123 3.975 3.975 0 0 1-2.799-1.122 3.997 3.997 0 0 1-.111-5.644l3.005-3.006a3.982 3.982 0 0 1 3.395-1.126 3.987 3.987 0 0 1 2.632 1.563 1 1 0 0 0 1.602-1.198z"></path>
+      </svg>
+    </a>
+  )
+}
+
 const FullPageH2 = ({ title }: { title: string }) => {
   const id = title.toLowerCase()
   return (
     <h2 id={id} className="js-toc-ignore">
       {title}
-      <a className="anchor" href={`#${id}`} aria-hidden="true" tabIndex={-1}>
-        <div className="anchor visually-hidden">permalink</div>
-        <svg
-          className="autolink-svg"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M9.199 13.599a5.99 5.99 0 0 0 3.949 2.345 5.987 5.987 0 0 0 5.105-1.702l2.995-2.994a5.992 5.992 0 0 0 1.695-4.285 5.976 5.976 0 0 0-1.831-4.211 5.99 5.99 0 0 0-6.431-1.242 6.003 6.003 0 0 0-1.905 1.24l-1.731 1.721a.999.999 0 1 0 1.41 1.418l1.709-1.699a3.985 3.985 0 0 1 2.761-1.123 3.975 3.975 0 0 1 2.799 1.122 3.997 3.997 0 0 1 .111 5.644l-3.005 3.006a3.982 3.982 0 0 1-3.395 1.126 3.987 3.987 0 0 1-2.632-1.563A1 1 0 0 0 9.201 13.6zm5.602-3.198a5.99 5.99 0 0 0-3.949-2.345 5.987 5.987 0 0 0-5.105 1.702l-2.995 2.994a5.992 5.992 0 0 0-1.695 4.285 5.976 5.976 0 0 0 1.831 4.211 5.99 5.99 0 0 0 6.431 1.242 6.003 6.003 0 0 0 1.905-1.24l1.723-1.723a.999.999 0 1 0-1.414-1.414L9.836 19.81a3.985 3.985 0 0 1-2.761 1.123 3.975 3.975 0 0 1-2.799-1.122 3.997 3.997 0 0 1-.111-5.644l3.005-3.006a3.982 3.982 0 0 1 3.395-1.126 3.987 3.987 0 0 1 2.632 1.563 1 1 0 0 0 1.602-1.198z"></path>
-        </svg>
-      </a>
+      <AnchorLink id={id} />
     </h2>
   )
 }
 
+const FullPageH3 = ({ title }: { title: string }) => {
+  const id = title.toLowerCase()
+  return (
+    <h3 id={id} className="js-toc-ignore">
+      {title}
+      <AnchorLink id={id} />
+    </h3>
+  )
+}
+
+const FullPageH4 = ({ title }: { title: string }) => {
+  const id = title.toLowerCase()
+  return (
+    <h4 id={id} className="js-toc-ignore">
+      {title}
+      <AnchorLink id={id} />
+    </h4>
+  )
+}
+
+type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
+  children?: React.ReactNode // `children` を `string` 型として扱う
+}
+
+const Code: FC<CodeProps> = ({ children, ...props }): React.ReactNode => {
+  // Check if children is a string and perform operations if true
+  if (typeof children === "string") {
+    const codeHTML = highlight(children)
+    return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
+  }
+  // Optionally handle or return null if children is not a string
+  return null
+}
+
+const slugify = (str: any) => {
+  return str
+    .toString()
+    .toLowerCase()
+    .trim() // Remove whitespace from both ends of a string
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/&/g, "-and-") // Replace & with 'and'
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+}
+
+const createHeading = (level: number) => {
+  // eslint-disable-next-line react/display-name
+  return ({ children }: { children?: React.ReactNode }) => {
+    const slug = slugify(children)
+    return createElement(
+      `h${level}`,
+      { id: slug },
+      [
+        createElement("a", {
+          href: `#${slug}`,
+          key: `link-${slug}`,
+          className: "anchor",
+        }),
+      ],
+      children,
+    )
+  }
+}
+
+createHeading.displayName = `Heading`
+
 const components = {
+  h1: createHeading(1),
+  h2: createHeading(2),
+  h3: createHeading(3),
+  h4: createHeading(4),
+  h5: createHeading(5),
+  h6: createHeading(6),
   Bold,
   Image: RoundedImage,
   a: CustomLink,
   AlertCard,
-  Code: CodeBlock,
+  CodeBlock,
   CustomList,
   CustomTable,
   Section,
   X,
+  code: Code,
   FullPageH2,
+  FullPageH3,
+  FullPageH4,
 }
 
 const addComponents = {
@@ -338,16 +422,20 @@ const addComponents = {
   },
 }
 
-type MdxComponentProps = {
-  code: string
-}
-
-export const MdxComponent: FC<MdxComponentProps> = ({ code }) => {
-  const Component = useMDXComponent(code)
-
+export const MdxComponent: FC<MDXRemoteProps> = props => {
   return (
     <div className="js-toc-content full-page-toc-content">
-      <Component components={{ ...components, ...addComponents }} />
+      <MDXRemote
+        {...props}
+        components={{
+          ...components,
+          ...addComponents,
+          h1: createHeading(1),
+          code: Code,
+          // eslint-disable-next-line react/destructuring-assignment
+          ...props.components,
+        }}
+      />
     </div>
   )
 }

@@ -3,7 +3,7 @@ title: 【決定版】NFTのアローリスト(ホワイトリスト)をスマ�
 slug: nft-allowlist-smart-contract
 publishedAt: 2023-06-21
 summary: 'NFTのアローリスト(ホワイトリスト)をスマートコントラクトで作る方法を解説します。'
-tags: [solidity, nft, smart-contract]
+layout: "blog"
 image: /image/merkle-tree/merkle-tree-allowlist-social.png
 ---
 
@@ -33,20 +33,20 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 
 難しそうなものが3つ並んでいますが、タイトルにある通り特別な理由がない限り<Bold>マークルツリーを採用</Bold>してください。
 
-なぜかというと、<Code title="mapping" /> は簡単だけどガス代かなりかかりますし、<Code title="ECDSA" /> は実装の難易度が高くてハッキングの落とし穴も結構あるからです。
+なぜかというと、<CodeBlock title="mapping" /> は簡単だけどガス代かなりかかりますし、<CodeBlock title="ECDSA" /> は実装の難易度が高くてハッキングの落とし穴も結構あるからです。
 
-それに比べてマークルツリーは多くのNFTプロジェクトで採用されており、ガス代あまりかかりませんし実装難易度も <Code title="ECDSA" /> に比べたら難しくありません。
+それに比べてマークルツリーは多くのNFTプロジェクトで採用されており、ガス代あまりかかりませんし実装難易度も <CodeBlock title="ECDSA" /> に比べたら難しくありません。
 
 なので今回はマークルツリーの実装方法を詳しくみていきたいと思います！
 
 <AlertCard  title="CNPRのECDSAについて">
-	[コード](https://etherscan.io/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code)を見れば分かるとおり、僕がエンジニアとして担当した[CNPR](https://www.ninja-dao.com/cnpr)では <Code title="ECDSA" /> を採用しています。
+	[コード](https://etherscan.io/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code)を見れば分かるとおり、僕がエンジニアとして担当した[CNPR](https://www.ninja-dao.com/cnpr)では <CodeBlock title="ECDSA" /> を採用しています。
 
-	当時はセールを複数回に分けて実地している事例がなくて、ガス代などを含めて何回もセールをするなら <Code title="ECDSA" /> の方が良いと思い採用しました。
+	当時はセールを複数回に分けて実地している事例がなくて、ガス代などを含めて何回もセールをするなら <CodeBlock title="ECDSA" /> の方が良いと思い採用しました。
 
 	今はマークルツリーで複数回セールをしている事例はたくさんあるので分割セールでもマークルツリーでいいと思います。
 
-	僕も[ZUTTO MAMORU](https://zutto-mamoru.com/)では <Code title="ECDSA" /> ではなくマークルツリーを採用しました。
+	僕も[ZUTTO MAMORU](https://zutto-mamoru.com/)では <CodeBlock title="ECDSA" /> ではなくマークルツリーを採用しました。
 </AlertCard>
 
 ## マークルツリーの基礎
@@ -76,9 +76,9 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 ### 同じ箱を入れたら出てくる文字列は常に一緒
 これは<Bold>同じものを入れたら常に同じデータが返ってくる</Bold>ということです。
 
-<Code title="change" /> を押した後に <Code title="reset" /> を押してみてください。
+<CodeBlock title="change" /> を押した後に <CodeBlock title="reset" /> を押してみてください。
 
-<Code title="0x" /> の後の値が最初の値と変わっていないのがわかると思います。
+<CodeBlock title="0x" /> の後の値が最初の値と変わっていないのがわかると思います。
 
 <MerkleTreeIntro/>
 
@@ -129,11 +129,11 @@ NFTのアローリストの登録をスマートコントラクトで実装す�
 マークルツリーの基礎について分かったと思うので、次の章では実際にアローリストを登録する方法を解説します。
 
 <AlertCard  title="マークルツリーの用語" variant="pro">
-	<Code title="Leaves(Leaf)" text="データをハッシュ化したもの" />
+	<CodeBlock title="Leaves(Leaf)" text="データをハッシュ化したもの" />
 
-	<Code title="Nodes(Node)" text="LeafまたはNodeを組み合わせてしてハッシュ化したもの" />
+	<CodeBlock title="Nodes(Node)" text="LeafまたはNodeを組み合わせてしてハッシュ化したもの" />
 
-	<Code title="Root" text="最後に出てくる文字列" />
+	<CodeBlock title="Root" text="最後に出てくる文字列" />
 
 	先ほどの図で表すとこんな感じです。
 
@@ -250,7 +250,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 また、NFTプロジェクトを作る場合はERC721Aが使われることが多いので今回はこちらをベースとして使います。
 
-インストールが完了したら、<Code title=".sol"/> ファイルを作りライブラリをインポートしてコードを以下のようにします。
+インストールが完了したら、<CodeBlock title=".sol"/> ファイルを作りライブラリをインポートしてコードを以下のようにします。
 
 ```solidity title="src/nftFree.sol"
 // SPDX-License-Identifier: MIT
@@ -260,10 +260,10 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 ```
 
-- <Code title="SPDX-License-Identifier: MIT" text={<a href="https://www.skyarch.net/blog/spdx-license-identifiers-%E3%81%A3%E3%81%A6%E3%81%AA%E3%82%93%E3%81%A0%E3%80%82/" >コードのライセンス</a>} />
-- <Code title="pragma solidity" text="バージョン指定" />
+- <CodeBlock title="SPDX-License-Identifier: MIT" text={<a href="https://www.skyarch.net/blog/spdx-license-identifiers-%E3%81%A3%E3%81%A6%E3%81%AA%E3%82%93%E3%81%A0%E3%80%82/" >コードのライセンス</a>} />
+- <CodeBlock title="pragma solidity" text="バージョン指定" />
 
-次に <Code title="contract"/> を作り <Code title="ERC721A"/> と <Code title="Ownable"/> を継承します。
+次に <CodeBlock title="contract"/> を作り <CodeBlock title="ERC721A"/> と <CodeBlock title="Ownable"/> を継承します。
 
 ```solidity title="src/nftFree.sol" {7-12}
 // SPDX-License-Identifier: MIT
@@ -279,9 +279,9 @@ function _startTokenId() internal view virtual override returns (uint256) {
 }
 ```
 
-<Code title="MyToken" /> がトークン名で <Code title="MTK" /> がシンボル名です。
+<CodeBlock title="MyToken" /> がトークン名で <CodeBlock title="MTK" /> がシンボル名です。
 
-ERC721AはトークンIDが <Code title="0" /> から始まるので <Code title="1" /> から始まるように変更しています。
+ERC721AはトークンIDが <CodeBlock title="0" /> から始まるので <CodeBlock title="1" /> から始まるように変更しています。
 
 これで準備ができたのでセールのコードを追加します。
 
@@ -302,13 +302,13 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 	}
 }
 ```
-<Code title="presaleMint" /> は3つの引数を受け取ります。
+<CodeBlock title="presaleMint" /> は3つの引数を受け取ります。
 
-- <Code title="_mintAmount" text="購入する枚数" />
-- <Code title="_maxMintAmount" text="最大で購入できる枚数" />
-- <Code title="_proof" text="マークルツリー内にデータがあるかどうか調べる" />
+- <CodeBlock title="_mintAmount" text="購入する枚数" />
+- <CodeBlock title="_maxMintAmount" text="最大で購入できる枚数" />
+- <CodeBlock title="_proof" text="マークルツリー内にデータがあるかどうか調べる" />
 
-その下にERC721Aの <Code title="_mint" /> 関数を設置しています。
+その下にERC721Aの <CodeBlock title="_mint" /> 関数を設置しています。
 
 これを実行すると購入しようとしている人に〇〇量のNFTが送られます。
 
@@ -348,7 +348,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 }
 ```
 
-<Code title="merkleRoot" /> を誰でも変更できてしまうと悪用されてしまうので <Code title="setMerkleRoot" /> に <Code title="onlyOwner" /> をつけています。
+<CodeBlock title="merkleRoot" /> を誰でも変更できてしまうと悪用されてしまうので <CodeBlock title="setMerkleRoot" /> に <CodeBlock title="onlyOwner" /> をつけています。
 
 ```solidity title="src/nftFree.sol" /onlyOwner/
 	function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
@@ -356,9 +356,9 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 	}
 ```
 
-<Code title="onlyOwner" /> をつけると関数を実行できるのを<Bold>コントラクトのオーナーのみに制限</Bold>してくれます。
+<CodeBlock title="onlyOwner" /> をつけると関数を実行できるのを<Bold>コントラクトのオーナーのみに制限</Bold>してくれます。
 
-また、 <Code title="presaleMint" /> に <Code title="require" /> を追加して <Code title="isWhitelisted" /> が <Code title="false" /> だったらエラーが出るようにしています。
+また、 <CodeBlock title="presaleMint" /> に <CodeBlock title="require" /> を追加して <CodeBlock title="isWhitelisted" /> が <CodeBlock title="false" /> だったらエラーが出るようにしています。
 
 ```solidity title="src/nftFree.sol" {2}
 	function presaleMint(uint256 _mintAmount, uint256 _maxMintAmount, bytes32[] calldata _proof) external {
@@ -367,7 +367,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 	}
 ```
 
-<Code title="isWhitelisted" /> では、ウォレットアドレスと購入できる最大数で <Code title="leaf" /> を作ってマークルツリーの認証をしています。
+<CodeBlock title="isWhitelisted" /> では、ウォレットアドレスと購入できる最大数で <CodeBlock title="leaf" /> を作ってマークルツリーの認証をしています。
 
 ```solidity title="src/nftFree.sol" 
 	function isWhitelisted(
@@ -382,13 +382,13 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 結構難しそうなことをしているように見えますが、一個一個見ていきます。
 
-まず、<Code title={<a href="https://docs.soliditylang.org/en/v0.8.11/abi-spec.html" >abi.encodePacked</a>} /> はデータをくっつけて <Code title={<a href="https://wa3.i-3-i.info/word1933.html" >バイト型</a>} /> に変換します。
+まず、<CodeBlock title={<a href="https://docs.soliditylang.org/en/v0.8.11/abi-spec.html" >abi.encodePacked</a>} /> はデータをくっつけて <CodeBlock title={<a href="https://wa3.i-3-i.info/word1933.html" >バイト型</a>} /> に変換します。
 
-なぜ、これをやるかというとデータを <Code title="バイト型" /> に変えないと[EVM](https://ethereum.org/ja/developers/docs/evm/)が読み取れないからですね。
+なぜ、これをやるかというとデータを <CodeBlock title="バイト型" /> に変えないと[EVM](https://ethereum.org/ja/developers/docs/evm/)が読み取れないからですね。
 
 <Image src="/image/merkle-tree/abi-encode-packed-compare-group.png" alt="abi.encodePackedを使う場合と使うわない場合の比較図" width={724} height={341} />
 
-もう少し詳しくいうとEVMがバイトデータを扱うようにできていてそこで使われる <Code title={<a href="https://www.ruckplus-tech.io/blog/web3-1#:~:text=Keccak%2D256%20%E3%81%AF%E3%80%81Ethereum%20%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF,%E3%81%AB%E3%82%88%E3%81%A3%E3%81%A6%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E5%8C%96%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82" >keccak256</a>} /> の受け付けるデータが <Code title="バイト型" /> だから変換しています。
+もう少し詳しくいうとEVMがバイトデータを扱うようにできていてそこで使われる <CodeBlock title={<a href="https://www.ruckplus-tech.io/blog/web3-1#:~:text=Keccak%2D256%20%E3%81%AF%E3%80%81Ethereum%20%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF,%E3%81%AB%E3%82%88%E3%81%A3%E3%81%A6%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E5%8C%96%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82" >keccak256</a>} /> の受け付けるデータが <CodeBlock title="バイト型" /> だから変換しています。
 
 試しに以下のコードを作って呼び出すとコメントアウトのデータが返ってきます。
 
@@ -404,7 +404,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 さらに詳しく見たい方はこちらの[abi.encodePacked()の働きを見てみよう](https://qiita.com/Voldemort/items/2d9f01c2a7aaabdcc067)がわかりやすいと思います。
 
 
-ただ、これだと何のデータを入れたかわかってしまうので <Code title="keccak256" /> で一定の長さの<a href="https://wa3.i-3-i.info/word11949.html" >ハッシュ値</a>に変換します。
+ただ、これだと何のデータを入れたかわかってしまうので <CodeBlock title="keccak256" /> で一定の長さの<a href="https://wa3.i-3-i.info/word11949.html" >ハッシュ値</a>に変換します。
 
 まぁ要するに入れたデータをわからないようにして悪いことできないようにしている感じです。
 
@@ -412,7 +412,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 前の章のマークルツリーの基礎で説明した<Bold>常に一定の大きさの文字列を返して逆から計算することができない</Bold>というのはこの機能を使っているからです。
 
-試しに先ほどのデータに対して <Code title="keccak256" /> を使ってみるとコメントアウトのデータが返ってきます。
+試しに先ほどのデータに対して <CodeBlock title="keccak256" /> を使ってみるとコメントアウトのデータが返ってきます。
 
 ```solidity title="src/nftFree.sol"
 	//return: 0x569ab48c70cc15322c9253243aab005d1c64df7c33031cf8dfb5a8ac071d368d
@@ -429,20 +429,20 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 
 <Image src="/image/merkle-tree/keccak256-chatgpt.jpg" alt="chatgptに聞いてもkeccak256で生成したデータを復元できない" width={724} height={262} />
 
-ちなみに前の <Code title="0x" /> は文字列が<a href="https://wa3.i-3-i.info/word1610.html" >16進数</a>であることを表しています。
+ちなみに前の <CodeBlock title="0x" /> は文字列が<a href="https://wa3.i-3-i.info/word1610.html" >16進数</a>であることを表しています。
 
 さらに詳しくみたい方はこちらの[Hashing Functions In Solidity Using Keccak256](https://medium.com/0xcode/hashing-functions-in-solidity-using-keccak256-70779ea55bb0)が参考になると思います。
 
-まとめると <Code title="leaf" /> を生成するためにやっていることは以下の通りです。
+まとめると <CodeBlock title="leaf" /> を生成するためにやっていることは以下の通りです。
 
-1. <Code title="_address" /> と <Code title="_maxMintAmount" /> をくっつけて <Code title="バイト型" />にデータを変換
+1. <CodeBlock title="_address" /> と <CodeBlock title="_maxMintAmount" /> をくっつけて <CodeBlock title="バイト型" />にデータを変換
 2. それをハッシュ化して一定の長さの文字列に変換
 
 これだけです。
 
-次に、<Code title="MerkleProof.verifyCalldata" /> を見ていきます。
+次に、<CodeBlock title="MerkleProof.verifyCalldata" /> を見ていきます。
 
-ここでは、3つの引数を受け取って <Code title="root" /> の中にさっき作った <Code title="leaf" /> があるかどうか確認しています。
+ここでは、3つの引数を受け取って <CodeBlock title="root" /> の中にさっき作った <CodeBlock title="leaf" /> があるかどうか確認しています。
 
 ```solidity title="src/nftFree.sol" /MerkleProof.verifyCalldata(_proof, merkleRoot, leaf)/
 	function isWhitelisted(
@@ -455,7 +455,7 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 	}
 ```
 
-<Code title="leaf" /> が <Code title="root" /> の中にあるかどうか確認するためには、<Code title="leaf" /> と <Code title="proof" /> から <Code title="root" /> をもう一回計算して設定されている <Code title="root" /> と同じかどうか比較します。
+<CodeBlock title="leaf" /> が <CodeBlock title="root" /> の中にあるかどうか確認するためには、<CodeBlock title="leaf" /> と <CodeBlock title="proof" /> から <CodeBlock title="root" /> をもう一回計算して設定されている <CodeBlock title="root" /> と同じかどうか比較します。
 
 ```solidity title="MerkleProof.sol"
 	function verifyCalldata(bytes32[] calldata proof, bytes32 root, bytes32 leaf) internal pure returns (bool) {
@@ -463,11 +463,11 @@ contract NFTFree is ERC721A("MyToken", "MTK"), Ownable {
 	}
 ```
 
-例えば、青の箱が <Code title="root" /> の中に含まれているかどうか確認したいときは、水色の枠線のハッシュ値が必要です。
+例えば、青の箱が <CodeBlock title="root" /> の中に含まれているかどうか確認したいときは、水色の枠線のハッシュ値が必要です。
 
 <Image src="/image/merkle-tree/proof-and-leaf-are-required-to-recalculate-root.png" alt="rootを再計算するにはProofとleafが必要" width={724} height={249} />
 
-<Code title="bytes32[] calldata proof" /> とあるように渡すときはそれらを配列に入れて渡します。
+<CodeBlock title="bytes32[] calldata proof" /> とあるように渡すときはそれらを配列に入れて渡します。
 
 これで特定の人しか購入できないNFTのセールのコントラクトを作ることができました！
 
@@ -728,7 +728,7 @@ contract NFTFreeTest is MerkleTreeHelper {
 
 Solidityでマークルツリーのテストをするために<a href="https://github.com/dmfxyz/murky">Murky</a>というライブラリを使っています。
 
-マークルツリーの生成に必要なものは <Code title="Helper" /> として別のファイルに記載しそれをメインの方で継承してテストしています。
+マークルツリーの生成に必要なものは <CodeBlock title="Helper" /> として別のファイルに記載しそれをメインの方で継承してテストしています。
 
 申し訳ないですが、ここでテストのやり方を説明してしまうと記事が膨大になってしまうので、詳しい説明は省かせていただきます🙇‍♂️
 
@@ -780,7 +780,7 @@ export const alData: [`0x${string}`, number][] = [
 
 そうしないとユーザーが購入できないトラブルが起きてしまうので[変換ツール](https://www.lambdatest.com/free-online-tools/text-lowercase)ですべて小文字にしましょう。
 
-次はユーザーがウォレットに接続したらマークルツリーの <Code title="proof" /> を返す仕組みを作ります。
+次はユーザーがウォレットに接続したらマークルツリーの <CodeBlock title="proof" /> を返す仕組みを作ります。
 
 まずは[wagmi](https://wagmi.sh/react/getting-started)をインストールまたはセットアップしましょう！
 
@@ -847,7 +847,7 @@ import MerkleTree from "merkletreejs";
 import { alData } from "../../data/al";
 ```
 
-先頭にある <Code title="use client" /> はNext.jsがアップデートでデフォルトが[サーバーコンポーネント](https://nextjs.org/docs/getting-started/react-essentials)になったのでつけています。
+先頭にある <CodeBlock title="use client" /> はNext.jsがアップデートでデフォルトが[サーバーコンポーネント](https://nextjs.org/docs/getting-started/react-essentials)になったのでつけています。
 
 Next.jsを使っていないもしくはpagesで開発している方は不要です。
 
@@ -857,7 +857,7 @@ Next.jsを使っていないもしくはpagesで開発している方は不要�
 
 詳しくは<a href="https://viem.sh/docs/introduction.html">Why viem</a>を読んでみてください。
 
-その下の <Code title="toLowerCaseTyped" /> は <Code title="toLowerCase" /> したときに <Code title="string型" /> になるのを防ぐための関数です。
+その下の <CodeBlock title="toLowerCaseTyped" /> は <CodeBlock title="toLowerCase" /> したときに <CodeBlock title="string型" /> になるのを防ぐための関数です。
 
 ```ts title="src/util/merkle-tree.ts"
 const toLowerCaseTyped = <T extends string>(arg: T) => {
@@ -868,7 +868,7 @@ const toLowerCaseTyped = <T extends string>(arg: T) => {
 
 次のコードは取得したアドレスを小文字変換して、alデータからアドレスのみのデータを取得しています。
 
-また、アドレスのみのデータに対して <Code title="indexOf" /> を使い小文字変換したアドレスが何番目にあるか探しています。
+また、アドレスのみのデータに対して <CodeBlock title="indexOf" /> を使い小文字変換したアドレスが何番目にあるか探しています。
 
 ```ts title="src/util/merkle-tree.ts"
 const { address } = useAccount();
@@ -881,9 +881,9 @@ const { address } = useAccount();
   const addressId = alAddressData.indexOf(lowerAddress);
 ```
 
-<Code title="indexOf" /> はデータがない場合は <Code title="-1" /> を返します。
+<CodeBlock title="indexOf" /> はデータがない場合は <CodeBlock title="-1" /> を返します。
 
-次のコードを見ると <Code title="leafNodes" /> と <Code title="claimLeafNodes" /> があると思います。
+次のコードを見ると <CodeBlock title="leafNodes" /> と <CodeBlock title="claimLeafNodes" /> があると思います。
 
 ```ts title="src/util/merkle-tree.ts"
   const leafNodes = alData.map((data) => {
@@ -900,7 +900,7 @@ const { address } = useAccount();
   );
 ```
 
-ここでは、マークルツリーの作成に必要な <Code title="leafNodes" /> と検証するデータの <Code title="claimLeafNodes" /> を作成しています。
+ここでは、マークルツリーの作成に必要な <CodeBlock title="leafNodes" /> と検証するデータの <CodeBlock title="claimLeafNodes" /> を作成しています。
 
 先ほどのマークルツリーの基礎で説明したようにデータを検証するときは再度マークルツリーのデータをを作成する必要があります。
 
@@ -916,11 +916,11 @@ const { address } = useAccount();
   return { hexProof, maxAmount, verify };
 ```
 
-こちらでは <Code title="MerkleTree" /> に必要なデータを入れてインスタンスを作成し、そのインスタンスを使い <Code title="rootHash" />、<Code title="hexProof" />、<Code title="verify" /> を作っています。
+こちらでは <CodeBlock title="MerkleTree" /> に必要なデータを入れてインスタンスを作成し、そのインスタンスを使い <CodeBlock title="rootHash" />、<CodeBlock title="hexProof" />、<CodeBlock title="verify" /> を作っています。
 
-事前に <Code title="verify" /> することでミスをなくせますし、アローリストに登録されているかどうか判定するために使えます。
+事前に <CodeBlock title="verify" /> することでミスをなくせますし、アローリストに登録されているかどうか判定するために使えます。
 
-もっと厳格にしたい場合はオンチェーンに設定されている <Code title="root" /> を取ってきて <Code title="verify" /> するのもありだと思います！
+もっと厳格にしたい場合はオンチェーンに設定されている <CodeBlock title="root" /> を取ってきて <CodeBlock title="verify" /> するのもありだと思います！
 
 こんな感じでフックを作成していきます。
 
@@ -933,24 +933,24 @@ const { address } = useAccount();
 
 	なので特にサーバーサイドでやらなくても大丈夫です。
 
-	気になる方はnext.jsの <Code title={<a href="https://nextjs.org/docs/app/building-your-application/routing/router-handlers">Route Handlers</a>} /> などを使いサーバーサイドでやることもできます。
+	気になる方はnext.jsの <CodeBlock title={<a href="https://nextjs.org/docs/app/building-your-application/routing/router-handlers">Route Handlers</a>} /> などを使いサーバーサイドでやることもできます。
 
 	ここではフックの方が簡単かなと思いこちらを紹介しました。
 </AlertCard>
 
-次にオンチェーンのマークルツリーの <Code title="root" /> の設定がまだなのでやりましょう。
+次にオンチェーンのマークルツリーの <CodeBlock title="root" /> の設定がまだなのでやりましょう。
 
-<Code title="root" /> はさっき作ったフックに <Code title="console.log" /> を使って調べられます。
+<CodeBlock title="root" /> はさっき作ったフックに <CodeBlock title="console.log" /> を使って調べられます。
 
 ```ts title="src/src/util/merkle-tree.ts"
   const localRootHash = merkleTree.getRoot();
   console.log("Root Hash: ", "0x" + localRootHash.toString("hex"));
 ```
-コンソールを確認すると <Code title="root" /> の値が取得できているのが確認できると思います。
+コンソールを確認すると <CodeBlock title="root" /> の値が取得できているのが確認できると思います。
 
-それをコピーできたら、[イーサスキャン](https://goerli.etherscan.io/)にデプロイしたコントラクトアドレスを入力して、<Code title="write" /> にある <Code title="setMerkleRoot" /> を呼び出し <Code title="merkleRoot" /> を設定してください。
+それをコピーできたら、[イーサスキャン](https://goerli.etherscan.io/)にデプロイしたコントラクトアドレスを入力して、<CodeBlock title="write" /> にある <CodeBlock title="setMerkleRoot" /> を呼び出し <CodeBlock title="merkleRoot" /> を設定してください。
 
-設定が終わったら <Code title="console.log()" /> は消してください。
+設定が終わったら <CodeBlock title="console.log()" /> は消してください。
 
 次に実際にフロントからコントラクトを呼び出してNFTを購入してみましょう。
 
@@ -1082,12 +1082,12 @@ export default function Page() {
 
 上記はフロントの最適限のコードです。
 
-サイトを見てみると「セールが開始されていません」となっていると思いますが、これは <Code title="phase" /> が <Code title="0" /> だからですね。
+サイトを見てみると「セールが開始されていません」となっていると思いますが、これは <CodeBlock title="phase" /> が <CodeBlock title="0" /> だからですね。
 
-イーサスキャンの <Code title="write" /> から <Code title="setPhase" /> を呼び出し <Code title="1" /> に変更しておきましょう。
+イーサスキャンの <CodeBlock title="write" /> から <CodeBlock title="setPhase" /> を呼び出し <CodeBlock title="1" /> に変更しておきましょう。
 
 <AlertCard  title="phaseの注意" variant="warning">
-	実際に販売するときは <Code title="phase" /> の変更を直前までしないでください。
+	実際に販売するときは <CodeBlock title="phase" /> の変更を直前までしないでください。
 </AlertCard>
 
 そうすると購入するボタンが出てくると思います。
@@ -1113,13 +1113,13 @@ export default function Page() {
 
 <CustomTable heads={["プロジェクト", "デプロイ費用"]} data={[["ZUTTO MAMORU", "0.3593 ETH"],["CNPR","0.0284 ETH"]]}  />
 
-これに加えてエアドロや他の関数の操作もするので、僕の場合は余裕を持って <Code title="0.5~1ETH" /> をファウンダーの方からもらうことが多いです。
+これに加えてエアドロや他の関数の操作もするので、僕の場合は余裕を持って <CodeBlock title="0.5~1ETH" /> をファウンダーの方からもらうことが多いです。
 
 ただ、規模やすることによって金額も大きく変わるので参考までにです。
 
 hardhatやfoundryならおおよそのかかるガス代を事前に見れるので、それを参考にするといいと思います！
 
-ちなみに <Code title="mapping" /> でアローリスト登録しようとする場合は、普通に <Code title="1ETH" /> 以上かかったりするので、マークルツリーに感謝ですね。
+ちなみに <CodeBlock title="mapping" /> でアローリスト登録しようとする場合は、普通に <CodeBlock title="1ETH" /> 以上かかったりするので、マークルツリーに感謝ですね。
 
 ## まとめ
 

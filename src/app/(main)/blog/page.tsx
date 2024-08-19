@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getBlogMdxListItems } from "@/util/mdx-hook"
+import { getBlogPosts } from "@/util/mdx-server"
 
 export const metadata = {
   title: "記事一覧",
@@ -8,7 +8,7 @@ export const metadata = {
 }
 
 const Blog = () => {
-  const posts = getBlogMdxListItems()
+  const posts = getBlogPosts()
   return (
     <section className="min-h-screen px-6 py-16 md:py-24">
       <h1 className="pb-6 text-3xl text-slate-12 dark:text-slatedark-12">
@@ -24,11 +24,11 @@ const Blog = () => {
             >
               <div className="flex h-full flex-col justify-between gap-4">
                 <h2 className="text-xl leading-relaxed text-slate-12 group-hover:text-indigo-8 dark:text-slatedark-12 dark:group-hover:text-indigodark-8">
-                  {post.title}
+                  {post.metadata.title}
                 </h2>
                 <div className="ml-auto">
                   <p className="text-sm text-slate-11 dark:text-slatedark-11">
-                    {post.publishedAt}
+                    {post.metadata.publishedAt}
                   </p>
                 </div>
               </div>
