@@ -34,12 +34,12 @@ interface SheetPortalProps
 
 const SheetPortal = ({
   position,
-  className,
+
   children,
   ...props
 }: SheetPortalProps) => {
   return (
-    <SheetPrimitive.Portal className={cn(className)} {...props}>
+    <SheetPrimitive.Portal {...props}>
       <div className={portalVariants({ position })}>{children}</div>
     </SheetPrimitive.Portal>
   )
@@ -166,7 +166,7 @@ const SheetContent = forwardRef<
       >
         {children}
         <SheetPrimitive.Close className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-slate-8 transition-opacity hover:opacity-100 disabled:pointer-events-none  dark:ring-offset-slatedark-8">
-          <X className="h-6 w-6" />
+          <X className="size-6" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>

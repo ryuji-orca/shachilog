@@ -4,18 +4,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { cn } from "@/util/cn"
-import { LaptopIcon, Menu as MenuIcon, MoonIcon, SunIcon } from "lucide-react"
-import { useTheme } from "next-themes"
+import { Menu as MenuIcon } from "lucide-react"
 import { ShachilogDark } from "public/image/common/shachilog-dark"
 import { ShachilogLight } from "public/image/common/shachilog-light"
 
-import { Button } from "./ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 
 const LINKS = [
@@ -23,57 +15,57 @@ const LINKS = [
   { name: "About", href: "/about" },
 ]
 
-const ModeToggle = () => {
-  const { setTheme } = useTheme()
+// const ModeToggle = () => {
+//   const { setTheme } = useTheme()
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 px-0 hover:bg-slate-4 dark:hover:bg-slatedark-4"
-        >
-          <SunIcon className="rotate-0 scale-100 text-slatedark-2 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute rotate-90 scale-0 text-slate-2 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="border-indigo-6 bg-indigo-3 dark:border-indigodark-6 dark:bg-indigodark-3"
-      >
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
-          onClick={() => {
-            return setTheme("light")
-          }}
-        >
-          <SunIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
-          <span className="text-slatedark-2  dark:text-slate-2">Light</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
-          onClick={() => {
-            return setTheme("dark")
-          }}
-        >
-          <MoonIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
-          <span className="text-slatedark-2 dark:text-slate-2">Dark</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
-          onClick={() => {
-            return setTheme("system")
-          }}
-        >
-          <LaptopIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
-          <span className="text-slatedark-2  dark:text-slate-2">System</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+//   return (
+//     <DropdownMenu>
+//       <DropdownMenuTrigger asChild>
+//         <Button
+//           variant="ghost"
+//           size="sm"
+//           className="h-8 w-8 px-0 hover:bg-slate-4 dark:hover:bg-slatedark-4"
+//         >
+//           <SunIcon className="rotate-0 scale-100 text-slatedark-2 transition-all dark:-rotate-90 dark:scale-0" />
+//           <MoonIcon className="absolute rotate-90 scale-0 text-slate-2 transition-all dark:rotate-0 dark:scale-100" />
+//           <span className="sr-only">Toggle theme</span>
+//         </Button>
+//       </DropdownMenuTrigger>
+//       <DropdownMenuContent
+//         align="end"
+//         className="border-indigo-6 bg-indigo-3 dark:border-indigodark-6 dark:bg-indigodark-3"
+//       >
+//         <DropdownMenuItem
+//           className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
+//           onClick={() => {
+//             return setTheme("light")
+//           }}
+//         >
+//           <SunIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
+//           <span className="text-slatedark-2  dark:text-slate-2">Light</span>
+//         </DropdownMenuItem>
+//         <DropdownMenuItem
+//           className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
+//           onClick={() => {
+//             return setTheme("dark")
+//           }}
+//         >
+//           <MoonIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
+//           <span className="text-slatedark-2 dark:text-slate-2">Dark</span>
+//         </DropdownMenuItem>
+//         <DropdownMenuItem
+//           className="cursor-pointer hover:bg-indigo-4 dark:hover:bg-indigodark-4"
+//           onClick={() => {
+//             return setTheme("system")
+//           }}
+//         >
+//           <LaptopIcon className="mr-2 h-4 w-4 text-slatedark-2  dark:text-slate-2" />
+//           <span className="text-slatedark-2  dark:text-slate-2">System</span>
+//         </DropdownMenuItem>
+//       </DropdownMenuContent>
+//     </DropdownMenu>
+//   )
+// }
 
 const MobileMenu = () => {
   return (
