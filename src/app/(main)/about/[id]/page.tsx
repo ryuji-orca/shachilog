@@ -23,7 +23,7 @@ const AboutDetail = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <section className="min-h-screen px-6 pt-2">
+    <section className="min-h-screen pt-2">
       <div className="max-w-1096 mx-auto px-6 text-center">
         <h1 className="text-balance pb-6 pt-16 text-2xl font-bold leading-normal tracking-wider text-slate-12 dark:text-slatedark-12 sm:text-3xl">
           {post.metadata.title}
