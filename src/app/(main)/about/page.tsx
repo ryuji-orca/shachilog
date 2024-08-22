@@ -29,83 +29,123 @@ const About = () => {
 
         <p>現在は、ブロックチェーンの企業でフリーランスとして働いています。</p>
         <h2>制作物</h2>
-        <Card size="3" className="mb-8">
-          <Inset
-            clip="padding-box"
-            side="top"
-            pb="current"
-            className="not-prose relative"
-          >
-            <Image
-              className="h-auto w-full max-w-full object-contain"
-              width={802}
-              height={535}
-              sizes="100vw"
-              src="/image/about/tmas-top.webp"
-              alt="tmasのステーキング画像"
-              priority
-              placeholder={`data:image/svg+xml;base64,${toBase64(
-                shimmer(802, 535),
-              )}`}
-            />
-          </Inset>
-          <h3 className="mt-3">TheMafiaAnimals Soldiers</h3>
-
-          <p>
-            <a
-              href="https://opensea.io/collection/the-mafia-animals-soldiers-"
-              target="_blank"
+        <div className="flex flex-col gap-8">
+          <Card size="3">
+            <Inset
+              clip="padding-box"
+              side="top"
+              pb="current"
+              className="not-prose relative"
             >
-              TheMafiaAnimals Soldiers
-            </a>
-            のフロントエンドを開発しました。
-          </p>
-          <div className="flex justify-center">
-            <Button asChild className="not-prose" variant="soft" size="2">
-              <Link href={"/about/tmas"} className="">
-                詳細を見る
-              </Link>
-            </Button>
-          </div>
-        </Card>
+              <Image
+                className="h-auto w-full max-w-full object-cover"
+                width={802}
+                height={535}
+                sizes="100vw"
+                src="/image/about/tmas-top.webp"
+                alt="tmasのステーキング画像"
+                priority
+                placeholder={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(802, 535),
+                )}`}
+              />
+            </Inset>
+            <h3 className="mt-3">TheMafiaAnimals Soldiers</h3>
 
-        <Card size="3">
-          <Inset
-            clip="padding-box"
-            side="top"
-            pb="current"
-            className="not-prose relative"
-          >
-            <Image
-              className="h-auto w-full max-w-full object-contain"
-              width={802}
-              height={535}
-              sizes="100vw"
-              src="/image/about/zutto-mamoru.jpg"
-              alt="ZUTTO MAMORUのトップ画像"
-              priority
-              placeholder={`data:image/svg+xml;base64,${toBase64(
-                shimmer(802, 535),
-              )}`}
-            />
-          </Inset>
-          <h3 className="mt-3">ZUTTO MAMORU</h3>
+            <p>
+              <a
+                href="https://opensea.io/collection/the-mafia-animals-soldiers-"
+                target="_blank"
+              >
+                TheMafiaAnimals Soldiers
+              </a>
+              のフロントエンドを開発しました。
+            </p>
+            <div className="flex justify-center">
+              <Button asChild className="not-prose" variant="soft" size="2">
+                <Link href={"/about/tmas"} className="">
+                  詳細を見る
+                </Link>
+              </Button>
+            </div>
+          </Card>
 
-          <p>
-            <a
-              href="https://opensea.io/collection/the-mafia-animals-soldiers-"
-              target="_blank"
+          <Card size="3">
+            <Inset
+              clip="padding-box"
+              side="top"
+              pb="current"
+              className="not-prose relative"
             >
-              ZUTTO MAMORU（ずとまも）
-            </a>
-            のスマートコントラクトとフロントエンドの開発を担当しました。
-          </p>
-          <div className="flex justify-center">
-            <Button asChild className="not-prose" variant="soft" size="2">
-              <Link href={"/about/zutto-mamoru"}>詳細を見る</Link>
-            </Button>
-          </div>
-        </Card>
+              <Image
+                className="h-auto w-full max-w-full object-cover"
+                width={802}
+                height={535}
+                sizes="100vw"
+                src="/image/about/zutto-mamoru.jpg"
+                alt="ZUTTO MAMORUのトップ画像"
+                priority
+                placeholder={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(802, 535),
+                )}`}
+              />
+            </Inset>
+            <h3 className="mt-3">ZUTTO MAMORU</h3>
+
+            <p>
+              <a
+                href="https://opensea.io/collection/the-mafia-animals-soldiers-"
+                target="_blank"
+              >
+                ZUTTO MAMORU（ずとまも）
+              </a>
+              のスマートコントラクトとフロントエンドの開発を担当しました。
+            </p>
+            <div className="flex justify-center">
+              <Button asChild className="not-prose" variant="soft" size="2">
+                <Link href={"/about/zutto-mamoru"}>詳細を見る</Link>
+              </Button>
+            </div>
+          </Card>
+
+          <Card size="3">
+            <Inset
+              clip="padding-box"
+              side="top"
+              pb="current"
+              className="not-prose relative"
+            >
+              <Image
+                className="h-auto w-full max-w-full object-cover"
+                width={802}
+                height={535}
+                sizes="100vw"
+                src="/image/about/cnpr.jpg"
+                alt="CNPRのトップ画像"
+                priority
+                placeholder={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(802, 535),
+                )}`}
+              />
+            </Inset>
+            <h3 className="mt-3">CryptoNinja Partners Rookies</h3>
+
+            <p>
+              <a
+                href="https://opensea.io/collection/the-mafia-animals-soldiers-"
+                target="_blank"
+              >
+                CNPR（CryptoNinja Partners Rookies）
+              </a>
+              のフロントエンド、スマートコントラクト、バックエンドの開発を担当しました。
+            </p>
+            <div className="flex justify-center">
+              <Button asChild className="not-prose" variant="soft" size="2">
+                <Link href={"/about/cnpr"}>詳細を見る</Link>
+              </Button>
+            </div>
+          </Card>
+        </div>
 
         <h2>過去の活動</h2>
         <h3>APPの監査担当</h3>
