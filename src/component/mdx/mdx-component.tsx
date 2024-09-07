@@ -1,6 +1,7 @@
 import {
   Children,
   createElement,
+  Suspense,
   type AnchorHTMLAttributes,
   type DetailedHTMLProps,
   type FC,
@@ -8,6 +9,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react"
+import { unstable_cache } from "next/cache"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -17,7 +19,8 @@ import { DataList } from "@radix-ui/themes"
 import { cva, type VariantProps } from "class-variance-authority"
 import { AlertCircle, AlertTriangleIcon, CheckCircle } from "lucide-react"
 import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc"
-import { Tweet } from "react-tweet"
+import { EmbeddedTweet, TweetNotFound, TweetSkeleton } from "react-tweet"
+import { getTweet as _getTweet } from "react-tweet/api"
 import { highlight } from "sugar-high"
 
 import { ReactPlayerYoutube } from "../react-player"
@@ -302,10 +305,30 @@ const Section = ({ title, chapterNumber, color }: SectionProps) => {
   )
 }
 
+const getTweet = unstable_cache(
+  async (id: string) => {
+    return _getTweet(id)
+  },
+  ["tweet"],
+  { revalidate: 3600 * 24 },
+)
+
+const TweetPage = async ({ id }: { id: string }) => {
+  try {
+    const tweet = await getTweet(id)
+    return tweet ? <EmbeddedTweet tweet={tweet} /> : <TweetNotFound />
+  } catch (error) {
+    console.error(error)
+    return <TweetNotFound error={error} />
+  }
+}
+
 const X = ({ id }: { id: string }) => {
   return (
     <div className="not-prose">
-      <Tweet id={id} />
+      <Suspense fallback={<TweetSkeleton />}>
+        <TweetPage id={id} />
+      </Suspense>
     </div>
   )
 }
@@ -314,7 +337,11 @@ const XList = ({ ids }: { ids: string[] }) => {
   return (
     <div className="not-prose flex flex-col place-items-center justify-center gap-4 md:block md:columns-2">
       {ids.map(id => {
-        return <Tweet key={id} id={id} />
+        return (
+          <Suspense fallback={<TweetSkeleton />} key={id}>
+            <TweetPage id={id} />
+          </Suspense>
+        )
       })}
     </div>
   )
