@@ -8,44 +8,32 @@ import ReactPlayer from "react-player/youtube"
 
 type ReactPlayerYoutubeType = {
   url: string
-  width: number
-  height: number
-  size: "md" | "full"
 }
 
-const ReactPlayerYoutube: FC<ReactPlayerYoutubeType> = ({
-  url,
-  size = "md",
-}) => {
+const ReactPlayerYoutube: FC<ReactPlayerYoutubeType> = ({ url }) => {
   const [isClient, setIsClient] = useState(false)
-  const videoSize = (size: string) => {
-    switch (size) {
-      case "md":
-        return {
-          width: 802,
-          height: 451,
-        }
-      case "full":
-        return {
-          width: 1048,
-          height: 590,
-        }
-    }
-  }
 
   useEffect(() => {
     setIsClient(true)
   }, [])
 
   return isClient ? (
-    <div className="my-8 flex justify-center">
-      <ReactPlayer url={url} {...videoSize(size)} light={false} loop={true} />
+    <div className="relative my-8 flex justify-center pt-[56.25%]">
+      <ReactPlayer
+        style={{ position: "absolute", top: 0, left: 0 }}
+        url={url}
+        light={false}
+        loop={true}
+        width="100%"
+        height="100%"
+      />
     </div>
   ) : (
     <Image
-      {...videoSize(size)}
+      width={1048}
+      height={590}
       sizes="100vw"
-      src={`data:image/svg+xml;base64,${toBase64(shimmer(videoSize(size)?.width, videoSize(size)?.height))}`}
+      src={`data:image/svg+xml;base64,${toBase64(shimmer(1048, 590))}`}
       alt="blur image"
     />
   )
