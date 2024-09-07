@@ -36,17 +36,6 @@ const Home = () => {
   return (
     <div className="px-6 pt-16 md:pt-24">
       <div>
-        <h2 className="pb-4 text-2xl text-slate-12 dark:text-slatedark-12">
-          ryuji
-        </h2>
-
-        <div className="text-base text-slate-11 dark:text-slatedark-11">
-          <p>
-            ブロックチェーンにコミットしているフリーランスのエンジニアです。
-          </p>
-          <p>このブログでは、僕が学んだことなどをアウトプットしています。</p>
-        </div>
-
         <ul className="grid grid-cols-1 justify-between gap-8 pt-16 md:grid-cols-2">
           <LinkCard
             name="Blog"

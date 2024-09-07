@@ -11,19 +11,19 @@ import {
 const LINKS = [
   {
     icon: (
-      <TwitterLogoIcon className="h-6 w-6 text-slate-12 dark:text-slatedark-12" />
+      <TwitterLogoIcon className="size-6 text-slate-12 dark:text-slatedark-12" />
     ),
     href: "https://twitter.com/orca48691",
   },
   {
     icon: (
-      <GitHubLogoIcon className="h-6 w-6 text-slate-12 dark:text-slatedark-12" />
+      <GitHubLogoIcon className="size-6 text-slate-12 dark:text-slatedark-12" />
     ),
     href: "https://github.com/ryuji-orca",
   },
   {
     icon: (
-      <EnvelopeClosedIcon className="h-6 w-6 text-slate-12 dark:text-slatedark-12" />
+      <EnvelopeClosedIcon className="size-6 text-slate-12 dark:text-slatedark-12" />
     ),
     href: "/contact",
     target: "_self",
@@ -57,7 +57,7 @@ export const Footer = () => {
         </ul>
         <div className="flex items-center justify-center">
           <span className="block text-slate-11 dark:text-slatedark-11">
-            © 2023 ryuji
+            © 2024 ryuji
           </span>
         </div>
       </footer>

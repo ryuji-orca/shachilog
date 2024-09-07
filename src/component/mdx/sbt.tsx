@@ -313,7 +313,7 @@ const BuyButton = ({
 }
 
 const walletBlockVariants = cva(
-  "relative grid aspect-square h-full max-h-[240px] w-full max-w-[240px] grid-cols-2 place-items-center items-center justify-center gap-6 rounded-lg border-2",
+  "relative grid aspect-square size-full max-h-[240px] max-w-[240px] grid-cols-2 place-items-center items-center justify-center gap-6 rounded-lg border-2",
   {
     variants: {
       color: {

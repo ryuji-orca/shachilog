@@ -1,6 +1,6 @@
 ---
 title: CryptoNinja Partners Rookies
-slug: cbpr
+slug: cnpr
 layout: "full"
 ---
 
@@ -10,47 +10,68 @@ layout: "full"
 また、忍者DAOのエンジニアサーバーで、多くの人にアドバイスをいただきました。
 [イケハヤ](https://x.com/IHayato)さんがCNPRについて解説してくださっているので、詳しく知りたい方は[こちら](https://voicy.jp/channel/585/393112)を聞いてみてください。
 
+<CustomDataList
+  dataList={[
+    {
+      title: "MY ROLE",
+      values: [
+        "Front End Engineer",
+        "Smart Contract Developer",
+        "Back End Engineer",
+      ],
+    },
+    {
+      title: "STACK",
+      values: [
+        "Solidity",
+        "Hardhat",
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Mantine",
+        "ethers.js / wagmi",
+        "AWS Lambda / AWS API Gateway",
+        "Alchemy",
+      ],
+    },
+    {
+      title: "CODE",
+      values: [
+        <a href="https://etherscan.io/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code">
+          本体
+        </a>,
+
+        <a href="https://polygonscan.com/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code">
+          SBT
+        </a>,
+      ],
+    },
+
+]}
+/>
+
 <Image
-  src="/image/about/cnpr.jpg"
+  src="/image/about/cnpr-work.webp"
   alt="ZUTTO MAMORUのトップ画像"
   width={724}
   height={483}
 />
 
-<FullPageH2 title="STACK" />
+<Section title="実装した機能" color="pink" chapterNumber={1} />
 
-- Solidity
-- Hardhat
-- Next.js
-- TypeScript
-- Tailwind CSS
-- [Mantine](https://mantine.dev/)
-- ethers.js / [wagmi](https://wagmi.sh/)
-- AWS Lambda / AWS API Gateway / AWS WAF / CloudFront / AWS GuardDuty / CloudTrail / AWS Config
-- Alchemy SDK
-
-<FullPageH2 title="コード" />
-
-Solidityのコードは、こちらから見れます。
-
-- [本体](https://etherscan.io/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code)
-- [SBT](https://polygonscan.com/address/0x836b4d9c0f01275a28085acef53ac30460f58242#code)
-
-<FullPageH2 title="実装した機能" />
-
-<FullPageH3 title="スマートコントラクト" />
+<FullPageH2 title="スマートコントラクト" />
 
 - フロントから送られた[ECDSA](https://qiita.com/ais3/items/73ee05f158ec7155b27a)の署名をオンチェーンで再検証し正しい署名かどうか判定
 - 持っているNFTをバーンして新しいNFTを取得する機能
 - SBTの実装
 - メタデータを将来オンチェーンに移行できるようする
 
-<FullPageH3 title="バックエンド" />
+<FullPageH2 title="バックエンド" />
 
 - 実地するセールの種類、ミント数、ウォレットアドレスを含めたECDSAの署名の作成
 - 接続したウォレットアドレスからスマートコントラクトに送るデータを取得するAPIの構築
 
-<FullPageH3 title="フロントエンド" />
+<FullPageH2 title="フロントエンド" />
 
 - 初心者でもわかりやすいようにミントサイトを構築
 
@@ -61,17 +82,10 @@ Solidityのコードは、こちらから見れます。
 ちなみに僕がCNPRをリリースした時は、ホワイトリストを実装するのに[mapping](https://www.tutorialspoint.com/solidity/solidity_mappings.htm)を採用しているところが多く、マークルツリーを使っているプロジェクトは数例しかありませんでした。
 
 なので、当時は、マークルツリーについてもしっかりと理解できておらず、ECDSAを採用しましたが、今なら管理のしやすさや安全性を考えて、マークルツリーを使うと思います。
-また、今回のプロジェクトではAWSを使っていますが、こちらも今ならNext.jsのRoute Handlersを使うと思います。
 
-<FullPageH2 title="スポットライト" />
+<Section title="スポットライト" color="sky" chapterNumber={2} />
 
-今回のプロジェクトで、手間がかかったところと工夫した点は、以下の3つです。
-
-- ECDSAを使ったホワイトリストの実装
-- メタデータを将来オンチェーンに移行できるようする
-- 初心者でもわかりやすいようにミントサイトを構築
-
-<FullPageH3 title="ECDSAを使ったホワイトリストの実装" />
+<FullPageH2 title="ECDSAを使ったホワイトリストの実装" />
 
 ガス代の負担をできるだけ下げるために、ECDSAを採用しましたが、問題点として、国内でECDSAを採用したプロジェクトのほとんどが、立て続けにハッキングの被害に遭っていたことです。
 その中で、ECDSAを採用したので、どうすればハッキングされないのか、正しい実装方法を学ぶ必要がありました。
@@ -80,13 +94,32 @@ Solidityのコードは、こちらから見れます。
 
 また、ECDSAの楕円曲線はすごく難しく、何をしたらハッキングのリスクになるのか、理解するのにかなり時間がかかりました。
 
-<FullPageH3 title="メタデータを将来オンチェーンに移行できるようする" />
+<FullPageH2 title="メタデータを将来オンチェーンに移行できるようする" />
 
 現在のほとんどのNFTプロジェクトは、メタデータをAWSのS3や[ipfs](https://ipfs.tech/)または[Arweave](https://arweave.org/)などに保存しているので、仮にプロジェクトが終了した場合、画像などのデータが消えてしまうリスクがあります。
 
-それを避けるためには、フルオンチェーンにするしかないのですが、現在のイーサリアムだとSVGを使い、かなり無茶をしないとオンチェーンにデータを保存できないので、手間とガス代が結構かかります。そこで、将来オンチェーンにデータを書き込むのがもっと簡単になった時に、オンチェーンへ移行できるようにするために、メタデータの切り替えをできるようにしました。
+それを避けるためには、フルオンチェーンにするしかないのですが、現在のイーサリアムだとSVGを使い、かなり無茶をしないとオンチェーンにデータを保存できないので、手間とガス代が結構かかります。そこで、将来オンチェーンにデータを書き込むのがもっと簡単になった時、オンチェーンへ移行できるように、メタデータの切り替えをできるようにしました。
 
-<FullPageH3 title="初心者でもわかりやすいようにミントサイトを構築" />
+```solidity
+  function tokenURI(uint256 _tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        require(_exists(_tokenId), "URI query for nonexistent token");
+
+        if (isOnchain) {
+            return descriptor.tokenURI(_tokenId);
+        }
+
+        return
+            string(abi.encodePacked(ERC721A.tokenURI(_tokenId), baseExtension));
+    }
+```
+
+<FullPageH2 title="初心者でもわかりやすいようにミントサイトを構築" />
 
 当時のNFTプロジェクトのほとんどは、ミントサイトを作るのにHashLipsが採用されることことが多かったのですが、かなり使いづらくて、CNPRは初心者向けなので、もっとわかりやすものを作る必要があると思い、ゼロから作りました。スマートコントラクトとミントサイトの両方を作らないといけなくて、どちらも初めての経験だったので結構大変でした。
 
@@ -94,25 +127,24 @@ Solidityのコードは、こちらから見れます。
 
 <X id="1565571040025407488" />
 
-<FullPageH2 title="ユーザーからのコメント" />
+<Section title="ユーザーからのコメント" color="mint" chapterNumber={3} />
 
-<X id="1573827262704586752" />
+<XList
+  ids={[
+    "1573827262704586752",
+    "1574001476409884673",
+    "1573869520950730753",
+    "1573971330923261957",
+    "1573954723136544769",
+    "1573826268239630336",
+    "1591657613795917825",
+    "1591660487913402369",
+    "1591582333357813761",
+    "1591604329307602944",
+  ]}
+/>
 
-<X id="1573971330923261957" />
-
-<X id="1574001476409884673" />
-
-<X id="1573869520950730753" />
-
-<X id="1573954723136544769" />
-
-<X id="1573826268239630336" />
-
-<X id="1591657613795917825" />
-
-<X id="1591660487913402369" />
-
-<FullPageH2 title="学んだこと" />
+<Section title="学んだこと" color="violet" chapterNumber={4} />
 
 今回のプロジェクトは、フロントエンド、バックエンド、スマートコントラクトの開発を全て一人で担当しました。
 これらの経験のおかげで、NFTをどのように作りユーザーに購入してもらうのか全て知ることができ、スキルもかなり向上しました。

@@ -7,36 +7,59 @@ layout: "full"
 [ZUTTO MAMORU（ずとまも）](https://zutto-mamoru.com/)は「幼馴染との一生を」をコンセプトにかかげる成長型のNFTプロジェクトです。1人の小学生の女の子から始って、大人になり結婚し、墓場に入るまでのストーリーが描かれており、イラストが変化していきます。
 ファウンダーは、[tochi](https://twitter.com/tochi1203)さん、デザイナーに[まもる](https://twitter.com/mamoru_kame)さん、ジェネの生成に[なおこママ](https://twitter.com/5151Naoko)さん、監査に[masataka](https://twitter.com/masataka_net)さんと[ルブライト](https://twitter.com/lavulite_eng)さんが参加しています。僕は、スマートコントラクトとフロントエンドの開発を担当しました。
 
+<CustomDataList
+  dataList={[
+    {
+      title: "MY ROLE",
+      values: ["Front End Engineer", "Smart Contract Developer"],
+    },
+    {
+      title: "STACK",
+      values: [
+        "Solidity",
+        "Hardhat",
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Mantine",
+        "viem / wagmi",
+        "ethers.js",
+        "Alchemy",
+      ],
+    },
+    {
+      title: "CODE",
+      values: [
+        <a href="https://etherscan.io/address/0xa33C3162BD3AE64e81DbC88765B6f719C90c5B28#code">
+          本体
+        </a>,
+        <a href="https://etherscan.io/address/0xCF01626065609c102c6a8DD02F2b1220258E6987#code">
+          セール
+        </a>,
+        <a href="https://etherscan.io/address/0x56a8e87911E82c62cE1439a6b4C710527aDe41D0#code">
+          メタデータ
+        </a>,
+        <a href="https://etherscan.io/address/0x89570b38Cf8015aA5010d63829DB64467c2E040d#code">
+          SBTのファクトリー
+        </a>,
+        <a href="https://etherscan.io/address/0x95b9cf49deaa519D6CAd94224313bfFBc3F34241#code">
+          SBTのセール
+        </a>,
+      ],
+    },
+  ]}
+/>
+
 <Image
-  src="/image/about/zutto-mamoru.jpg"
+  src="/image/about/zutto-mamoru-work.webp"
   alt="ZUTTO MAMORUのトップ画像"
   width={724}
   height={483}
 />
 
-<FullPageH2 title="STACK" />
+<Section title="実装した機能" color="pink" chapterNumber={1} />
 
-- Solidity
-- Hardhat
-- Next.js
-- TypeScript
-- Tailwind CSS
-- [Mantine](https://mantine.dev/)
-- [viem](https://viem.sh/) / [wagmi](https://wagmi.sh/)
-
-<FullPageH2 title="コード" />
-
-Solidityのコードは、こちらから見れます。
-
-- [本体](https://etherscan.io/address/0xa33C3162BD3AE64e81DbC88765B6f719C90c5B28#code)
-- [セール](https://etherscan.io/address/0xCF01626065609c102c6a8DD02F2b1220258E6987#code)
-- [メタデータ](https://etherscan.io/address/0x56a8e87911E82c62cE1439a6b4C710527aDe41D0#code)
-- [SBTのファクトリー](https://etherscan.io/address/0x89570b38Cf8015aA5010d63829DB64467c2E040d#code)
-- [SBTのセール](https://etherscan.io/address/0x95b9cf49deaa519D6CAd94224313bfFBc3F34241#code)
-
-<FullPageH2 title="実装した機能" />
-
-<FullPageH3 title="スマートコントラクト" />
+<FullPageH2 title="スマートコントラクト" />
 
 - ERC721Aで複数ミントのガス代の軽減
 - ダイナミックなtokenURIの実装
@@ -46,7 +69,7 @@ Solidityのコードは、こちらから見れます。
 - 詐欺防止機能とコントラクトブロックの実装
 - プレセールを複数回実地できるようにする
 
-<FullPageH3 title="フロントエンド" />
+<FullPageH2 title="フロントエンド" />
 
 - マークルツリーによるユーザーがNFTを購入できるサイトの構築
 - 枚数を指定してNFTを購入できる
@@ -60,35 +83,39 @@ Solidityのコードは、こちらから見れます。
   height={483}
 />
 
-<FullPageH2 title="スポットライト" />
+<Section title="スポットライト" color="sky" chapterNumber={2} />
 
-今回のプロジェクトで、手間がかかったところと工夫した点はたくさんありますが、以下の二つです。
-
-- 本体のNFTが移動したら紐付いているSBTも一緒に移動する
-- コントラクトを用途ごとに分ける
-
-<FullPageH3 title="本体のNFTが移動したら紐付いているSBTも一緒に移動する" />
+<FullPageH2 title="本体のNFTが移動したら紐付いているSBTも一緒に移動する" />
 
 当時、[EIP](https://eips.ethereum.org/all)で要件を満たせる規格を探しましたが、見つかりませんでした。
 なので、最初は、[ERC-5192](https://github.com/attestate/ERC5192)をベースにゼロから作るつもりでしたが、EIPを漁っていたら[ERC-998](https://erc998.org/)という、ERC-721にコンポーザビリティ機能（他のトークンなどと接続できる機能）を持っている規格を見つけました。
 
 ERC-998をそのまま使用することはできませんが、他のトークンと紐付ける部分のコードを参考にして、ERC-5192と組み合わせれば、要件を満たせるのでは？と仮説を立てました。結果はうまくいき、本体のNFTと子供のSBTを紐付けさせて、本体が移動したら一緒に移動するSBTを作ることができました。
 
-<FullPageH3 title="コントラクトを用途ごとに分ける" />
+<FullPageH2 title="コントラクトを用途ごとに分ける" />
 
 今回のプロジェクトでは、コントラクトを機能ごとに分割し、合計６個デプロイしました。
 コントラクトを分けた理由は、コードの可読性の向上、コントラクトのサイズの対策、コントラクトのアプデをできるようにするためです。
 また、管理者が操作する重要な関数を一箇所にまとめることで、onlyOwnerをつけ忘れるなどのケアレスミスが起きにくくなるようにしました。
 
-<FullPageH2 title="チームからのコメント" />
+<Section
+  title="チームとユーザーからのコメント"
+  color="mint"
+  chapterNumber={3}
+/>
 
-<X id="1634149718828675072" />
+<XList
+  ids={[
+    "1658730284576309248",
+    "1634149718828675072",
+    "1659165366957010944",
+    "1644717302867456003",
+    "1644556991678013440",
+    "1821755986895630434",
+  ]}
+/>
 
-<X id="1658730284576309248" />
-
-<X id="1821755986895630434" />
-
-<FullPageH2 title="学んだこと" />
+<Section title="学んだこと" color="violet" chapterNumber={4} />
 
 学んだことは、複雑なスマートコントラクトの開発をする際に、なるべく新規で作成しない方が良いことです。
 エンジニアはゼロからコードを書きたがる傾向がありますが、スマートコントラクトのコードは一度デプロイされると、世界中の人が見ることができます。

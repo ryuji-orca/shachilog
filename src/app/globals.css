@@ -158,6 +158,9 @@
   @apply no-underline text-sm hover:text-indigo-9 dark:hover:text-indigodark-9;
 }
 
+.react-tweet-theme {
+  margin: 0px 0px 16px 0px !important;
+}
 /* .full-page-toc a.is-active-link {
     @apply text-indigo-8 dark:text-indigodark-8;
   } */

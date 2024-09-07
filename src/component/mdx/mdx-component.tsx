@@ -13,12 +13,14 @@ import Link from "next/link"
 
 import { cn } from "@/util/cn"
 import { shimmer, toBase64 } from "@/util/shimmer"
+import { DataList } from "@radix-ui/themes"
 import { cva, type VariantProps } from "class-variance-authority"
 import { AlertCircle, AlertTriangleIcon, CheckCircle } from "lucide-react"
 import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc"
 import { Tweet } from "react-tweet"
 import { highlight } from "sugar-high"
 
+import { ReactPlayerYoutube } from "../react-player"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { RadixCodeBlock } from "../ui/code"
 import {
@@ -107,17 +109,19 @@ const RoundedImage: FC<RoundedImageProps> = ({
           </Link>
         </blockquote>
       ) : (
-        <Image
-          className="rounded-lg"
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          placeholder={`data:image/svg+xml;base64,${toBase64(
-            shimmer(width, height),
-          )}`}
-          {...rest}
-        />
+        <div className="flex justify-center">
+          <Image
+            className="rounded-lg"
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(width, height),
+            )}`}
+            {...rest}
+          />
+        </div>
       )}
     </div>
   )
@@ -193,6 +197,33 @@ const AlertCard: FC<AlertCardProps> = ({
   )
 }
 
+type CustomDataListType = {
+  dataList: { title: string; values: string[] }[]
+}
+
+const CustomDataList: FC<CustomDataListType> = ({ dataList }) => {
+  return (
+    <DataList.Root
+      orientation="vertical"
+      className="not-prose flex flex-wrap py-6 sm:!flex-row md:!gap-20"
+      size="3"
+    >
+      {dataList?.map(({ title, values }, index) => {
+        const color = index === 0 ? "orange" : index === 1 ? "crimson" : "mint"
+
+        return (
+          <DataList.Item key={title} className="!gap-2">
+            <DataList.Label color={color}>{title}</DataList.Label>
+            {values.map(value => {
+              return <DataList.Value key={value}>{value}</DataList.Value>
+            })}
+          </DataList.Item>
+        )
+      })}
+    </DataList.Root>
+  )
+}
+
 const CodeBlock = ({ title, text }: { title: string; text?: string }) => {
   return <RadixCodeBlock title={title} text={text} />
 }
@@ -221,7 +252,7 @@ const CustomList = ({
 }
 
 export const sectionVariants = cva(
-  "not-prose relative my-12 py-12 before:absolute before:inset-x-[-10000px] before:inset-y-0 before:h-full before:border-y-2 md:py-24 ",
+  "not-prose relative my-12 py-12 before:absolute before:inset-x-[-10000px] before:inset-y-0 before:h-full before:border-y-2 md:py-24",
   {
     variants: {
       color: {
@@ -275,6 +306,16 @@ const X = ({ id }: { id: string }) => {
   return (
     <div className="not-prose">
       <Tweet id={id} />
+    </div>
+  )
+}
+
+const XList = ({ ids }: { ids: string[] }) => {
+  return (
+    <div className="not-prose flex flex-col place-items-center justify-center gap-4 md:block md:columns-2">
+      {ids.map(id => {
+        return <Tweet key={id} id={id} />
+      })}
     </div>
   )
 }
@@ -389,6 +430,9 @@ const components = {
   CustomTable,
   Section,
   X,
+  XList,
+  CustomDataList,
+  ReactPlayerYoutube,
   code: Code,
   FullPageH2,
   FullPageH3,

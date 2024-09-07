@@ -9,6 +9,24 @@ layout: "full"
 通常のNFTとは違いトークンを使ってレベルを上げたりなどのゲーム要素を入れたいと提案を受け、フロントエンドの開発を担当しました。
 サイトの大枠のデザインはRii2さんが担当し、スマートコントラクトとバックエンドは[syou](https://twitter.com/nft_syou)さんと[ルブライト](https://twitter.com/lavulite_eng)さんが担当しました。
 
+<CustomDataList
+  dataList={[
+    { title: "MY ROLE", values: ["Front End Engineer"] },
+    {
+      title: "STACK",
+      values: [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Mantine",
+        "viem / wagmi",
+        "ethers.js",
+        "Alchemy",
+      ],
+    },
+  ]}
+/>
+
 <Image
   src="/image/about/tmas-staking.webp"
   alt="tmasのステーキング画像"
@@ -16,37 +34,69 @@ layout: "full"
   height={1310}
 />
 
-<FullPageH2 title="STACK" />
+<Image
+  src="/image/about/add-troop.webp"
+  alt="部隊追加"
+  width={724}
+  height={402}
+/>
 
-- Next.js
-- TypeScript
-- Tailwind CSS
-- [Mantine](https://mantine.dev/)
-- [viem](https://viem.sh/) / [wagmi](https://wagmi.sh/)
+<Image
+  src="/image/about/start-mission.webp"
+  alt="ミッションスタート"
+  width={724}
+  height={472}
+/>
 
-<FullPageH2 title="実装した機能" />
+<Section title="実装した機能" color="pink" chapterNumber={1} />
 
-<FullPageH3 title="初期の機能" />
+<FullPageH2 title="初期の機能" />
 
 - マークルツリーで特定の人しかNFTを購入できないサイトの構築
 - NFTをステーキングしてオンチェーンのトークンを取得
 - 名前変更、レベルアップ、パラメーターアップ、ステーキングの枠を増やす、ファミリー変更
 - NFTの詳細画面
 
-<FullPageH3 title="追加機能" />
+<FullPageH2 title="追加機能" />
 
 - NFTのパーツの取り外し、着せ替え用のアイテムの購入
 - オフチェーンポイントをオンチェーンに変える
 
-全体のデザインはが決まったのは３週間くらい前で、メインネットにスマートコントラクトがデプロイされたのは、2日くらい前とかなり開発期間はシビアでした。
-
-コンポーネントをゼロから作ると時間かかるので、UIライブラリにMantineを採用しました。
-
-当時は、Mantineを採用しましたが、TailwindCSSとの互換性を考えると、今なら[Radix UI](https://www.radix-ui.com/)を使うと思います。
+全体のデザインはが決まったのは３週間くらい前で、メインネットにスマートコントラクトがデプロイされたのは、2日くらい前とかなり開発期間がシビアでした。
 
 <Image
   src="/image/about/tmas-closet.webp"
   alt="tmasの着せ替え"
+  width={724}
+  height={392}
+/>
+
+<Image
+  src="/image/about/item-store.webp"
+  alt="アイテムストア"
+  width={724}
+  height={392}
+/>
+
+<Section title="スポットライト" color="sky" chapterNumber={2} />
+
+<FullPageH2 title="オンチェーンの変更をフロントに伝える" />
+
+開発を始めた頃は、サイトからトランザクションを送って完了した際に、フロントがその変更を取得する最適な方法がわからなかったです。
+最初は、wagmiの[refetchInterval](https://wagmi.sh/react/api/hooks/useReadContract#refetchinterval)を使っていましたが、APIリクエストが多すぎるのでやめました。Githubを漁ると、成功時のcollback関数にrefechを入れて更新するのが良いと書かれており、こちらを採用しました。
+
+<FullPageH2 title="スマートコントラクトの型定義" />
+
+スマートコントラクトには、関数が用意されていて、フロントから関数を呼び出すには、通常abiとアドレスを取得してライブラリを使う必要があります。
+ただ問題となるのは、呼び出す関数にTypeScriptの型をつけられないことです。TypeScriptの型は必須ではないですが、スマートコントラクトの関数の型がわからないのは開発効率に大きく関わります。リサーチをした結果、[Wagmi CLI](https://wagmi.sh/cli/getting-started)というものを見つけて、これでスマートコントラクトの関数の型定義を実装しました。
+
+<FullPageH2 title="関数を呼ぶ前に事前チェック" />
+
+オンチェーンの関数を直接呼ぶこともできますが、ガス代が低すぎるとガス詰まりを起こしたり、ウォレットが立ち上がらないとエラーかどうかわからなかったりと、ユーザー体験に様々な問題があります。そこで、[estimateContractGas](https://viem.sh/docs/contract/estimateContractGas.html)と[simulateContract](https://viem.sh/docs/contract/simulateContract.html)を使い、関数を呼ぶ前に事前チェックをし、ユーザーがボタンを押したタイミングでエラーかどうか判定できるようにしました。
+
+<Image
+  src="/image/about/parameter-up.webp"
+  alt="パラメータアップ"
   width={724}
   height={392}
 />
@@ -58,52 +108,46 @@ layout: "full"
   height={392}
 />
 
-<FullPageH2 title="スポットライト" />
+<Section
+  title="ファウンダーとユーザーからのコメント"
+  color="mint"
+  chapterNumber={3}
+/>
 
-今回のプロジェクトで手間がかかった部分は、以下の３点です。
+<XList
+  ids={[
+    "1740680914827616332",
+    "1740680917654618291",
+    "1744197192821400011",
+    "1641292452878483457",
+    "1641364243965673472",
+    "1641598654392963073",
+    "1641396493474230274",
+    "1641290559146033152",
+    "1641418722262007809",
+    "1641749729309761536",
+    "1641281185027600384",
+    "1641334562981806080",
+    "1641288043910033408",
+  ]}
+/>
 
-- オンチェーンの変更をフロントに伝える
-- スマートコントラクトの型定義
-- 関数を呼ぶ前に事前チェック
-
-<FullPageH3 title="オンチェーンの変更をフロントに伝える" />
-
-開発を始めた頃は、サイトからトランザクションを送り、それが通った場合にフロントがその変更を取得する方法がわからなかったです。
-最初は、wagmiの[refetchInterval](https://wagmi.sh/react/api/hooks/useReadContract#refetchinterval)を使っていましたが、APIリクエストが多すぎるのでやめました。幸いwagmiの関数に、トランザクションが成功した時のcollback関数が用意されており、refech関数をそこに入れることでデータを更新できました。
-
-<FullPageH3 title="スマートコントラクトの型定義" />
-
-スマートコントラクトには、関数が用意されていて、フロントから関数を呼び出すには、通常abiとアドレスを取得してライブラリを使う必要があります。
-ただ問題となるのは、呼び出す関数にTypeScriptの型をつけられないことです。TypeScriptは必須ではないですが、スマートコントラクトの関数の型がわからないのは開発効率に大きく関わります。リサーチをした結果、[Wagmi CLI](https://wagmi.sh/cli/getting-started)というものを見つけて、これでスマートコントラクトの関数の型定義を実装しました。
-
-<FullPageH3 title="関数を呼ぶ前に事前チェック" />
-
-オンチェーンの関数を直接呼ぶこともできますが、ガス代が低すぎるとガス詰まりを起こしたり、ウォレットが立ち上がらないとエラーかどうかわからなかったりと、ユーザー体験に様々な問題があります。そこで、[estimateContractGas](https://viem.sh/docs/contract/estimateContractGas.html)と[simulateContract](https://viem.sh/docs/contract/simulateContract.html)を使い、関数を呼ぶ前に事前チェックをし、ユーザーがボタンを押したタイミングでエラーかどうか判定できるようにしました。
-
-<FullPageH2 title="ファウンダーからのコメント" />
-
-<X id="1645617578231070720" />
-
-<X id="1740680914827616332" />
-
-<X id="1740680917654618291" />
-
-<FullPageH2 title="学んだこと" />
+<Section title="学んだこと" color="violet" chapterNumber={4} />
 
 このプロジェクトを通じて学んだことは、たくさんありますが、いくつか例を出すと以下の通りです。
 
 - フロントエンドエンジニアがSolidityを理解していると開発がスムーズにいく
 - ガス代がかかると利用者が大幅に減る
 
-<FullPageH3 title="フロントエンドエンジニアがSolidityを理解していると開発がスムーズにいく" />
+<FullPageH2 title="フロントエンドエンジニアがSolidityを理解していると開発がスムーズにいく" />
 
 今回のプロジェクトでは、スマートコントラクトの開発を別の人が担当し、[foundry](https://book.getfoundry.sh/)を使って開発していました。foundryは、Solidityのみでテストコードを書けるので人気がありますが、欠点として、Solidityを知らないフロントエンドエンジニアが見たら、関数をどのように呼び出すべきかわからないことです。[hardhat](https://hardhat.org/)ならテストコードはjsで書くので、フロントエンドエンジニアがコードを見ても、呼び出し方がわかります。
 
-僕の場合は、Solidityも理解しているので、そこのコミュニケーションを省けてスマートコントラクトとフロントの繋ぎ込みはスムーズにいきました。
+僕の場合は、Solidityも理解しているので、そこのコミュニケーションを省けて、スマートコントラクトとフロントの繋ぎ込みはスムーズにいきました。
 
 また、有料販売のミント関数を呼び出した時に、見慣れないエラーが発生しました。スマートコントラクトを確認したところ、関数にpayableが付いていないことが原因であることがわかり、開発者にその点を指摘しました。Solidityを理解していることで、エラーの解決がスムーズに進むことも学びました。
 
-<FullPageH3 title="ガス代がかかると利用者が大幅に減る" />
+<FullPageH2 title="ガス代がかかると利用者が大幅に減る" />
 
 このプロジェクトの開発をする時に、ステーキングやレベル上げなどの機能を、オフチェーンでやるのかオンチェーンでやるのか議論しました。最終的に実装コストとメンテナンスのしやすさからオンチェーンでやることになったのですが、これはあまり良い判断ではなかった気がします。
 
