@@ -28,8 +28,11 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+
       - name: 📥 Install pnpm
-        run: npm install -g pnpm@8.0.0 # 必要に応じてpnpmのバージョンを指定
+        run: pnpm install
 
       - name: 🖥️ Verify pnpm Installation
         run: pnpm --version
@@ -56,8 +59,8 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: 📥 Install pnpm
-        run: npm install -g pnpm@8.0.0 # 必要に応じてpnpmのバージョンを指定
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
 
       - name: 🖥️ Verify pnpm Installation
         run: pnpm --version
