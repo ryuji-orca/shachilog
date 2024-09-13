@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -18,7 +19,6 @@
 # misc
 .DS_Store
 *.pem
-*.env
 
 # debug
 npm-debug.log*
@@ -26,7 +26,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+*.local.*
+.env.local
+
+.env
+.env.production
 
 # vercel
 .vercel
@@ -35,16 +39,3 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# contentlayer
-.contentlayer
-
-# 
-.cache
-/other/cache.db
-
-# prisma
-/prisma/data.db
-/prisma/data.db-journal
-/prisma/dev.db
-/prisma/dev.db-journal
-/tests/prisma

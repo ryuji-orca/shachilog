@@ -5,8 +5,11 @@ import { MdxComponent } from "@/component/mdx/mdx-component"
 import { Toc } from "@/component/toc"
 import { TocFullPage } from "@/component/toc-full-page"
 import { cn } from "@/util/cn"
+import { LikeCounter } from "@/util/like-counter"
+import { getHashedIp } from "@/util/like-counter-server"
 import { getBlogMdxListItem } from "@/util/mdx-hook"
 import { getBlogPosts } from "@/util/mdx-server"
+import { PrismaClient } from "@prisma/client"
 
 export const generateStaticParams = async () => {
   const allBlogs = getBlogPosts()
@@ -54,6 +57,8 @@ export const generateMetadata = async ({
   }
 }
 
+const prisma = new PrismaClient()
+
 const Page = async ({ params }: { params: { slug: string } }) => {
   const post = getBlogPosts().find(post => {
     return post.slug === params.slug
@@ -63,8 +68,40 @@ const Page = async ({ params }: { params: { slug: string } }) => {
     notFound()
   }
 
+  // トータルのカウントを取得
+  const postLike = await prisma.postLike
+    .findMany({
+      where: {
+        postSlug: post.slug,
+      },
+    })
+    .then(res => {
+      return res.reduce((acc, cur) => {
+        return acc + cur.count
+      }, 0)
+    })
+
+  // 　ユーザーのカウントを取得
+  const hashIp = getHashedIp()
+  const user = await prisma.user.findFirst({
+    where: {
+      ipAddresses: hashIp,
+    },
+    include: {
+      postLikes: true,
+    },
+  })
+
+  const userPostLikeCount = user?.postLikes.find(postLike => {
+    return postLike.postSlug === post.slug
+  })?.count
+
   return (
-    <section className="!col-[1/6] overflow-hidden">
+    <section
+      className={cn("!col-[1/6] md:relative md:min-h-svh", {
+        "overflow-hidden": post?.metadata.layout === "full",
+      })}
+    >
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -86,13 +123,23 @@ const Page = async ({ params }: { params: { slug: string } }) => {
         }}
       />
 
-      {post?.metadata.layout === "full" ? <TocFullPage /> : null}
+      {post?.metadata.layout === "full" ? (
+        <div>
+          <TocFullPage />
+          <div className="fixed bottom-8 right-24 z-10 hidden items-center justify-center shadow-xl  lg:flex">
+            <LikeCounter
+              slug={post.slug}
+              totalLikeCount={postLike}
+              userLikeCount={userPostLikeCount ?? 0}
+            />
+          </div>
+        </div>
+      ) : null}
 
       <div className="max-w-1096 mx-auto px-6 text-center">
         <h1 className="text-balance pb-6 pt-16 text-2xl font-bold leading-normal tracking-wider text-slate-12 dark:text-slatedark-12 sm:text-3xl">
           {post.metadata.title}
         </h1>
-
         <div className="text-slate-11 dark:text-slatedark-11">
           {post.metadata.publishedAt}
         </div>
@@ -101,6 +148,13 @@ const Page = async ({ params }: { params: { slug: string } }) => {
         {post?.metadata.layout === "blog" ? (
           <aside className="sticky top-32 mt-6 hidden max-h-[calc(100vh_-_148px)] max-w-[264px] overflow-auto scrollbar scrollbar-track-indigo-1 scrollbar-thumb-slate-8 scrollbar-thumb-rounded scrollbar-w-[4px] prose-ol:list-none dark:scrollbar-track-indigodark-1 dark:scrollbar-thumb-slatedark-8 lg:block">
             <Toc />
+            <div className="mt-6">
+              <LikeCounter
+                slug={post.slug}
+                totalLikeCount={postLike}
+                userLikeCount={userPostLikeCount ?? 0}
+              />
+            </div>
           </aside>
         ) : null}
         <article
