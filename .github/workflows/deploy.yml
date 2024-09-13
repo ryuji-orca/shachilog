@@ -35,6 +35,9 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
+        with:
+          version: 8.12.1
+      - run: pnpm i --frozen-lockfile
 
       - name: 📥 Install pnpm
         run: pnpm install
@@ -58,7 +61,8 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
           version: 8.12.1
       - run: pnpm i --frozen-lockfile
@@ -68,9 +72,6 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
 
       - name: 🖥️ Verify pnpm Installation
         run: pnpm --version
