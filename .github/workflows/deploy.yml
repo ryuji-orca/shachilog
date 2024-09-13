@@ -22,13 +22,19 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: ⎔ Setup node
+      - name: ⎔ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "pnpm"
 
-      - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+      - name: 📥 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.0.0 # 必要に応じてpnpmのバージョンを指定
+
+      - name: 📥 Install dependencies
+        run: pnpm install
 
       # - name: 🖼 Build icons
       #   run: pnpm build:icons
@@ -43,19 +49,24 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: ⎔ Setup node
+      - name: ⎔ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "pnpm"
 
-      - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+      - name: 📥 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.0.0 # 必要に応じてpnpmのバージョンを指定
+
+      - name: 📥 Install dependencies
+        run: pnpm install
 
       # - name: 🖼 Build icons
-      #   run: npm run build:icons
+      #   run: pnpm build:icons
 
       - name: 🔎 Type check
-        # run: pnpm run typecheck --if-present
         run: pnpm run typecheck
 
   # vitest:
@@ -65,19 +76,25 @@ jobs:
   #     - name: ⬇️ Checkout repo
   #       uses: actions/checkout@v4
 
-  #     - name: ⎔ Setup node
+  #     - name: ⎔ Setup Node.js
   #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
+  #         cache: 'pnpm'
 
-  #     - name: 📥 Download deps
-  #       uses: bahmutov/npm-install@v1
+  #     - name: 📥 Setup pnpm
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8.0.0
+
+  #     - name: 📥 Install dependencies
+  #       run: pnpm install
 
   #     - name: 🏄 Copy test env vars
   #       run: cp .env.example .env .local.env
 
   #     # - name: 🖼 Build icons
-  #     #   run: npm run build:icons
+  #     #   run: pnpm build:icons
 
   #     - name: ⚡ Run vitest
   #       run: pnpm test -- --coverage
@@ -93,40 +110,46 @@ jobs:
   #     - name: 🏄 Copy test env vars
   #       run: cp .env.example .env
 
-  #     - name: ⎔ Setup node
+  #     - name: ⎔ Setup Node.js
   #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
+  #         cache: 'pnpm'
 
-  #     - name: 📥 Download deps
-  #       uses: bahmutov/npm-install@v1
+  #     - name: 📥 Setup pnpm
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8.0.0
+
+  #     - name: 📥 Install dependencies
+  #       run: pnpm install
 
   #     - name: 📥 Install Playwright Browsers
-  #       run: npm run test:e2e:install
+  #       run: pnpm run test:e2e:install
 
   #     - name: 🛠 Setup Database
-  #       run: npx prisma migrate deploy
+  #       run: pnpx prisma migrate deploy
 
   #     - name: 🏦 Cache Database
   #       id: db-cache
   #       uses: actions/cache@v4
   #       with:
   #         path: prisma/data.db
-  #         key:
-  #           db-cache-schema_${{ hashFiles('./prisma/schema.prisma')
-  #           -migrations_${{ hashFiles('./prisma/migrations/*/migration.sql')
+  #         key: |
+  #           db-cache-schema_${{ hashFiles('./prisma/schema.prisma') }}
+  #           -migrations_${{ hashFiles('./prisma/migrations/*/migration.sql') }}
 
   #     - name: 🌱 Seed Database
   #       if: steps.db-cache.outputs.cache-hit != 'true'
-  #       run: npx prisma db seed
+  #       run: pnpx prisma db seed
   #       env:
   #         MINIMAL_SEED: true
 
   #     - name: 🏗 Build
-  #       run: npm run build
+  #       run: pnpm run build
 
   #     - name: 🎭 Playwright tests
-  #       run: npx playwright test
+  #       run: pnpx playwright test
 
   #     - name: 📊 Upload report
   #       uses: actions/upload-artifact@v4
@@ -139,11 +162,8 @@ jobs:
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-22.04
-    # needs: [lint, typecheck, vitest, playwright]
     needs: [lint, typecheck]
-    # only build/deploy branches on pushes
     if: ${{ github.event_name == 'push' }}
-
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
@@ -162,17 +182,14 @@ jobs:
 
       - name: 🚀 Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
-        run:
-          flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
-          --app ${{ steps.app_name.outputs.value }}-staging
+        run: |
+          flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }} --app ${{ steps.app_name.outputs.value }}-staging
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
-        # run:
-        #   flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
-        #   --build-secret SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

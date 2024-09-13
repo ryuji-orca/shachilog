@@ -11,7 +11,7 @@
     "lint:fix": "next lint && eslint ./src --fix",
     "lint": "eslint .",
     "typecheck": "tsc",
-    "setup": "yarn build && prisma generate && prisma migrate deploy && prisma db seed"
+    "setup": "pnpm build && prisma generate && prisma migrate deploy && prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
