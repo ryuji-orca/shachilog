@@ -31,10 +31,10 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       # - name: 🖼 Build icons
-      #   run: yarn build:icons
+      #   run: pnpm build:icons
 
       - name: 🔬 Lint
-        run: yarn lint
+        run: pnpm lint
 
   typecheck:
     name: ʦ TypeScript
@@ -55,8 +55,8 @@ jobs:
       #   run: npm run build:icons
 
       - name: 🔎 Type check
-        # run: yarn run typecheck --if-present
-        run: yarn run typecheck
+        # run: pnpm run typecheck --if-present
+        run: pnpm run typecheck
 
   # vitest:
   #   name: ⚡ Vitest
@@ -80,7 +80,7 @@ jobs:
   #     #   run: npm run build:icons
 
   #     - name: ⚡ Run vitest
-  #       run: yarn test -- --coverage
+  #       run: pnpm test -- --coverage
 
   # playwright:
   #   name: 🎭 Playwright
