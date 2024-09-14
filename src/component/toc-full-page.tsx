@@ -10,7 +10,7 @@ import {
   useScroll,
 } from "framer-motion"
 import { ClipboardListIcon, XCircleIcon } from "lucide-react"
-import tocbot from "tocbot"
+import * as tocbot from "tocbot"
 
 const TocFullPage = () => {
   const [selectedId, setSelectedId] = useState(false)

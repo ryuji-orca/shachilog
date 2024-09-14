@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-import tocbot from "tocbot"
+import * as tocbot from "tocbot"
 
 const Toc = () => {
   useEffect(() => {
