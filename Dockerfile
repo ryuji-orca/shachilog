@@ -11,8 +11,8 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="production"
-ARG PNPM_VERSION=9.10.0
-RUN npm install -g pnpm@${PNPM_VERSION} --force
+ARG YARN_VERSION=1.22.22
+RUN npm install -g yarn@$YARN_VERSION --force
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
@@ -25,8 +25,8 @@ RUN apt-get update && \
     apt-get install -y build-essential node-gyp openssl pkg-config python-is-python3 ca-certificates fuse3 sqlite3
 
 # Install node modules
-COPY --link package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY --link package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production=false
 
 # Generate Prisma Client
 COPY --link prisma .
@@ -36,10 +36,10 @@ RUN npx prisma generate
 COPY --link . .
 
 # Build application
-RUN pnpm run build
+RUN yarn run build
 
 # Remove development dependencies
-RUN pnpm install --prod
+RUN yarn install --production=true
 
 # Final stage for app image
 FROM base

@@ -22,37 +22,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.10.0
-      - run: pnpm i --frozen-lockfile
-
       - name: ⎔ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.10.0
-      - run: pnpm i --frozen-lockfile
-
-      - name: 📥 Install pnpm
-        run: pnpm install
-
-      - name: 🖥️ Verify pnpm Installation
-        run: pnpm --version
-
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      # - name: 🖼 Build icons
-      #   run: pnpm build:icons
+      
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
 
       - name: 🔬 Lint
-        run: pnpm lint
+        run: yarn lint
 
   typecheck:
     name: ʦ TypeScript
@@ -61,29 +40,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.10.0
-      - run: pnpm i --frozen-lockfile
-
       - name: ⎔ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
 
-      - name: 🖥️ Verify pnpm Installation
-        run: pnpm --version
-
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      # - name: 🖼 Build icons
-      #   run: pnpm build:icons
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
 
       - name: 🔎 Type check
-        run: pnpm run typecheck
+        run: yarn run typecheck
 
   deploy:
     name: 🚀 Deploy

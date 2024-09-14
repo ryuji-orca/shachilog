@@ -41,7 +41,7 @@ exec:
     if-candidate: true
 
   # - cmd: yarn start
-  - cmd: pnpm start
+  - cmd: yarn start
 
   # Run Next.js on startup.
   # - cmd: 'node server.js'
