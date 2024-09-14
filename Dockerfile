@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="production"
-ARG PNPM_VERSION=8.0.0
+ARG PNPM_VERSION=9.10.0
 RUN npm install -g pnpm@${PNPM_VERSION} --force
 
 # Throw-away build stage to reduce size of final image
