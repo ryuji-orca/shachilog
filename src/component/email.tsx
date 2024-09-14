@@ -1,10 +1,10 @@
 "use client"
 
+import { Box, Card, Heading, Text } from "@radix-ui/themes"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { cn } from "@/util/cn"
-import { Box, Card, Heading, Text } from "@radix-ui/themes"
 
 export const EmailSimpleForm = () => {
   const pathname = usePathname()

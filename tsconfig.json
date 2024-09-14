@@ -26,6 +26,7 @@
       "@/*": ["./src/*"]
     }
   },
+  "extends": ["@epic-web/config/typescript"],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -33,7 +34,8 @@
     "**/*.js",
     "**/*.jsx",
     ".next/types/**/*.ts",
-    "tailwind.config.mjs"
+    "tailwind.config.mjs",
+    "@epic-web/config/reset.d.ts"
   ],
   "exclude": ["node_modules"]
 }

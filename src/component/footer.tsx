@@ -1,12 +1,12 @@
 "use client"
 
-import Link from "next/link"
-
 import {
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   TwitterLogoIcon,
 } from "@radix-ui/react-icons"
+import Link from "next/link"
+
 
 const LINKS = [
   {

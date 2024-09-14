@@ -14,6 +14,7 @@ ENV NODE_ENV="production"
 ARG YARN_VERSION=1.22.22
 RUN npm install -g yarn@$YARN_VERSION --force
 
+
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -21,6 +22,7 @@ ARG NEXT_PUBLIC_EXAMPLE="value"
 ARG NEXT_PUBLIC_OTHER="Other value"
 
 # Install packages needed to build node modules
+
 RUN apt-get update && \
     apt-get install -y build-essential node-gyp openssl pkg-config python-is-python3 ca-certificates fuse3 sqlite3
 
@@ -40,6 +42,7 @@ RUN yarn run build
 
 # Remove development dependencies
 RUN yarn install --production=true
+
 
 # Final stage for app image
 FROM base
@@ -66,10 +69,12 @@ RUN apt-get update && \
     apt-get install -y openssl ca-certificates fuse3 sqlite3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Generate random value and save it to .env file which will be loaded by dotenv
+    
+    # Generate random value and save it to .env file which will be loaded by dotenv
 RUN INTERNAL_COMMAND_TOKEN=$(openssl rand -hex 32) && \
     echo "INTERNAL_COMMAND_TOKEN=$INTERNAL_COMMAND_TOKEN" > .env.local
-
+    
+    
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
@@ -81,6 +86,7 @@ COPY --from=build /app /app
 COPY --from=build /app/prisma ./prisma
 
 # COPY docker-entrypoint.js /app/docker-entrypoint.js
+
 
 # litefs
 # COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs

@@ -1,8 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
 
-import { cn } from "@/util/cn"
 import {
   AnimatePresence,
   motion,
@@ -10,7 +8,9 @@ import {
   useScroll,
 } from "framer-motion"
 import { ClipboardListIcon, XCircleIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import * as tocbot from "tocbot"
+import { cn } from "@/util/cn"
 
 const TocFullPage = () => {
   const [selectedId, setSelectedId] = useState(false)

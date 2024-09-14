@@ -1,9 +1,9 @@
+import { Button, Card, Inset } from "@radix-ui/themes"
 import Image from "next/image"
 import Link from "next/link"
 
 import { IconCircle } from "@/component/motion-circle"
 import { shimmer, toBase64 } from "@/util/shimmer"
-import { Button, Card, Inset } from "@radix-ui/themes"
 
 export const metadata = {
   title: "About",

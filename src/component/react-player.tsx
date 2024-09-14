@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState, type FC } from "react"
 import Image from "next/image"
+import { useEffect, useState, type FC } from "react"
 
-import { shimmer, toBase64 } from "@/util/shimmer"
 import ReactPlayer from "react-player/youtube"
+import { shimmer, toBase64 } from "@/util/shimmer"
 
 type ReactPlayerYoutubeType = {
   url: string

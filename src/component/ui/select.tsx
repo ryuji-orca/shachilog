@@ -1,5 +1,7 @@
 "use client"
 
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
+import * as SelectPrimitive from "@radix-ui/react-select"
 import {
   forwardRef,
   type ComponentPropsWithoutRef,
@@ -7,8 +9,6 @@ import {
 } from "react"
 
 import { cn } from "@/util/cn"
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
-import * as SelectPrimitive from "@radix-ui/react-select"
 
 const Select = SelectPrimitive.Root
 

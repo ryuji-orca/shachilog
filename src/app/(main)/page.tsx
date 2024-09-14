@@ -1,8 +1,8 @@
-import type { FC, ReactNode } from "react"
+import { BookOpenIcon, User as UserIcon } from "lucide-react"
 import Link from "next/link"
+import  { type FC, type ReactNode } from "react"
 
 import { cn } from "@/util/cn"
-import { BookOpenIcon, User as UserIcon } from "lucide-react"
 
 type LinkCardProps = {
   name: string

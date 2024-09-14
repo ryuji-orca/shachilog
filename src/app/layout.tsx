@@ -1,13 +1,13 @@
 import "./globals.css"
 import "@radix-ui/themes/styles.css"
 
-import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/react"
+import  { type Metadata } from "next"
 import { Inter } from "next/font/google"
 
-import { Toaster } from "@/component/ui/toaster"
-import { Analytics } from "@vercel/analytics/react"
-
 import { Providers } from "@/app/providers"
+import { Toaster } from "@/component/ui/toaster"
+
 
 const inter = Inter({
   display: "swap",

@@ -1,9 +1,10 @@
 "use client"
 
-import { useOptimistic, type FC } from "react"
 
 import { Text } from "@radix-ui/themes"
 import { motion } from "framer-motion"
+import { useOptimistic, type FC } from "react"
+
 
 import { handleLikeCounter } from "./like-counter-server"
 
