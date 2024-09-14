@@ -1,17 +1,17 @@
 # This directory is where your application will access the database.
 fuse:
-  dir: "${LITEFS_DIR}"
+  dir: '${LITEFS_DIR}'
 
 # This directory is where LiteFS will store internal data.
 # You must place this directory on a persistent volume.
 data:
-  dir: "/data/litefs"
+  dir: '/data/litefs'
 
 proxy:
   # matches the internal_port in fly.toml
-  addr: ":${INTERNAL_PORT}"
-  target: "localhost:${PORT}"
-  db: "${DATABASE_FILENAME}"
+  addr: ':${INTERNAL_PORT}'
+  target: 'localhost:${PORT}'
+  db: '${DATABASE_FILENAME}'
 
 # The lease section specifies how the cluster will be managed. We're using the
 # "consul" lease type so that our application can dynamically change the primary.
@@ -19,14 +19,14 @@ proxy:
 # These environment variables will be available in your Fly.io application.
 # You must specify "experiement.enable_consul" for FLY_CONSUL_URL to be available.
 lease:
-  type: "consul"
+  type: 'consul'
   candidate: ${FLY_REGION == PRIMARY_REGION}
   promote: true
-  advertise-url: "http://${HOSTNAME}.vm.${FLY_APP_NAME}.internal:20202"
+  advertise-url: 'http://${HOSTNAME}.vm.${FLY_APP_NAME}.internal:20202'
 
   consul:
-    url: "${FLY_CONSUL_URL}"
-    key: "shachilog-litefs/${FLY_APP_NAME}"
+    url: '${FLY_CONSUL_URL}'
+    key: 'thank-you-token-litefs/${FLY_APP_NAME}'
 
 exec:
   - cmd: npx prisma migrate deploy
@@ -40,7 +40,6 @@ exec:
   - cmd: sqlite3 $CACHE_DATABASE_PATH "PRAGMA journal_mode = WAL;"
     if-candidate: true
 
-  # - cmd: yarn start
   - cmd: yarn start
 
   # Run Next.js on startup.
