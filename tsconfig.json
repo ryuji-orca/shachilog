@@ -30,8 +30,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
     ".next/types/**/*.ts",
-    "tailwind.config.mts"
+    "tailwind.config.mjs"
   ],
   "exclude": ["node_modules"]
 }
