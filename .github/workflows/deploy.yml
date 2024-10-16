@@ -73,7 +73,7 @@ jobs:
       #   run: npm run build:icons
 
       - name: ⚡ Run vitest
-        run: yarn test -- --coverage
+        run: yarn test --coverage
 
   playwright:
     name: 🎭 Playwright

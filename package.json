@@ -18,6 +18,7 @@
     "coverage": "vitest run --coverage",
     "test:e2e:dev": "playwright test --ui",
     "test:e2e:run": "cross-env CI=true playwright test",
+    "test:e2e:install": "npx playwright install --with-deps chromium",
     "setup": "yarn build && prisma generate && prisma migrate deploy && prisma db seed",
     "prisma:studio": "prisma studio"
   },
@@ -95,7 +96,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.2",
-    "@vitest/coverage-v8": "2.1.2",
+    "@vitest/coverage-v8": "2.1.3",
     "enforce-unique": "^1.3.0",
     "eslint": "8.57.0",
     "eslint-config-kentcdodds": "^21.0.0",
@@ -111,7 +112,7 @@
     "tsx": "^4.7.3",
     "typescript": "^5.4.0",
     "vite-tsconfig-paths": "^5.0.1",
-    "vitest": "^2.1.2"
+    "vitest": "^2.1.3"
   },
   "prettier": "@epic-web/config/prettier"
 }
