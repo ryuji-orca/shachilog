@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import { type Metadata } from 'next/types'
 
@@ -6,6 +5,7 @@ import { MdxComponent } from '@/component/mdx/mdx-component'
 import { Toc } from '@/component/toc'
 import { TocFullPage } from '@/component/toc-full-page'
 import { cn } from '@/util/cn'
+import prisma from '@/util/db'
 import { LikeCounter } from '@/util/like-counter'
 import { getHashedIp } from '@/util/like-counter-server'
 import { getBlogMdxListItem } from '@/util/mdx-hook'
@@ -56,8 +56,6 @@ export const generateMetadata = async ({
 		},
 	}
 }
-
-const prisma = new PrismaClient()
 
 const Page = async ({ params }: { params: { slug: string } }) => {
 	const post = getBlogPosts().find((post) => {

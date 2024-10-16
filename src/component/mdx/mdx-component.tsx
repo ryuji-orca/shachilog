@@ -114,7 +114,7 @@ const RoundedImage: FC<RoundedImageProps> = ({
 			) : (
 				<div className="flex justify-center">
 					<Image
-						className="rounded-lg"
+						className="h-auto w-full max-w-full rounded-lg"
 						src={src}
 						alt={alt}
 						width={width}
@@ -296,7 +296,7 @@ const Section = ({ title, chapterNumber, color }: SectionProps) => {
 
 				<h2
 					id={id}
-					className="ralative text-balance text-center text-2xl font-semibold leading-normal tracking-wider sm:text-3xl"
+					className="relative text-balance text-center text-2xl font-semibold leading-normal tracking-wider sm:text-3xl"
 				>
 					{title}
 				</h2>
@@ -316,14 +316,14 @@ const getTweet = unstable_cache(
 const TweetPage = async ({ id }: { id: string }) => {
 	try {
 		const tweet = await getTweet(id)
-		return tweet ? <EmbeddedTweet tweet={tweet} /> : <TweetNotFound />
+		return tweet ? <EmbeddedTweet tweet={tweet} /> : null
 	} catch (error) {
 		console.error(error)
 		return <TweetNotFound error={error} />
 	}
 }
 
-const X = ({ id }: { id: string }) => {
+export const X = ({ id }: { id: string }) => {
 	return (
 		<div className="not-prose">
 			<Suspense fallback={<TweetSkeleton />}>
@@ -352,7 +352,6 @@ const AnchorLink = ({ id }: { id: string }) => {
 		<a className="anchor" href={`#${id}`} aria-hidden="true" tabIndex={-1}>
 			<div className="anchor visually-hidden">permalink</div>
 			<svg
-				className="autolink-svg"
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"

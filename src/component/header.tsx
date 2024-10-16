@@ -1,18 +1,17 @@
-"use client"
+'use client'
 
+import { Menu as MenuIcon } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ShachilogDark } from 'public/image/common/shachilog-dark'
+import { ShachilogLight } from 'public/image/common/shachilog-light'
 
-import { Menu as MenuIcon } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ShachilogDark } from "public/image/common/shachilog-dark"
-import { ShachilogLight } from "public/image/common/shachilog-light"
-
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
-import { cn } from "@/util/cn"
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
+import { cn } from '@/util/cn'
 
 const LINKS = [
-  { name: "Blog", href: "/blog" },
-  { name: "About", href: "/about" },
+	{ name: 'Blog', href: '/blog' },
+	{ name: 'About', href: '/about' },
 ]
 
 // const ModeToggle = () => {
@@ -68,93 +67,95 @@ const LINKS = [
 // }
 
 const MobileMenu = () => {
-  return (
-    <Sheet>
-      <SheetTrigger>
-        <MenuIcon className="text-slate-12 dark:text-slatedark-12" />
-      </SheetTrigger>
+	return (
+		<Sheet>
+			<SheetTrigger>
+				<MenuIcon className="text-slate-12 dark:text-slatedark-12" />
+			</SheetTrigger>
 
-      <SheetContent size="full" className="flex h-3/4 flex-col justify-between">
-        <div className="flex flex-col gap-6 pt-28">
-          {LINKS.map(({ name, href }) => {
-            return (
-              <div key={name} className="text-slate-12 dark:text-slatedark-12">
-                <a className="text-2xl" href={href}>
-                  {name}
-                </a>
-              </div>
-            )
-          })}
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
+			<SheetContent size="full" className="flex h-3/4 flex-col justify-between">
+				<div className="flex flex-col gap-6 pt-28">
+					{LINKS.map(({ name, href }) => {
+						return (
+							<div key={name} className="text-slate-12 dark:text-slatedark-12">
+								<a className="text-2xl" href={href}>
+									{name}
+								</a>
+							</div>
+						)
+					})}
+				</div>
+			</SheetContent>
+		</Sheet>
+	)
 }
 
 const NavLink = ({
-  href,
-  ...rest
-}: Omit<Parameters<typeof Link>["0"], "href"> & { href: string }) => {
-  const pathname = usePathname()
-  const isActive = pathname === href
-  return (
-    <li>
-      <Link
-        className={cn("text-base dark:text-slatedark-11 text-slate-11", {
-          "dark:border-yellowdark-10 border-indigo-10 border-b pb-2 border-dashed":
-            isActive,
-          "": !isActive,
-        })}
-        href={href}
-        {...rest}
-      />
-    </li>
-  )
+	href,
+	...rest
+}: Omit<Parameters<typeof Link>['0'], 'href'> & { href: string }) => {
+	const pathname = usePathname()
+	const isActive = pathname === href
+	return (
+		<li>
+			<Link
+				className={cn('text-base text-slate-11 dark:text-slatedark-11', {
+					'border-b border-dashed border-indigo-10 pb-2 dark:border-yellowdark-10':
+						isActive,
+					'': !isActive,
+				})}
+				href={href}
+				{...rest}
+			/>
+		</li>
+	)
 }
 
 export const Header = () => {
-  const pathname = usePathname()
-  return (
-    <div className="sticky top-0 z-10 border-b border-indigo-6 bg-indigo-1/75 backdrop-blur dark:border-indigodark-6 dark:bg-indigodark-1/75">
-      <header className="max-w-1096 mx-auto flex flex-col  justify-center px-6 py-4 md:p-6">
-        <nav className="flex items-end justify-between gap-8 md:items-center">
-          <Link href="/" className="block  w-auto">
-            {pathname === "/" ? (
-              <h1>
-                <span className="hidden dark:block">
-                  <ShachilogLight />
-                </span>
-                <span className="block dark:hidden">
-                  <ShachilogDark />
-                </span>
-              </h1>
-            ) : (
-              <div>
-                <span className="hidden dark:block">
-                  <ShachilogLight />
-                </span>
-                <span className="block dark:hidden">
-                  <ShachilogDark />
-                </span>
-              </div>
-            )}
-          </Link>
-          <div className="flex items-center gap-6">
-            <ul className="hidden items-center gap-5 md:flex">
-              {LINKS.map(({ name, href }) => {
-                return (
-                  <NavLink key={name} href={href}>
-                    {name}
-                  </NavLink>
-                )
-              })}
-            </ul>
-            <div className="md:hidden">
-              <MobileMenu />
-            </div>
-          </div>
-        </nav>
-      </header>
-    </div>
-  )
+	const pathname = usePathname()
+	return (
+		<div className="sticky top-0 z-10 border-b border-indigo-6 bg-indigo-1/75 backdrop-blur dark:border-indigodark-6 dark:bg-indigodark-1/75">
+			<header className="max-w-1096 mx-auto flex flex-col justify-center px-6 py-4 md:p-6">
+				<nav className="flex items-end justify-between gap-8 md:items-center">
+					<Link href="/" className="block w-auto">
+						{pathname === '/' ? (
+							<h1>
+								<span className="hidden dark:block">
+									<ShachilogLight />
+								</span>
+								<span className="block dark:hidden">
+									<ShachilogDark />
+								</span>
+							</h1>
+						) : (
+							<div>
+								<span className="hidden dark:block">
+									<ShachilogLight />
+								</span>
+								<span className="block dark:hidden">
+									<ShachilogDark />
+								</span>
+							</div>
+						)}
+					</Link>
+					<div className="flex items-center gap-6">
+						{pathname === '/' ? null : (
+							<ul className="hidden items-center gap-5 md:flex">
+								{LINKS.map(({ name, href }) => {
+									return (
+										<NavLink key={name} href={href}>
+											{name}
+										</NavLink>
+									)
+								})}
+							</ul>
+						)}
+						<div className="md:hidden">
+							<MobileMenu />
+						</div>
+					</div>
+				</nav>
+			</header>
+		</div>
+	)
 }
